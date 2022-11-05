@@ -1,0 +1,10 @@
+# This file is for test if behat is good configured
+Feature:
+    In order to prove that testing JS via browser correctly installed      
+    As a user
+    I want to have a demo scenario
+    
+    @javascript
+    Scenario: I can navigate to the homepage
+        When I am on homepage
+        Then I should see "Welcome"

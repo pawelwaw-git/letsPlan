@@ -1,0 +1,44 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block main %}
+
+
+
+<h2>You are Welcome on your Dashboard. You can check how your goals progress.</span></h2>
+<div class="row">
+    <div class="col card">
+        <section>
+            <h3 class="card-header">Finished Todays Tasks ({{ todays_finished_tasks | length }})</h3>
+            <ul class="list-group card-body">
+                {% for task in todays_finished_tasks %}
+                    <li class="list-group-item list-group-item-success">{{ task.goal.name }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+    <div class="col card">
+        <section>
+            <h3 class="card-header">Yet Unfinished Todays Tasks ({{ todays_unfinished_tasks | length }})</h3>
+            <ul class="list-group card-body">
+                {% for task in todays_unfinished_tasks %}
+                    <li class="list-group-item list-group-item-warning">{{ task.goal.name }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+    <div class="col card">
+        <section>
+            <h3 class="card-header">Task Last 7 days Statistic</h3>
+            {{ render_chart(chart_last_7days) }} 
+        </section>
+    </div>
+<div>
+<div class="row">
+    <div class="col card">
+        <section>
+            <h3 class="card-header">Task Last Month Statistic</h3>
+            {{ render_chart(chart_last_month) }} 
+        </section>
+    </div>
+</div>
+{% endblock %}
