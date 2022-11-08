@@ -44,6 +44,7 @@ final class TasksContext implements Context
                 ['Repeatable' => RepeatableTypes::EveryDay->value, 'Active' => true],
                 ['Repeatable' => RepeatableTypes::EveryWeek->value, 'Active' => true],
                 ['Repeatable' => RepeatableTypes::EveryMonth->value, 'Active' => true],
+                ['Repeatable' => RepeatableTypes::None->value, 'Active' => true],
             ]
         );
     }
@@ -60,10 +61,12 @@ final class TasksContext implements Context
         $expected_days = $this->taskCalendarRepository->getQuantityOfTasksTypes(RepeatableTypes::EveryDay->value);
         $expected_weeks = $this->taskCalendarRepository->getQuantityOfTasksTypes(RepeatableTypes::EveryWeek->value);
         $expected_months = $this->taskCalendarRepository->getQuantityOfTasksTypes(RepeatableTypes::EveryMonth->value);
+        $expected_none = $this->taskCalendarRepository->getQuantityOfTasksTypes(RepeatableTypes::None->value);
 
         assertEquals($expected_days, $days_diff->days);
         assertEquals($expected_weeks, ceil($days_diff->days / 7));
         assertEquals($expected_months, $days_diff->format("%m"));
+        assertEquals($expected_none, 0);
     }
 
     /**
