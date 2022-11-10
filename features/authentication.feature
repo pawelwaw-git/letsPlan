@@ -21,3 +21,7 @@ Feature: Authentication
     And I fill in "Password" with "adminpass"
     And I press "Sign in"
     Then I should see "Invalid credentials"
+  Scenario: Can Log out
+    Given I am login as admin
+    When I follow "Sign out"
+    Then I should see "Please sign in"

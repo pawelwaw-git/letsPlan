@@ -55,7 +55,7 @@ final class FormContext extends MinkContext implements Context
     /** @AfterFeature */
     public static function teardownFeature(AfterFeatureScope $scope): void
     {
-        // shell_exec("php bin/console doctrine:database:drop --env=test --force");
+        shell_exec("php bin/console doctrine:database:drop --env=test --force");
     }
 
     /**
