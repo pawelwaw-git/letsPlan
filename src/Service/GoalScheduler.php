@@ -3,12 +3,13 @@
 namespace App\Service;
 
 use App\Entity\TaskCalendar;
-use App\Enum\RepeatableTypes;
 use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
 use DateInterval;
 use DateTime;
-use App\Enum\RepetableTypeException;
+use App\Contracts\IsScheduled;
+use App\Contracts\Repeatable;
+use App\Repeatable\RepeatableFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class GoalScheduler
@@ -33,20 +34,23 @@ class GoalScheduler
         if ($this->canScheduleGoals()) {
             $goalsToSchedule = $this->goalRepository->findGoalsToSchedule($this->getLastScheduleDate());
             foreach ($goalsToSchedule as $goal) {
-                $scheduledPeriod = $this->getScheduledPeriod($goal->getRepeatable(), $goal->getLastDateSchedule());
-                if ($scheduledPeriod) {
-                    foreach ($scheduledPeriod as $date) {
-                        $task = new TaskCalendar();
-                        $task->setDate($date);
-                        $task->isIsDone(false);
-                        $task->setGoal($goal);
-                        $goal->setLastDateSchedule($date);
-                        $this->taskCalendarRepository->save($task);
+                $repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
+                if ($this->canScheduleGoal($repeatableType)) {
+                    $scheduledPeriod = $this->getScheduledPeriod($repeatableType, $goal->getLastDateSchedule());
+                    if ($scheduledPeriod) {
+                        foreach ($scheduledPeriod as $date) {
+                            $task = new TaskCalendar();
+                            $task->setDate($date);
+                            $task->isIsDone(false);
+                            $task->setGoal($goal);
+                            $goal->setLastDateSchedule($date);
+                            $this->taskCalendarRepository->save($task);
+                        }
                     }
                 }
+                $this->goalRepository->flush();
+                $this->taskCalendarRepository->flush();
             }
-            $this->goalRepository->flush();
-            $this->taskCalendarRepository->flush();
         }
     }
 
@@ -64,33 +68,21 @@ class GoalScheduler
         return $lastScheduleDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT))->setTime(0, 0, 0);
     }
 
-    private function getScheduledPeriod(string $Repeatable, $lastScheduleDate): mixed
+    private function getScheduledPeriod(Repeatable $Repeatable, ?DateTime $lastScheduleDate): \DatePeriod
     {
-        $finishDate = new \DateTime('today');
-        $finishDate->setTime(0, 0, 0);
-
-        if (!$lastScheduleDate) {
-            $lastScheduleDate = clone $finishDate;
-        }
-
-        // is Scheduled - throw Exception or false -- 
-        // get start Date
-            // if lastScheduleDate is null then setStartDate based on Interval - maybe contract is needed there
-            // how to solve problem with unique value of text Repeatable ?? 
-            // - unique repeatable guid text + method for make name for user, to choose repeatable
-            // default will be name of Class - no method in contract
-        // get finish Date
-        // then return Period to schedule tasks
-
-        try {
-            $interval = RepeatableTypes::getSuitableInterval($Repeatable);
-        } catch (RepetableTypeException $e) {
-            dump("Value Repeatable don't suits for RepeatableTypes Enum");
-            return null;
-        }
-        if (!$interval) return null;
-
+        $startDate = $Repeatable->getStartDate();
+        $startDate->setTime(0, 0, 0);
+        $finishDate = clone $startDate;
         $finishDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT));
-        return new \DatePeriod($lastScheduleDate, $interval, $finishDate);
+        $finishDate->setTime(0, 0, 0);
+        if ($startDate <= $lastScheduleDate) {
+            return new \DatePeriod($lastScheduleDate, $Repeatable->getInterval(), $finishDate, 1);
+        }
+        return new \DatePeriod($startDate, $Repeatable->getInterval(), $finishDate);
+    }
+
+    private function canScheduleGoal(IsScheduled $schedule): bool
+    {
+        return $schedule->isScheduled();
     }
 }

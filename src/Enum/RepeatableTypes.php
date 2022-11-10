@@ -2,8 +2,6 @@
 
 namespace App\Enum;
 
-use Exception;
-
 enum RepeatableTypes: string
 {
     case None = 'none';
@@ -24,26 +22,6 @@ enum RepeatableTypes: string
     {
         return array_rand(array_flip(self::getAsKeyValueArray()));
     }
-
-    /**
-     * return Suitable Interval
-     * if None returns null
-     * if wrong type then Exception
-     *
-     * @param string $intervalName
-     * @return mixed
-     */
-    public static function getSuitableInterval(string $intervalName):mixed {
-        return match( $intervalName) {
-            RepeatableTypes::EveryDay->value => new \DateInterval('P1D'),
-            RepeatableTypes::EveryWeek->value => new \DateInterval('P7D'),
-            RepeatableTypes::EveryMonth->value => new \DateInterval('P1M'),
-            RepeatableTypes::None->value => null,
-            default => new RepetableTypeException('No sutiable interval'),
-        };
-    }
 }
 
-Class RepetableTypeException extends Exception {
 
-}
