@@ -43,12 +43,12 @@ final class GoalFactory extends ModelFactory
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'Name' => self::faker()->word(),
-            'Priority' => self::faker()->numberBetween(1,20),
+            'Priority' => self::faker()->numberBetween(1, 20),
             'Category ' => CategoryFactory::random(),
             'Type' => GoalTypes::randomCase(),
             'Repeatable' => RepeatableTypes::randomCase(),
             'Description' => self::faker()->text(),
-            'Active' => self::faker()->numberBetween(0,1),
+            'Active' => self::faker()->numberBetween(0, 1),
         ];
     }
 
@@ -63,5 +63,19 @@ final class GoalFactory extends ModelFactory
     protected static function getClass(): string
     {
         return Goal::class;
+    }
+
+    public static function getProperTypeAndRepatableValues()
+    {
+        $random_type = GoalTypes::randomCase();
+        $repeatble_values = match ($random_type) {
+            GoalTypes::Rule->value, GoalTypes::Limit->value, GoalTypes::Task->value => [RepeatableTypes::None->value],
+            GoalTypes::SimpleHabbit->value, GoalTypes::ComplexHabbit->value => [RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value],
+        };
+
+        return [
+            'Type' => $random_type,
+            'Repeatable' => self::faker()->randomElement($repeatble_values)
+        ];
     }
 }

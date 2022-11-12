@@ -5,16 +5,29 @@ namespace App\DataFixtures;
 use App\Factory\AdminFactory;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
+use App\Service\GoalScheduler;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+    private $goalScheduler;
+
+    public function __construct(GoalScheduler $goalScheduler)
+    {
+        $this->goalScheduler = $goalScheduler;
+    }
+
     public function load(ObjectManager $manager): void
     {
+
         $this->loadUsers();
         $this->loadCategories();
-        GoalFactory::createMany(25);
+        GoalFactory::createMany(25, function () {
+            return GoalFactory::getProperTypeAndRepatableValues();
+        });
+        $this->goalScheduler->setPermissionToSchedule(true);
+        $this->goalScheduler->scheduleGoals();
         $manager->flush();
     }
 
@@ -53,7 +66,7 @@ class AppFixtures extends Fixture
             ->create();
     }
 
-    public function loadCategories()
+    private function loadCategories()
     {
         $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
         foreach ($categories as $category)
