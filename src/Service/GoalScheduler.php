@@ -79,17 +79,17 @@ class GoalScheduler
         return $lastScheduleDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT))->setTime(0, 0, 0);
     }
 
-    private function getScheduledPeriod(Repeatable $Repeatable, ?DateTime $lastScheduleDate): \DatePeriod
+    private function getScheduledPeriod(Goal $goal): \DatePeriod
     {
-        $startDate = $Repeatable->getStartDate();
+        $startDate = $this->repeatableType->getStartDate();
         $startDate->setTime(0, 0, 0);
         $finishDate = clone $startDate;
         $finishDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT));
         $finishDate->setTime(0, 0, 0);
-        if ($startDate <= $lastScheduleDate) {
-            return new \DatePeriod($lastScheduleDate, $Repeatable->getInterval(), $finishDate, 1);
+        if ($startDate <= $goal->getLastDateSchedule()) {
+            return new \DatePeriod($goal->getLastDateSchedule(), $this->repeatableType->getInterval(), $finishDate, 1);
         }
-        return new \DatePeriod($startDate, $Repeatable->getInterval(), $finishDate);
+        return new \DatePeriod($startDate, $this->repeatableType->getInterval(), $finishDate);
     }
 
     private function isRepeatable(): bool
@@ -99,7 +99,7 @@ class GoalScheduler
 
     private function createTasksBasedOnPeriod(Goal $goal)
     {
-        $scheduledPeriod = $this->getScheduledPeriod($this->repeatableType, $goal->getLastDateSchedule());
+        $scheduledPeriod = $this->getScheduledPeriod($goal);
         foreach ($scheduledPeriod as $date) {
             $task = new TaskCalendar();
             $task->setDate($date);
