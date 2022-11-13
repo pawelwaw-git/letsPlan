@@ -66,7 +66,7 @@ class AppFixtures extends Fixture
             ->create();
     }
 
-    private function loadCategories()
+    public function loadCategories()
     {
         $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
         foreach ($categories as $category)

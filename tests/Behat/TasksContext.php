@@ -14,6 +14,7 @@ use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Event\ScenarioEvent;
+use Behat\Gherkin\Node\TableNode;
 use DateInterval;
 use DateTime;
 
@@ -30,10 +31,13 @@ final class TasksContext implements Context
     protected TaskCalendarRepository $taskCalendarRepository;
     protected GoalRepository $goalRepository;
 
-    public function __construct(TaskCalendarRepository $taskCalendarRepository, GoalRepository $goalRepository)
+    protected $goalScheduler;
+
+    public function __construct(TaskCalendarRepository $taskCalendarRepository, GoalRepository $goalRepository, GoalScheduler $goalScheduler)
     {
         $this->taskCalendarRepository = $taskCalendarRepository;
         $this->goalRepository = $goalRepository;
+        $this->goalScheduler = $goalScheduler;
     }
 
     /**
@@ -41,7 +45,7 @@ final class TasksContext implements Context
      */
     public function thereAreDifferentGoalTypes()
     {
-        $fixtures = new AppFixtures();
+        $fixtures = new AppFixtures($this->goalScheduler);
         $fixtures->loadCategories();
         GoalFactory::createSequence(
             [
@@ -105,9 +109,26 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db
      */
-    public function thereArePlanedTasksInDb($type)
+    public function thereArePlanedTasksInDb($type, $startDate)
     {
-        $days_diff = $this->getQuantityOfPlannedDays(null);
+        $this->thereArePlanedTasksInDbFromDate($type, $startDate);
+    }
+
+    /**
+     * @Then there are planed :type tasks in db from date :startDate
+     */
+    public function thereArePlanedTasksInDbFromDate($type, $startDate = null)
+    {
+        if ($startDate !== false) {
+            $startDate = DateTime::createFromFormat("Y-m-d", $startDate);
+        }
+        // strange this, $startDate return false in console, but if I use else there is not working !== don't work also
+        if ($startDate == false) {
+            $startDate = null;
+        }
+
+        $days_diff = $this->getQuantityOfPlannedDays($startDate);
+
         $from_days = match ($type) {
             RepeatableTypes::EveryMonth->value =>  $days_diff->format("%m"),
             RepeatableTypes::EveryWeek->value => ceil($days_diff->days / 7),
@@ -120,20 +141,22 @@ final class TasksContext implements Context
     }
 
     /**
-     * @Then there are planed :type tasks in db from date :startDate
+     * @Given there are following Goals with lastDates in db:
      */
-    public function thereArePlanedTasksInDbFromDate($type, $startDate)
+    public function thereAreFollowingGoalsWithLastdatesInDb(TableNode $table)
     {
-        $days_diff = $this->getQuantityOfPlannedDays(DateTime::createFromFormat("Y-m-d", $startDate));
+        foreach ($table as $row) {
+            $this->thereIsGoalWithLastdateInDb($row['goal_type'], $row['lastDate']);
+        }
+    }
 
-        $from_days = match ($type) {
-            RepeatableTypes::EveryMonth->value =>  $days_diff->format("%m"),
-            RepeatableTypes::EveryWeek->value => ceil($days_diff->days / 7),
-            RepeatableTypes::EveryDay->value => $days_diff->days,
-            RepeatableTypes::None->value => 0,
-        };
-
-        $expected_from_db = $this->taskCalendarRepository->getQuantityOfTasksTypes($type);
-        assertEquals($expected_from_db, $from_days);
+    /**
+     * @Then there are following planed tasks in db:
+     */
+    public function thereAreFollowingPlanedTasksInDb(TableNode $table)
+    {
+        foreach ($table as $row) {
+            $this->thereArePlanedTasksInDb($row['goal_type'], $row['startDate']);
+        }
     }
 }
