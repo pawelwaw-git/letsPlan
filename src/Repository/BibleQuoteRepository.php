@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\BibleQuote;
+use App\Service\Bible\RandomBibleText;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,13 +40,13 @@ class BibleQuoteRepository extends ServiceEntityRepository
         }
     }
 
-   public function findByBibleAndChapter(string $bibleId,string $bibleChapter): ?BibleQuote
+   public function findByBibleAndChapter(RandomBibleText $randomBibleText): ?BibleQuote
    {
        return $this->createQueryBuilder('b')
            ->andWhere('b.IdBible = :bibleId')
            ->andWhere('b.ChapterVerse = :bibleChapter')
-           ->setParameter('bibleId', $bibleId)
-           ->setParameter('bibleChapter', $bibleChapter)
+           ->setParameter('bibleId', $randomBibleText->getId())
+           ->setParameter('bibleChapter', $randomBibleText->getChapterVerse())
            ->getQuery()
            ->getOneOrNullResult()
        ;
