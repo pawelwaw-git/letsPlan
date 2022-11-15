@@ -9,7 +9,7 @@ use App\Entity\Category;
 use App\Repository\AdminRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\TaskCalendarRepository;
-use App\Service\GoalScheduler;
+use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;

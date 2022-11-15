@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Service\ApiBible;
-use App\Service\GoalScheduler;
+use App\Service\GoalScheduler\GoalScheduler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +15,7 @@ class HomepageController extends AbstractController
     {
         return $this->render('homepage/index.html.twig', [
             'controller_name' => 'HomepageController',
-            'api_text' => $apiBible->getVerseOfBibleFromApi(),
+            'api_text' => $apiBible->getRandomBibleVerse(),
         ]);
     }
 
