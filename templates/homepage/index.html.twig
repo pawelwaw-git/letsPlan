@@ -3,10 +3,119 @@
 {% block title %}Homepage!{% endblock %}
 
 {% block body %}
-
-<div class="example-wrapper">
-    <h1>Welcome and set your Goals.</h1>
-    <h1>Remember set your Goals S.M.A.R.T</h1>
-    <img src = "{{ asset('images/goals-768x604.jpg') }}" alt="set Goals Smart" />
+{{ parent() }}
+<div class="example-wrapper container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-3 text-center">Welcome, set your goals perfectly.</h1>
+            {{ api_text | raw }}
+            <h2 class="display-5 text-center">Remember set your Goals S.M.A.R.T</h2>
+        </div>
+    </div>
+    <div id="smart_style">
+        <div class="row smart_letters" >
+            <div class="col border-right">
+                <span class="letter_decor"> S </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> M </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> A </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> R </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> T </span>
+            </div>
+        </div>
+        <div class="row explain_letters">
+            <div class="col border-right">
+                <span>Smart</span>
+            </div>
+            <div class="col border-right">
+                <span>Measurable</span>
+            </div>
+            <div class="col border-right">
+                <span>Attainable</span>
+            </div>
+            <div class="col border-right">
+                <span>Relevant</span>
+            </div>
+            <div class="col border-right">
+                <span>Time-based</span>
+            </div>
+        </div>
+        <div class="row questions">
+            <div class="col border-right">
+                <span>What do you want to accomplish?</span>
+            </div>
+            <div class="col border-right">
+                <span>How will you know when you have reached it?</span>
+            </div>
+            <div class="col border-right">
+                <span>How can the goal be achieved?</span>
+            </div>
+            <div class="col border-right">
+                <span>Why is this goal important to you?</span>
+            </div>
+            <div class="col border-right">
+                <span>When exatly do you want to accomplish it?</span>
+            </div>
+        </div>
+        <div class="row questions">
+            <div class="col border-right">
+                <span>Your goals should be clear and defined</span>
+            </div>
+            <div class="col border-right">
+                <span>You should be able to track your progress</span>
+            </div>
+            <div class="col border-right">
+                <span>Make your goal ambitious not outrageous</span>
+            </div>
+            <div class="col border-right">
+                <span>You goal should meet personal insterests, skills and resources</span>
+            </div>
+            <div class="col border-right">
+                <span>Create a timeframe/deadline for achieving your goal</span>
+            </div>
+        </div>
+        <div class="row fontawesone-pic">
+            <div class="col border-right">
+                <i class="fa fa-search fa-5x" aria-hidden="true"></i>
+            </div>
+            <div class="col border-right">
+                <i class="fa fa-balance-scale fa-5x" aria-hidden="true"></i>
+            </div>
+            <div class="col border-right">
+                <i class="fa fa-line-chart fa-5x" aria-hidden="true"></i>
+            </div>
+            <div class="col border-right">
+                <i class="fa fa-check-circle fa-5x" aria-hidden="true"></i>
+            </div>
+            <div class="col border-right">
+                <i class="fa fa-hourglass-end fa-5x" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="row smart_letters" >
+            <div class="col border-right">
+                <span class="letter_decor"> G </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> O </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> A </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> L </span>
+            </div>
+            <div class="col border-right">
+                <span class="letter_decor"> S </span>
+            </div>
+        </div>
+    </div>
+    </div>
 </div>
 {% endblock %}

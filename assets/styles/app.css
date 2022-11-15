@@ -1,3 +1,35 @@
+@import '~@fortawesome/fontawesome-free/css/all.css';
 body {
     background-color: white;
+}
+/* bible quetes styles */
+#homepage_blockquote p {display: inline; }
+.q1 span.v {display: none;}
+#smart_style { 
+    background-color: #725d95;
+    text-align: center;
+    font-weight: 900;
+    color: #e1d6fe;
+    margin: 0 0 50px;
+}
+#smart_style .row {
+    margin: 0 0 0 10px;
+}
+#smart_style .smart_letters { 
+    font-size: calc(1em + 4vw) ;  
+	text-shadow: 
+    4px 4px #000;
+}
+#smart_style .fontawesone-pic i {
+    margin: 10px 0 0 10px;
+}
+
+#smart_style .explain_letters {
+    font-size: 1.5em;
+}
+#smart_style .questions {
+    color: #84759e;
+    background-color: #e1d5fd;
+    margin:0;
+    padding: 10px 0 0 10px;
 }
