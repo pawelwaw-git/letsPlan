@@ -12,7 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use App\Enum\GoalTypes;
 use App\Enum\RepeatableTypes;
-use App\Service\GoalScheduler;
+use App\Service\GoalScheduler\GoalScheduler;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;

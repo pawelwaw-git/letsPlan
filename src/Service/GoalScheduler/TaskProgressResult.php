@@ -1,7 +1,6 @@
 <?php
-namespace App\Service;
+namespace App\Service\GoalScheduler;
 
-use App\Entity\TaskCalendar;
 use App\Repository\TaskCalendarRepository;
 
 class TaskProgressResult
