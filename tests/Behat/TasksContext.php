@@ -11,7 +11,7 @@ use App\Enum\RepeatableTypes;
 use App\Factory\GoalFactory;
 use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
-use App\Service\GoalScheduler;
+use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Event\ScenarioEvent;
 use Behat\Gherkin\Node\TableNode;

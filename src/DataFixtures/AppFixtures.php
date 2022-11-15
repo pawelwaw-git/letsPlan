@@ -5,7 +5,7 @@ namespace App\DataFixtures;
 use App\Factory\AdminFactory;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
-use App\Service\GoalScheduler;
+use App\Service\GoalScheduler\GoalScheduler;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
