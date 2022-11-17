@@ -1,21 +1,20 @@
 Description
 ------------
 
-For now this project is strictly educational.
-I will try to use technologies which I learn.
+For now this project is mainly for educational.
+I want to use technologies, which I learn.
 
 Functions
 ----------------
-
 For now there are some simple functions:
     - You can manage your goals
     - manage categories
     - create schedule for goals
     - checking tasks
-    - simle statistics
-    - login admin
+    - simple statistics
+    - admin panel
 
-Technolgies / Components
+Technologies / Components
 ----------------
     - Symfony 5.4
     - Stimulus Chartjs component
@@ -38,7 +37,7 @@ then use composer and yarn
 compser install 
 ```
 
-to compile css use
+to compile css
 
 ```sh
 yarn 
@@ -46,7 +45,8 @@ yarn watch
 ```
 
 change your connection for database in .evn file
-you also need to set key for webapi from https://scripture.api.bible/, if not there is no problem
+set WEB_API_TOKEN if you need random bible verse
+I use website https://scripture.api.bible/
 
 
 if you need sample data run 
@@ -62,12 +62,11 @@ php bin/console server:start
 ```
 
 I hope you can now enjoy my simple website on http://127.0.0.1:8000/
-You can login using data 
+If you used fixtures, you can login using data 
 admin@example.com
 adminpass to login
-if you used fixtures
 
-if not you can creata use 
+if not you can create use 
 please use commands 
 
 ```
@@ -81,4 +80,4 @@ php bin/console security:hash-password
 ```
 
 and add roles ["ROLE_USER", "ROLE_ADMIN"] to created user
-then is no registration form yet.
+then is no registration form yet - so you need set via database.
