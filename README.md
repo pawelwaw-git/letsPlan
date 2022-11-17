@@ -6,16 +6,22 @@ I want to use technologies, which I learn.
 
 Functions
 ----------------
+
 For now there are some simple functions:
+- manage your goals
+- manage your categories
+- create and schedule goals
+- checking tasks
+- simple statistics
+- admin panel
 
 Technologies / Components
 ----------------
-
-    - Symfony 5.4
-    - Stimulus Chartjs component
-    - EasyAdmin
-    - https://scripture.api.bible/
-    - Webpack
+- Symfony 5.4
+- Stimulus Chartjs component
+- EasyAdmin
+- https://scripture.api.bible
+- Webpack
 
 
 Instalation
