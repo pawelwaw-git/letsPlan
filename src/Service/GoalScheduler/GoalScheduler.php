@@ -21,7 +21,7 @@ class GoalScheduler
     private GoalRepository $goalRepository;
     private TaskCalendarRepository $taskCalendarRepository;
     private RequestStack $request;
-    private bool $is_schedule_allowed = false;
+    private bool $isScheduleAllowed = false;
     private array $goalsToSchedule;
     // private DatePeriod $scheduledPeriod;
     private $repeatableType;
@@ -56,7 +56,7 @@ class GoalScheduler
     public function isScheduleGoalsAllowed(): bool
     {
         $this->checkPermissionBasedOnReqestQuery();
-        return $this->is_schedule_allowed;
+        return $this->isScheduleAllowed;
     }
 
     private function checkPermissionBasedOnReqestQuery()
@@ -64,13 +64,13 @@ class GoalScheduler
         if ($this->request->getCurrentRequest()) {
             $inputParams = $this->request->getCurrentRequest()->query->get(GoalScheduler::QUERY_PARAMS);
             if ($inputParams == GoalScheduler::SCHEDULE_ACTION)
-                $this->is_schedule_allowed = true;
+                $this->isScheduleAllowed = true;
         }
     }
 
     public function setPermissionToSchedule($allowed = false)
     {
-        $this->is_schedule_allowed = $allowed;
+        $this->isScheduleAllowed = $allowed;
     }
 
     private function getLastScheduleDate(): DateTime
@@ -117,7 +117,7 @@ class GoalScheduler
 
     private function resetPermission()
     {
-        $this->is_schedule_allowed = false;
+        $this->isScheduleAllowed = false;
     }
     private function saveData()
     {

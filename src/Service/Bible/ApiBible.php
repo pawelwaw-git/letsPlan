@@ -19,9 +19,9 @@ class ApiBible
         $this->client = $client;
     }
 
-    public function createChapterVerseLink(string $bible_id, string $chapter_verse): void
+    public function createChapterVerseLink(string $BibleId, string $chapterVerse): void
     {
-        $this->apiLink = 'https://api.scripture.api.bible/v1/bibles/' .  $bible_id . '/verses/' . $chapter_verse;
+        $this->apiLink = 'https://api.scripture.api.bible/v1/bibles/' .  $BibleId . '/verses/' . $chapterVerse;
     }
 
     public function call(): ResultBibleApi

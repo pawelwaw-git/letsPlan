@@ -7,10 +7,10 @@ use App\Repository\BibleQuoteRepository;
 
 class RandomBibleText
 {
-    private string $id_bible;
-    private string $bible_name;
-    private string $bible_chapter_verse;
-    private string $word_of_god = '';
+    private string $IdBible;
+    private string $BibleName;
+    private string $BibleChapterAverse;
+    private string $wordOfGod = '';
     private ApiBible $api_bible;
     private ?BibleQuote $cached_obeject = null;
     private BibleQuoteRepository $BibleQuoteRepository;
@@ -19,9 +19,9 @@ class RandomBibleText
 
     public function __construct(ApiBible $apiBible, BibleQuoteRepository $BibleQuoteRepository)
     {
-        $this->id_bible = $this->getRandomBibleId();
-        $this->bible_name = $this->getBibleNameBasedOnId($this->id_bible);
-        $this->bible_chapter_verse = $this->getRandomBibleVerseNumber();
+        $this->IdBible = $this->getRandomBibleId();
+        $this->BibleName = $this->getBibleNameBasedOnId($this->IdBible);
+        $this->BibleChapterAverse = $this->getRandomBibleVerseNumber();
         $this->api_bible = $apiBible;
         $this->BibleQuoteRepository = $BibleQuoteRepository;
     }
@@ -30,15 +30,15 @@ class RandomBibleText
     {
         //@todo check if quote in db then if not then call Api. - max is 5000 per day.
         if ($this->isCached()) {
-            $this->word_of_god = $this->cached_obeject->getHtml();
+            $this->wordOfGod = $this->cached_obeject->getHtml();
         } else {
             $this->api_bible->createChapterVerseLink($this->getId(), $this->getChapterVerse());
             $this->result_bible_api = $this->api_bible->call();
             if ($this->result_bible_api->isSuccefull()) {
-                $this->word_of_god = $this->result_bible_api->getContent();
+                $this->wordOfGod = $this->result_bible_api->getContent();
                 $this->saveToCache();
             } else {
-                $this->word_of_god = $this->getFallbackText();
+                $this->wordOfGod = $this->getFallbackText();
             }
         }
 
@@ -59,7 +59,7 @@ class RandomBibleText
     {
         $bibleQuote = new BibleQuote();
         $bibleQuote->setChapterVerse($this->getChapterVerse());
-        $bibleQuote->setHtml($this->word_of_god);
+        $bibleQuote->setHtml($this->wordOfGod);
         $bibleQuote->setIdBible($this->getId());
         $this->BibleQuoteRepository->save($bibleQuote, true);
     }
@@ -69,7 +69,7 @@ class RandomBibleText
         return '<div>
         <figure id="homepage_blockquote">
         <blockquote class="blockquote text-center">
-          ' . $this->word_of_god . '
+          ' . $this->wordOfGod . '
         </blockquote>
         <figcaption class="blockquote-footer text-center">
             ' . $this->getName() . ' - <cite title="Source Title">' . $this->getChapterVerse() . '</cite>
@@ -101,9 +101,9 @@ class RandomBibleText
         ];
     }
 
-    private function getBibleNameBasedOnId(string $id_bible): string
+    private function getBibleNameBasedOnId(string $IdBible): string
     {
-        return array_flip($this->getBibleVersions())[$id_bible];
+        return array_flip($this->getBibleVersions())[$IdBible];
     }
 
     private function getRandomBibleVerseNumber(): string
@@ -124,16 +124,16 @@ class RandomBibleText
 
     public function getId(): string
     {
-        return $this->id_bible;
+        return $this->IdBible;
     }
 
     public function getName(): string
     {
-        return $this->bible_name;
+        return $this->BibleName;
     }
 
     public function getChapterVerse(): string
     {
-        return $this->bible_chapter_verse;
+        return $this->BibleChapterAverse;
     }
 }
