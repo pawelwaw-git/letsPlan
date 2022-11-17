@@ -7,7 +7,7 @@ I want to use technologies, which I learn.
 Functions
 ----------------
 For now there are some simple functions:
-    * You can manage your goals
+    * Symfony 5.4
     * manage categories
     * create schedule for goals
     * checking tasks
