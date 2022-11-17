@@ -38,8 +38,11 @@ then use composer and yarn
 compser install 
 ```
 
+to compile css use
+
 ```sh
-yarn & yarn install 
+yarn 
+yarn watch
 ```
 
 change your connection for database in .evn file
@@ -52,4 +55,30 @@ if you need sample data run
 php bin/console doctrine:fixtures:load
 ```
 
+then you can run 
 
+```sh
+php bin/console server:start 
+```
+
+I hope you can now enjoy my simple website on http://127.0.0.1:8000/
+You can login using data 
+admin@example.com
+adminpass to login
+if you used fixtures
+
+if not you can creata use 
+please use commands 
+
+```
+php bin/console make:user
+```
+
+and to generate password
+
+```
+php bin/console security:hash-password
+```
+
+and add roles ["ROLE_USER", "ROLE_ADMIN"] to created user
+then is no registration form yet.
