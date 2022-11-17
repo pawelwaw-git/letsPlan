@@ -6,6 +6,7 @@ I want to use technologies, which I learn.
 
 Functions
 ----------------
+
 For now there are some simple functions:
     - You can manage your goals
     - manage categories
