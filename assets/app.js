@@ -10,5 +10,4 @@ import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
-require('jquery');
-require('@popperjs/core');
+import { Input } from 'mdb-ui-kit'; 

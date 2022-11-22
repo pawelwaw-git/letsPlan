@@ -1632,7 +1632,7 @@
   "resolved" "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz"
   "version" "1.0.0"
 
-"bootstrap@^5.2.2":
+"bootstrap@5.2.3":
   "integrity" "sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ=="
   "resolved" "https://registry.npmjs.org/bootstrap/-/bootstrap-5.2.3.tgz"
   "version" "5.2.3"
@@ -2904,6 +2904,11 @@
   "version" "3.1.0"
   dependencies:
     "semver" "^6.0.0"
+
+"mdb-ui-kit@^6.0.1":
+  "integrity" "sha512-jZlO47ytSLcAzBmjSThtI+0QGDjJd4+EGZrHL6ZNI5tVd7OVyXvzEyoi5f9XU/rLMBUT2fwrkFQVubBg/Aw3Bw=="
+  "resolved" "https://registry.npmjs.org/mdb-ui-kit/-/mdb-ui-kit-6.0.1.tgz"
+  "version" "6.0.1"
 
 "mdn-data@2.0.14":
   "integrity" "sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow=="
