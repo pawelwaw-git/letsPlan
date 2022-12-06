@@ -19,22 +19,6 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class DashboardLeagueController extends AbstractDashboardController
 {
-    private GoalScheduler $scheduler;
-    private ChartBuilderInterface $chartBuilder;
-    private TaskCalendarRepository $taskCalendarRepository;
-    private TaskChartDatasetGenerator $taskChartDatasetFactory;
-
-    public function __construct(
-        GoalScheduler $scheduler,
-        ChartBuilderInterface $chartBuilder,
-        TaskCalendarRepository $taskCalendarRepository,
-        TaskChartDatasetGenerator $taskChartDatasetFactory
-    ) {
-        $this->scheduler = $scheduler;
-        $this->chartBuilder = $chartBuilder;
-        $this->taskCalendarRepository = $taskCalendarRepository;
-        $this->taskChartDatasetFactory = $taskChartDatasetFactory;
-    }
 
     #[Route('/admin/league', name: 'admin_league')]
     public function index(): Response

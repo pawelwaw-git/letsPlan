@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GoalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,14 @@ class Goal
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $LastDateSchedule = null;
+
+    #[ORM\ManyToMany(targetEntity: Turnament::class, mappedBy: 'Players')]
+    private Collection $turnaments;
+
+    public function __construct()
+    {
+        $this->turnaments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,6 +150,33 @@ class Goal
     public function setLastDateSchedule(?\DateTimeInterface $LastDateSchedule): self
     {
         $this->LastDateSchedule = $LastDateSchedule;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Turnament>
+     */
+    public function getTurnaments(): Collection
+    {
+        return $this->turnaments;
+    }
+
+    public function addTurnament(Turnament $turnament): self
+    {
+        if (!$this->turnaments->contains($turnament)) {
+            $this->turnaments->add($turnament);
+            $turnament->addPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTurnament(Turnament $turnament): self
+    {
+        if ($this->turnaments->removeElement($turnament)) {
+            $turnament->removePlayer($this);
+        }
 
         return $this;
     }
