@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-class DashboardController extends AbstractDashboardController
+class DashboardLeagueController extends AbstractDashboardController
 {
     private GoalScheduler $scheduler;
     private ChartBuilderInterface $chartBuilder;
@@ -25,27 +25,22 @@ class DashboardController extends AbstractDashboardController
     private TaskChartDatasetGenerator $taskChartDatasetFactory;
 
     public function __construct(
-        GoalScheduler             $scheduler,
-        ChartBuilderInterface     $chartBuilder,
-        TaskCalendarRepository    $taskCalendarRepository,
+        GoalScheduler $scheduler,
+        ChartBuilderInterface $chartBuilder,
+        TaskCalendarRepository $taskCalendarRepository,
         TaskChartDatasetGenerator $taskChartDatasetFactory
-    )
-    {
+    ) {
         $this->scheduler = $scheduler;
         $this->chartBuilder = $chartBuilder;
         $this->taskCalendarRepository = $taskCalendarRepository;
         $this->taskChartDatasetFactory = $taskChartDatasetFactory;
     }
 
-    #[Route('/admin', name: 'admin')]
+    #[Route('/admin/league', name: 'admin_league')]
     public function index(): Response
     {
-        $this->scheduler->scheduleGoals();
-        return $this->render('admin/index.html.twig', [
-            'todays_finished_tasks' => $this->taskCalendarRepository->getTodaysFinishedTasksWithGoals(),
-            'todays_unfinished_tasks' => $this->taskCalendarRepository->getTodaysUnFinishedTasksWithGoals(),
-            'chart_last_7days' => $this->createChartForLastTasks("- 7 days"),
-            'chart_last_month' => $this->createChartForLastTasks("- 1 month"),
+
+        return $this->render('admin/league.html.twig', [
         ]);
     }
 
@@ -58,22 +53,5 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         return MainMenu::configureMenuItems();
-    }
-
-    public function configureAssets(): Assets
-    {
-        return Assets::new()->addWebpackEncoreEntry('app');
-    }
-
-    private function createChartForLastTasks(string $period):Chart
-    {
-        $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
-        $dataset = $this->taskChartDatasetFactory->getChartDatasetDaysBefore($period);
-        $chart->setData(
-            [
-                'datasets' => $dataset,
-            ]
-        );
-        return $chart;
     }
 }
