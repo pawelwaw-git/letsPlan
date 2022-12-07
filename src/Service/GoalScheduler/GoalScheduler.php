@@ -23,7 +23,6 @@ class GoalScheduler
     private RequestStack $request;
     private bool $isScheduleAllowed = false;
     private array $goalsToSchedule;
-    // private DatePeriod $scheduledPeriod;
     private $repeatableType;
 
     public function __construct(GoalRepository $goalRepository, TaskCalendarRepository $taskCalendarRepository, RequestStack $request)
@@ -103,7 +102,7 @@ class GoalScheduler
         foreach ($scheduledPeriod as $date) {
             $task = new TaskCalendar();
             $task->setDate($date);
-            $task->isIsDone(false);
+            $task->setIsDone(false);
             $task->setGoal($goal);
             $goal->setLastDateSchedule($date);
             $this->taskCalendarRepository->save($task);

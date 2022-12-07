@@ -2,16 +2,18 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Goal;
 use App\Factory\AdminFactory;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
+use App\Factory\TurnamentFactory;
 use App\Service\GoalScheduler\GoalScheduler;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    private $goalScheduler;
+    private GoalScheduler $goalScheduler;
 
     public function __construct(GoalScheduler $goalScheduler)
     {
@@ -20,12 +22,9 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-
         $this->loadUsers();
         $this->loadCategories();
-        GoalFactory::createMany(25, function () {
-            return GoalFactory::getProperTypeAndRepatableValues();
-        });
+        $this->loadGoals();
         $this->goalScheduler->setPermissionToSchedule(true);
         $this->goalScheduler->scheduleGoals();
         $manager->flush();
@@ -74,5 +73,25 @@ class AppFixtures extends Fixture
                 ->withAttributes([
                     'name' => $category,
                 ])->create();
+    }
+
+    public function loadTurnaments() {
+
+        TurnamentFactory::new()
+            ->many(3)
+            ->create(function (){
+                $goals = GoalFactory::randomRange(2,5);
+                return [ 'Players' => $goals , ] ;
+            });
+    }
+
+    /**
+     * @return void
+     */
+    public function loadGoals(): void
+    {
+        GoalFactory::createMany(25, function () {
+            return GoalFactory::getProperTypeAndRepatableValues();
+        });
     }
 }

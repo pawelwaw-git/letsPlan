@@ -22,7 +22,7 @@ Feature: Schedule Tasks
       | every_week  | null |
       | every_month  | null |
       | none  | null |
-  Scenario: Create schedule by user with 1-12-2022 date
+  Scenario: Create schedule by user with 2022-12-01 date
     Given I am on "/admin?crudAction=index&crudControllerFqcn=App\Controller\Admin\GoalCrudController"
     And there is no active Goals in db
     And there are following Goals with lastDates in db:
