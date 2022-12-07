@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Filter\DateCalendarFilter;
 use App\Entity\Category;
 use App\Entity\Goal;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -17,6 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
 
 class GoalCrudController extends AbstractCrudController
 {
@@ -52,5 +55,12 @@ class GoalCrudController extends AbstractCrudController
         $actions->add(Crud::PAGE_INDEX, $scheduleTasks);
 
         return $actions;
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add('Category')
+            ->add('Type');
     }
 }

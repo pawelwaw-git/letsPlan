@@ -28,7 +28,6 @@ class RandomBibleText
 
     public function getRandomBibleVerse()
     {
-        //@todo check if quote in db then if not then call Api. - max is 5000 per day.
         if ($this->isCached()) {
             $this->wordOfGod = $this->cached_obeject->getHtml();
         } else {
