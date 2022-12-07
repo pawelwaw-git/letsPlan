@@ -23,7 +23,6 @@ class GoalScheduler
     private RequestStack $request;
     private bool $isScheduleAllowed = false;
     private array $goalsToSchedule;
-    // private DatePeriod $scheduledPeriod;
     private $repeatableType;
 
     public function __construct(GoalRepository $goalRepository, TaskCalendarRepository $taskCalendarRepository, RequestStack $request)
@@ -86,10 +85,11 @@ class GoalScheduler
         $finishDate = clone $startDate;
         $finishDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT));
         $finishDate->setTime(0, 0, 0);
-        if ($startDate <= $goal->getLastDateSchedule()) {
+        if (is_null($goal->getLastDateSchedule())) {
+            return new \DatePeriod($startDate, $this->repeatableType->getInterval(), $finishDate);
+        } else {
             return new \DatePeriod($goal->getLastDateSchedule(), $this->repeatableType->getInterval(), $finishDate, 1);
         }
-        return new \DatePeriod($startDate, $this->repeatableType->getInterval(), $finishDate);
     }
 
     private function isRepeatable(): bool
@@ -103,7 +103,7 @@ class GoalScheduler
         foreach ($scheduledPeriod as $date) {
             $task = new TaskCalendar();
             $task->setDate($date);
-            $task->isIsDone(false);
+            $task->setIsDone(false);
             $task->setGoal($goal);
             $goal->setLastDateSchedule($date);
             $this->taskCalendarRepository->save($task);
@@ -119,6 +119,7 @@ class GoalScheduler
     {
         $this->isScheduleAllowed = false;
     }
+
     private function saveData()
     {
         $this->goalRepository->flush();
