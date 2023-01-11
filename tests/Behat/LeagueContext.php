@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
-use App\DataFixtures\AppFixtures;
-use App\Factory\CategoryFactory;
-use App\Factory\GoalFactory;
 use App\Factory\TurnamentFactory;
 use App\Repository\GoalRepository;
 use App\Repository\TurnamentRepository;
-use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
-
 use Doctrine\ORM\Mapping as ORM;
 use function PHPUnit\Framework\assertTrue;
-use function Zenstruck\Foundry\faker;
 
 /**
  * This context class contains the definitions of the steps used by the demo
@@ -32,7 +26,6 @@ final class LeagueContext implements Context
     /**
      * @param TurnamentRepository $turnamentRepository
      * @param GoalRepository $goalRepository
-     * @param GoalScheduler $goalScheduler
      */
     public function __construct(TurnamentRepository $turnamentRepository, GoalRepository $goalRepository)
     {

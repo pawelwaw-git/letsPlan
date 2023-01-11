@@ -14,7 +14,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Turnament
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid',unique: true)]
+    #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     private ?Uuid $id = null;
@@ -105,5 +105,13 @@ class Turnament
         $this->Finished = $Finished;
 
         return $this;
+    }
+
+    public function getMaxRounds(): int
+    {
+        $count = $this->getPlayers()->count();
+        if ($count == 0) return 0;
+        if ($count < 3) return 1;
+        return $this->Rounds = ($count * ($count - 1)) / 2;
     }
 }

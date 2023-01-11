@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Goal;
 use App\Factory\AdminFactory;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;

@@ -308,6 +308,10 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/node,phpstorm+all,visualstudiocode,symfony
 
+###> symfony/framework-bundle ###
+/public/bundles/
+/public/build/
+###< symfony/framework-bundle ###
 
 ###> friends-of-behat/symfony-extension ###
 /behat.yml
@@ -315,3 +319,4 @@ fabric.properties
 geckodriver.exe
 chromedriver.exe
 MyRoadMap.txt
+/.phpunit.result.cache

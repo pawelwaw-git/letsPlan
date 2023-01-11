@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use App\Entity\Goal;
 use App\Entity\Turnament;
 use App\Repository\TurnamentRepository;
 use DateTime;
@@ -37,21 +38,38 @@ final class TurnamentFactory extends ModelFactory
 
     protected function getDefaults(): array
     {
+        $categories = CategoryFactory::createMany(10);
+        $goals = GoalFactory::new()->many(0, 10)->create([
+            'Category' => CategoryFactory::random(),
+        ]);
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
-//            'Rounds' => self::faker()->randomNumber(),
-//            'CurrentRound' => self::faker()->randomNumber(),
+            'Players' => $goals,
+            'CurrentRound' => 1,
             'Finished' => self::faker()->boolean(),
             'updatedAt' => new DateTime("now"),
             'createdAt' => new DateTime("now"),
         ];
     }
 
+    public function allPlayersWithSameCategory(string $categoryName): self
+    {
+        $category = CategoryFactory::new()->withName($categoryName)->create();
+        $goals = GoalFactory::new()->many(0, 10)->create([
+            'Category' => $category,
+        ]);
+        return $this->addState(
+            [
+                'Players' => $goals,
+            ]
+        );
+    }
+
     protected function initialize(): self
     {
-        // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-        return $this// ->afterInstantiate(function(Turnament $turnament): void {})
-            ;
+        return $this->afterInstantiate(function (Turnament $turnament): void {
+            $turnament->setRounds($turnament->getMaxRounds());
+        });
     }
 
     protected static function getClass(): string
