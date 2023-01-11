@@ -4,6 +4,7 @@ default:
             contexts:
                 - App\Tests\Behat\FormContext
                 - App\Tests\Behat\TasksContext
+                - App\Tests\Behat\LeagueContext
                 # - App\Tests\Behat\DemoContext
     extensions:
       DMore\ChromeExtension\Behat\ServiceContainer\ChromeExtension: ~
