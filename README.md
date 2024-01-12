@@ -32,17 +32,24 @@ In order to install
 ```sh
 git clone https://github.com/pawelwaw-git/letsPlan.git
 ```
-then use composer and yarn
+
+then build docker images
+
+```sh
+docker-compose up -d
+```
+
+then login to container
+```sh
+docker exec -it lets-plan-php bash
+```
+
+and use composer and npm in container
 
 ```sh
 compser install 
-```
-
-to compile css
-
-```sh
-yarn 
-yarn watch
+npm install
+npm run dev
 ```
 
 change your connection for database in .evn file
@@ -53,16 +60,14 @@ I use website https://scripture.api.bible/
 if you need sample data run 
 
 ```sh
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:create
 php bin/console doctrine:fixtures:load
 ```
 
 then you can run 
 
-```sh
-php bin/console server:start 
-```
-
-I hope you can now enjoy my simple website on http://127.0.0.1:8000/
+I hope you can now enjoy my simple website on http://localhost:8000/
 If you used fixtures, you can login using data 
 admin@example.com
 adminpass to login
