@@ -46,7 +46,7 @@ RUN docker-php-ext-install \
     intl \
     pcntl \
     pdo \
-    pdo_pgsql \
+    pdo_mysql \
     zip \
     bcmath
 
