@@ -87,3 +87,16 @@ php bin/console security:hash-password
 
 and add roles ["ROLE_USER", "ROLE_ADMIN"] to created user
 then is no registration form yet - so you need set via database.
+
+## install php-cs-fixer
+
+```
+mkdir -p tools/php-cs-fixer
+composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer
+```
+
+If you want to validate then you can run 
+
+```
+tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
+```
