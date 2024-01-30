@@ -31,3 +31,6 @@ yarn-error.log
 
 ### idea files ###
 /.idea/
+/.php-cs-fixer.cache
+
+/tools/
