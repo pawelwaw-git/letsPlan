@@ -47,7 +47,7 @@ docker exec -it lets-plan-php bash
 and use composer and npm in container
 
 ```sh
-compser install 
+composer install 
 npm install
 npm run dev
 ```
