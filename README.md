@@ -60,7 +60,6 @@ I use website https://scripture.api.bible/
 if you need sample data run 
 
 ```sh
-php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 ```
