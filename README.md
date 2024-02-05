@@ -87,15 +87,26 @@ php bin/console security:hash-password
 and add roles ["ROLE_USER", "ROLE_ADMIN"] to created user
 then is no registration form yet - so you need set via database.
 
-## install php-cs-fixer
+## run Behat tests
+
+Go into container
 
 ```
-mkdir -p tools/php-cs-fixer
-composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer
+docker exec -it lets-plan-php bash
 ```
 
-If you want to validate then you can run 
+and run the chrome
+```
+google-chrome-stable --disable-gpu --headless --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --no-sandbox
+```
+
+Then go into container
 
 ```
-tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
+docker exec -it lets-plan-php bash
+```
+
+and run in the container
+```
+vendor/bin/behat
 ```
