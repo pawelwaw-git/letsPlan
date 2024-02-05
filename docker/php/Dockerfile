@@ -4,6 +4,22 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install wget
+RUN apt-get update && apt-get install -y wget unzip
+
+# Get Chrome
+RUN apt-get install -y wget
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
+
+# Install Chrome WebDriver
+# Chrome Driver
+
+RUN wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/121.0.6167.85/linux64/chromedriver-linux64.zip
+RUN unzip chromedriver-linux64.zip \
+    && mv chromedriver-linux64/chromedriver /usr/bin/chromedriver \
+    && chmod +x /usr/bin/chromedriver
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     default-mysql-client \
@@ -30,7 +46,8 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     libmagickwand-dev \
     nodejs \
-    npm
+    npm \
+    sudo
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -67,6 +84,13 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 # enable apache modules
 RUN a2enmod rewrite
 RUN a2enmod ssl
+
+
+# FROM https://gitlab.com/behat-chrome/docker-chrome-headless/-/blob/main/Dockerfile?ref_type=heads
+RUN useradd headless --shell /bin/bash --create-home \
+  && usermod -a -G sudo headless \
+  && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
+  && echo 'headless:nopassword' | chpasswd
 
 USER www
 
