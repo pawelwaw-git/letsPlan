@@ -13,7 +13,6 @@ use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Event\ScenarioEvent;
 use Behat\Gherkin\Node\TableNode;
 use DateInterval;
 use DateTime;
@@ -83,7 +82,7 @@ final class TasksContext implements Context
         $goal->setType(GoalTypes::SimpleHabbit->value);
         $goal->setRepeatable($type);
         $goal->setActive(true);
-        if ($lastDateOrNull != "null")
+        if ($lastDateOrNull !== "null")
             $goal->setLastDateSchedule(DateTime::createFromFormat("Y-m-d", $lastDateOrNull));
         $this->goalRepository->save($goal, true);
     }
@@ -130,7 +129,7 @@ final class TasksContext implements Context
         $days_diff = $this->getQuantityOfPlannedDays($startDate);
 
         $from_days = match ($type) {
-            RepeatableTypes::EveryMonth->value =>  $days_diff->format("%m"),
+            RepeatableTypes::EveryMonth->value =>  (int) $days_diff->format("%y") * 12 + (int) $days_diff->format("%m"),
             RepeatableTypes::EveryWeek->value => ceil($days_diff->days / 7),
             RepeatableTypes::EveryDay->value => $days_diff->days,
             RepeatableTypes::None->value => 0,

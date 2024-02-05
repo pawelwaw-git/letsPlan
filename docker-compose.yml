@@ -14,6 +14,7 @@ services:
       - "3306:3306"
     volumes:
       - lets-plan-db:/var/lib/mysql
+      - ./docker/mysql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     networks:
       - my-network
   php:
