@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\GoalRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +35,9 @@ class Goal
 
     #[ORM\Column]
     private ?bool $Active = false;
+
+    #[ORM\OneToMany(mappedBy: 'Goal', targetEntity: TaskCalendar::class, cascade: ['remove'])]
+    private Collection $tasksCalendar;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $LastDateSchedule = null;
@@ -117,7 +121,7 @@ class Goal
 
     public function isActive(): ?bool
     {
-        return $this->isActive();
+        return $this->Active;
     }
 
     public function setActive(bool $isActive): self
@@ -142,5 +146,15 @@ class Goal
         $this->LastDateSchedule = $LastDateSchedule;
 
         return $this;
+    }
+
+    public function getTasksCalendar(): Collection
+    {
+        return $this->tasks_calendar;
+    }
+
+    public function setTasksCalendar(Collection $tasks_calendar): void
+    {
+        $this->tasks_calendar = $tasks_calendar;
     }
 }

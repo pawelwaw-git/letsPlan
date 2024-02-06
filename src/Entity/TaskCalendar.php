@@ -17,7 +17,8 @@ class TaskCalendar
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $Date = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Goal::class, inversedBy: 'tasksCalendar')]
+    #[ORM\JoinColumn(name: 'goal_id', referencedColumnName: 'id')]
     private ?Goal $Goal = null;
 
     #[ORM\Column]

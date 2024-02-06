@@ -46,11 +46,11 @@ class DeleteGoalTest extends KernelTestCase
         $this->goalIsNotExists($goal);
     }
 
-    public function createGoalWithTaskCalendar(): Goal
+    private function createGoalWithTaskCalendar(): Goal
     {
         CategoryFactory::createOne();
         $goal = GoalFactory::createOne();
-        TaskCalendarFactory::createOne(['goal' => $goal->object()]);
+        TaskCalendarFactory::createOne(['Goal' => $goal]);
         return $goal->object();
     }
 
