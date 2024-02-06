@@ -7,6 +7,7 @@ namespace App\Tests\Integration;
 use App\Entity\Goal;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
+use App\Factory\TaskCalendarFactory;
 use App\Repository\GoalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -33,7 +34,7 @@ class DeleteGoalTest extends KernelTestCase
     /**
      * @test
      */
-    public function somethingToTest(): void
+    public function canDeleteGoalWithTaskCalendar(): void
     {
         //GIVEN
         $goal = $this->createGoalWithTaskCalendar();
@@ -48,7 +49,9 @@ class DeleteGoalTest extends KernelTestCase
     public function createGoalWithTaskCalendar(): Goal
     {
         CategoryFactory::createOne();
-        return GoalFactory::createOne()->object();
+        $goal = GoalFactory::createOne();
+        TaskCalendarFactory::createOne(['goal' => $goal->object()]);
+        return $goal->object();
     }
 
     private function removeGoal(Goal $goal): void
