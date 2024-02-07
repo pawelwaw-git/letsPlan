@@ -110,3 +110,15 @@ and run in the container
 ```
 vendor/bin/behat
 ```
+
+## ECS
+
+You can add new rules to ecs.php to modify (cs-fixer and code sniffer) rules in project.
+You can run fixer with 
+```
+composer check-cs
+```
+or
+```
+composer fix-cs
+```
