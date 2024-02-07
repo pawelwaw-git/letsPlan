@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Form\Type\Admin;
 
 use Symfony\Component\Form\AbstractType;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enum;
 
 enum RepeatableTypes: string
@@ -15,6 +17,7 @@ enum RepeatableTypes: string
         foreach (self::cases() as $case) {
             $values[$case->name] = $case->value;
         }
+
         return $values;
     }
 
@@ -23,5 +26,3 @@ enum RepeatableTypes: string
         return array_rand(array_flip(self::getAsKeyValueArray()));
     }
 }
-
-

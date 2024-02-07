@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\BibleQuote;
@@ -10,8 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<BibleQuote>
  *
- * @method BibleQuote|null find($id, $lockMode = null, $lockVersion = null)
- * @method BibleQuote|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|BibleQuote find($id, $lockMode = null, $lockVersion = null)
+ * @method null|BibleQuote findOneBy(array $criteria, array $orderBy = null)
  * @method BibleQuote[]    findAll()
  * @method BibleQuote[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -40,25 +42,25 @@ class BibleQuoteRepository extends ServiceEntityRepository
         }
     }
 
-   public function findByBibleAndChapter(RandomBibleText $randomBibleText): ?BibleQuote
-   {
-       return $this->createQueryBuilder('b')
-           ->andWhere('b.IdBible = :bibleId')
-           ->andWhere('b.ChapterVerse = :bibleChapter')
-           ->setParameter('bibleId', $randomBibleText->getId())
-           ->setParameter('bibleChapter', $randomBibleText->getChapterVerse())
-           ->getQuery()
-           ->getOneOrNullResult()
-       ;
-   }
+    public function findByBibleAndChapter(RandomBibleText $randomBibleText): ?BibleQuote
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.IdBible = :bibleId')
+            ->andWhere('b.ChapterVerse = :bibleChapter')
+            ->setParameter('bibleId', $randomBibleText->getId())
+            ->setParameter('bibleChapter', $randomBibleText->getChapterVerse())
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 
-//    public function findOneBySomeField($value): ?BibleQuote
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?BibleQuote
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

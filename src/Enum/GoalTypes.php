@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enum;
 
 enum GoalTypes: string
@@ -16,6 +18,7 @@ enum GoalTypes: string
         foreach (self::cases() as $case) {
             $values[$case->name] = $case->value;
         }
+
         return $values;
     }
 

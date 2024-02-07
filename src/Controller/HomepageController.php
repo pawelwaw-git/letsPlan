@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Service\Bible\ApiBible;
 use App\Service\Bible\RandomBibleText;
 use App\Service\GoalScheduler\GoalScheduler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,7 @@ class HomepageController extends AbstractController
     public function taskScheduler(GoalScheduler $scheduler): Response
     {
         $scheduler->scheduleGoals();
+
         return $this->render('homepage/index.html.twig', [
             'controller_name' => 'HomepageController',
         ]);

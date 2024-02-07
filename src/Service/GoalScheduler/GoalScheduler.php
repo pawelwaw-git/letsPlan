@@ -1,22 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\GoalScheduler;
 
-use App\Entity\TaskCalendar;
 use App\Entity\Goal;
+use App\Entity\TaskCalendar;
+use App\Repeatable\RepeatableFactory;
 use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
-use DateInterval;
-use DateTime;
-use App\Contracts\Repeatable;
-use App\Repeatable\RepeatableFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class GoalScheduler
 {
-    const SCHEDULE_ACTION = 'schedule';
-    const QUERY_PARAMS = 'goal_scheduler_param';
-    const SCHEDULE_DATEINTERVAL_TEXT = 'P2M';
+    public const SCHEDULE_ACTION = 'schedule';
+    public const QUERY_PARAMS = 'goal_scheduler_param';
+    public const SCHEDULE_DATEINTERVAL_TEXT = 'P2M';
 
     private GoalRepository $goalRepository;
     private TaskCalendarRepository $taskCalendarRepository;
@@ -47,24 +46,11 @@ class GoalScheduler
         $this->resetPermission();
     }
 
-    private function setRepeatableType(Goal $goal)
-    {
-        $this->repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
-    }
-
     public function isScheduleGoalsAllowed(): bool
     {
         $this->checkPermissionBasedOnReqestQuery();
-        return $this->isScheduleAllowed;
-    }
 
-    private function checkPermissionBasedOnReqestQuery()
-    {
-        if ($this->request->getCurrentRequest()) {
-            $inputParams = $this->request->getCurrentRequest()->query->get(GoalScheduler::QUERY_PARAMS);
-            if ($inputParams == GoalScheduler::SCHEDULE_ACTION)
-                $this->isScheduleAllowed = true;
-        }
+        return $this->isScheduleAllowed;
     }
 
     public function setPermissionToSchedule($allowed = false)
@@ -72,10 +58,26 @@ class GoalScheduler
         $this->isScheduleAllowed = $allowed;
     }
 
-    private function getLastScheduleDate(): DateTime
+    private function setRepeatableType(Goal $goal)
     {
-        $lastScheduleDate = new DateTime('today');
-        return $lastScheduleDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT))->setTime(0, 0, 0);
+        $this->repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
+    }
+
+    private function checkPermissionBasedOnReqestQuery()
+    {
+        if ($this->request->getCurrentRequest()) {
+            $inputParams = $this->request->getCurrentRequest()->query->get(GoalScheduler::QUERY_PARAMS);
+            if (GoalScheduler::SCHEDULE_ACTION == $inputParams) {
+                $this->isScheduleAllowed = true;
+            }
+        }
+    }
+
+    private function getLastScheduleDate(): \DateTime
+    {
+        $lastScheduleDate = new \DateTime('today');
+
+        return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT))->setTime(0, 0, 0);
     }
 
     private function getScheduledPeriod(Goal $goal): \DatePeriod
@@ -83,13 +85,13 @@ class GoalScheduler
         $startDate = $this->repeatableType->getStartDate();
         $startDate->setTime(0, 0, 0);
         $finishDate = clone $startDate;
-        $finishDate->add(new DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT));
+        $finishDate->add(new \DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT));
         $finishDate->setTime(0, 0, 0);
         if (is_null($goal->getLastDateSchedule())) {
             return new \DatePeriod($startDate, $this->repeatableType->getInterval(), $finishDate);
-        } else {
-            return new \DatePeriod($goal->getLastDateSchedule(), $this->repeatableType->getInterval(), $finishDate, 1);
         }
+
+        return new \DatePeriod($goal->getLastDateSchedule(), $this->repeatableType->getInterval(), $finishDate, 1);
     }
 
     private function isRepeatable(): bool

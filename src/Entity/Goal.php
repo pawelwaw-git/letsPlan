@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\GoalRepository;
@@ -37,6 +39,11 @@ class Goal
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $LastDateSchedule = null;
+
+    public function __toString()
+    {
+        return $this->Name.' #'.$this->id;
+    }
 
     public function getId(): ?int
     {
@@ -125,11 +132,6 @@ class Goal
         $this->Active = $isActive;
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->Name . ' #'  . $this->id;
     }
 
     public function getLastDateSchedule(): ?\DateTimeInterface

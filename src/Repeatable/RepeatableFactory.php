@@ -1,12 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repeatable;
 
 use App\Enum\RepeatableTypes;
-use App\Repeatable\EveryDayRepeatableType;
-use App\Repeatable\EveryMonthRepeatableType;
-use App\Repeatable\EveryWeekRepeatableType;
-use App\Repeatable\NoneRepeatableType;
 
 class RepeatableFactory
 {
@@ -21,7 +19,4 @@ class RepeatableFactory
         };
     }
 }
-class RepetableTypeException extends \Exception
-{
-    
-}
+class RepetableTypeException extends \Exception {}

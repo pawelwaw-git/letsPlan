@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller\Admin\Filter;
 
 use App\Form\Type\Admin\DateCalendarFilterType;
@@ -19,14 +22,16 @@ class DateCalendarFilter implements FilterInterface
             ->setFilterFqcn(__CLASS__)
             ->setProperty($propertyName)
             ->setLabel($label)
-            ->setFormType(DateCalendarFilterType::class);
+            ->setFormType(DateCalendarFilterType::class)
+        ;
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
     {
-         if ('today' === $filterDataDto->getValue()) {
+        if ('today' === $filterDataDto->getValue()) {
             $queryBuilder->andWhere(sprintf('%s.%s = :today', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty()))
-                ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'));
+                ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'))
+            ;
         }
     }
 }
