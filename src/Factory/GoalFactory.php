@@ -65,17 +65,18 @@ final class GoalFactory extends ModelFactory
         return Goal::class;
     }
 
-    public static function getProperTypeAndRepatableValues()
+    public static function getProperTypeAndRepatableValues(): array
     {
         $random_type = GoalTypes::randomCase();
-        $repeatble_values = match ($random_type) {
+        $repeatable_values = match ($random_type) {
             GoalTypes::Rule->value, GoalTypes::Limit->value, GoalTypes::Task->value => [RepeatableTypes::None->value],
-            GoalTypes::SimpleHabbit->value, GoalTypes::ComplexHabbit->value => [RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value],
+            GoalTypes::SimpleHabit->value, GoalTypes::ComplexHabit->value => [RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value],
+            default => [],
         };
 
         return [
             'Type' => $random_type,
-            'Repeatable' => self::faker()->randomElement($repeatble_values)
+            'Repeatable' => self::faker()->randomElement($repeatable_values)
         ];
     }
 }

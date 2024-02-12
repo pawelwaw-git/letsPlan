@@ -117,7 +117,7 @@ class Goal
 
     public function isActive(): ?bool
     {
-        return $this->isActive();
+        return $this->Active;
     }
 
     public function setActive(bool $isActive): self

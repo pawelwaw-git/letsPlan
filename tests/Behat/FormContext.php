@@ -28,20 +28,17 @@ final class FormContext extends MinkContext implements Context
     private $userEntity;
     private $categoryEntity;
     private $passwordHasher;
-    private $tasksRepo;
     private $router;
 
     public function __construct(
         AdminRepository $user,
         CategoryRepository $category,
-        TaskCalendarRepository $tasksRepo,
         UserPasswordHasherInterface $passwordHasher,
         RouterInterface $router
     ) {
         $this->userEntity = $user;
         $this->categoryEntity = $category;
         $this->passwordHasher = $passwordHasher;
-        $this->tasksRepo = $tasksRepo;
         $this->router = $router;
     }
 

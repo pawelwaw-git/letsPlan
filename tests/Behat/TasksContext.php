@@ -30,7 +30,7 @@ final class TasksContext implements Context
     protected TaskCalendarRepository $taskCalendarRepository;
     protected GoalRepository $goalRepository;
 
-    protected $goalScheduler;
+    protected GoalScheduler $goalScheduler;
 
     public function __construct(TaskCalendarRepository $taskCalendarRepository, GoalRepository $goalRepository, GoalScheduler $goalScheduler)
     {
@@ -42,7 +42,7 @@ final class TasksContext implements Context
     /**
      * @Given There are different goal types
      */
-    public function thereAreDifferentGoalTypes()
+    public function thereAreDifferentGoalTypes(): void
     {
         $fixtures = new AppFixtures($this->goalScheduler);
         $fixtures->loadCategories();
@@ -58,9 +58,10 @@ final class TasksContext implements Context
 
     private function getQuantityOfPlannedDays(?DateTime $startDate): DateInterval
     {
-        $today = new \DateTime('today');
-        if ($startDate == null)
-            $startDate = new \DateTime('today');
+        $today = new DateTime('today');
+        if ($startDate == null) {
+            $startDate = new DateTime('today');
+        }
         else {
             $startDate->modify('+1 day');
         }
@@ -73,13 +74,13 @@ final class TasksContext implements Context
     /**
      * @Given there is :type Goal with  lastDate :lastDateOrNull in db
      */
-    public function thereIsGoalWithLastdateInDb($type, $lastDateOrNull)
+    public function thereIsGoalWithLastdateInDb($type, $lastDateOrNull): void
     {
         $goal = new Goal();
         $goal->setName('test Goal');
         $goal->setPriority(1);
         $goal->setDescription('test Goal');
-        $goal->setType(GoalTypes::SimpleHabbit->value);
+        $goal->setType(GoalTypes::SimpleHabit->value);
         $goal->setRepeatable($type);
         $goal->setActive(true);
         if ($lastDateOrNull !== "null")
@@ -90,7 +91,7 @@ final class TasksContext implements Context
     /**
      * @Given there is no active Goals in db
      */
-    public function thereIsNoActiveGoalsInDb()
+    public function thereIsNoActiveGoalsInDb(): void
     {
 
         $tasks = $this->taskCalendarRepository->findAll();
@@ -108,7 +109,7 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db
      */
-    public function thereArePlanedTasksInDb($type, $startDate)
+    public function thereArePlanedTasksInDb($type, $startDate): void
     {
         $this->thereArePlanedTasksInDbFromDate($type, $startDate);
     }
@@ -116,13 +117,13 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db from date :startDate
      */
-    public function thereArePlanedTasksInDbFromDate($type, $startDate = null)
+    public function thereArePlanedTasksInDbFromDate($type, $startDate = null): void
     {
         if ($startDate !== false) {
             $startDate = DateTime::createFromFormat("Y-m-d", $startDate);
         }
         // strange this, $startDate return false in console, but if I use else there is not working !== don't work also
-        if ($startDate == false) {
+        if ($startDate === false) {
             $startDate = null;
         }
 
@@ -132,7 +133,7 @@ final class TasksContext implements Context
             RepeatableTypes::EveryMonth->value =>  (int) $days_diff->format("%y") * 12 + (int) $days_diff->format("%m"),
             RepeatableTypes::EveryWeek->value => ceil($days_diff->days / 7),
             RepeatableTypes::EveryDay->value => $days_diff->days,
-            RepeatableTypes::None->value => 0,
+            default => 0,
         };
 
         $expected_from_db = $this->taskCalendarRepository->getQuantityOfTasksTypes($type);
@@ -152,7 +153,7 @@ final class TasksContext implements Context
     /**
      * @Then there are following planed tasks in db:
      */
-    public function thereAreFollowingPlanedTasksInDb(TableNode $table)
+    public function thereAreFollowingPlanedTasksInDb(TableNode $table): void
     {
         foreach ($table as $row) {
             $this->thereArePlanedTasksInDb($row['goal_type'], $row['startDate']);

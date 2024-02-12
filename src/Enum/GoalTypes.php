@@ -5,8 +5,8 @@ namespace App\Enum;
 enum GoalTypes: string
 {
     case Task = 'task';
-    case SimpleHabbit = 'simple_habbit';
-    case ComplexHabbit = 'complex_habbit';
+    case SimpleHabit = 'simple_habit';
+    case ComplexHabit = 'complex_habit';
     case Rule = 'rule';
     case Limit = 'limit';
 
@@ -19,7 +19,7 @@ enum GoalTypes: string
         return $values;
     }
 
-    public static function randomCase()
+    public static function randomCase(): string
     {
         return array_rand(array_flip(self::getAsKeyValueArray()));
     }
