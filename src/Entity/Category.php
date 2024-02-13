@@ -19,6 +19,9 @@ class Category
     #[ORM\Column(type: Types::TEXT)]
     private ?string $Name = null;
 
+    /**
+     * @var ArrayCollection<int,Goal>
+     */
     #[ORM\OneToMany(mappedBy: 'Category', targetEntity: Goal::class)]
     private Collection $goals;
 

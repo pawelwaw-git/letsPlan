@@ -26,15 +26,15 @@ class RandomBibleText
         $this->BibleQuoteRepository = $BibleQuoteRepository;
     }
 
-    public function getRandomBibleVerse()
+    public function getRandomBibleVerse(): string
     {
-        //@todo check if quote in db then if not then call Api. - max is 5000 per day.
+        //TODO check if quote in db then if not then call Api. - max is 5000 per day.
         if ($this->isCached()) {
             $this->wordOfGod = $this->cached_obeject->getHtml();
         } else {
             $this->api_bible->createChapterVerseLink($this->getId(), $this->getChapterVerse());
             $this->result_bible_api = $this->api_bible->call();
-            if ($this->result_bible_api->isSuccefull()) {
+            if ($this->result_bible_api->isSuccessful()) {
                 $this->wordOfGod = $this->result_bible_api->getContent();
                 $this->saveToCache();
             } else {
@@ -92,6 +92,9 @@ class RandomBibleText
         return $ids[array_rand($ids, 1)];
     }
 
+    /**
+     * @return array<string>
+     */
     private function getBibleVersions(): array
     {
         return [
@@ -112,7 +115,10 @@ class RandomBibleText
         return $verses[array_rand($verses, 1)];
     }
 
-    private function getBibleVerses()
+    /**
+     * @return array<string>
+     */
+    private function getBibleVerses(): array
     {
         return [
             'SIR.1.23',

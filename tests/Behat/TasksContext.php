@@ -67,14 +67,14 @@ final class TasksContext implements Context
         }
         $startDate->setTime(0, 0, 0);
         $end = clone $today;
-        $end->add(new DateInterval(GoalScheduler::SCHEDULE_DATEINTERVAL_TEXT));
+        $end->add(new DateInterval(GoalScheduler::SCHEDULE_DATE_INTERVAL_TEXT));
         return $end->diff($startDate);
     }
 
     /**
      * @Given there is :type Goal with  lastDate :lastDateOrNull in db
      */
-    public function thereIsGoalWithLastdateInDb($type, $lastDateOrNull): void
+    public function thereIsGoalWithLatestInDb(?string $type, ?string $lastDateOrNull): void
     {
         $goal = new Goal();
         $goal->setName('test Goal');
@@ -83,8 +83,9 @@ final class TasksContext implements Context
         $goal->setType(GoalTypes::SimpleHabit->value);
         $goal->setRepeatable($type);
         $goal->setActive(true);
-        if ($lastDateOrNull !== "null")
+        if ($lastDateOrNull !== "null") {
             $goal->setLastDateSchedule(DateTime::createFromFormat("Y-m-d", $lastDateOrNull));
+        }
         $this->goalRepository->save($goal, true);
     }
 
@@ -109,7 +110,7 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db
      */
-    public function thereArePlanedTasksInDb($type, $startDate): void
+    public function thereArePlanedTasksInDb(?string $type, ?string $startDate): void
     {
         $this->thereArePlanedTasksInDbFromDate($type, $startDate);
     }
@@ -117,7 +118,7 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db from date :startDate
      */
-    public function thereArePlanedTasksInDbFromDate($type, $startDate = null): void
+    public function thereArePlanedTasksInDbFromDate(?string $type, ?string $startDate = null): void
     {
         if ($startDate !== false) {
             $startDate = DateTime::createFromFormat("Y-m-d", $startDate);
@@ -143,10 +144,10 @@ final class TasksContext implements Context
     /**
      * @Given there are following Goals with lastDates in db:
      */
-    public function thereAreFollowingGoalsWithLastdatesInDb(TableNode $table)
+    public function thereAreFollowingGoalsWithLastDatesInDb(TableNode $table): void
     {
         foreach ($table as $row) {
-            $this->thereIsGoalWithLastdateInDb($row['goal_type'], $row['lastDate']);
+            $this->thereIsGoalWithLatestInDb($row['goal_type'], $row['lastDate']);
         }
     }
 

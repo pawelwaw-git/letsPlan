@@ -10,6 +10,9 @@ enum GoalTypes: string
     case Rule = 'rule';
     case Limit = 'limit';
 
+    /**
+     * @return array<string>
+     */
     public static function getAsKeyValueArray(): array
     {
         $values = [];

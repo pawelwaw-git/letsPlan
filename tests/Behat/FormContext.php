@@ -25,20 +25,20 @@ use Symfony\Component\Routing\RouterInterface;
  */
 final class FormContext extends MinkContext implements Context
 {
-    private $userEntity;
-    private $categoryEntity;
-    private $passwordHasher;
-    private $router;
+    private AdminRepository $userEntity;
+    private CategoryRepository $categoryEntity;
+    private UserPasswordHasherInterface $passwordHarsher;
+    private RouterInterface $router;
 
     public function __construct(
         AdminRepository $user,
         CategoryRepository $category,
-        UserPasswordHasherInterface $passwordHasher,
+        UserPasswordHasherInterface $passwordHarsher,
         RouterInterface $router
     ) {
         $this->userEntity = $user;
         $this->categoryEntity = $category;
-        $this->passwordHasher = $passwordHasher;
+        $this->passwordHarsher = $passwordHarsher;
         $this->router = $router;
     }
 
@@ -58,7 +58,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @Given there is an admin user :email with password :plaintextPassword
      */
-    public function thereIsAnAdminUserWithPassword(string $email, string $plaintextPassword)
+    public function thereIsAnAdminUserWithPassword(string $email, string $plaintextPassword): Admin
     {
         $user = $this->userEntity->findByEmail($email);
         if (!$user) {
@@ -72,7 +72,7 @@ final class FormContext extends MinkContext implements Context
         $user = new Admin();
         $user->setEmail($email);
         $user->setRoles(array('ROLE_ADMIN', 'ROLE_USER'));
-        $hashedPassword = $this->passwordHasher->hashPassword(
+        $hashedPassword = $this->passwordHarsher->hashPassword(
             $user,
             $plaintextPassword
         );
@@ -84,7 +84,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @Given I am login as admin
      */
-    public function iAmLoginAsAdmin()
+    public function iAmLoginAsAdmin(): void
     {
         $email = 'admin@example.com';
         $password = 'adminpass';
@@ -98,7 +98,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @Given There are standard types of categories
      */
-    public function thereAreStandardTypesOfCategories()
+    public function thereAreStandardTypesOfCategories(): void
     {
         $categories = ['God', 'Health', 'Finance', 'Carrier','Hobby','Development'];
         foreach ($categories as $name) {
@@ -111,7 +111,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @When I wait for Modal
      */
-    public function iWaitForModal()
+    public function iWaitForModal(): void
     {
         $this->getSession()->wait(
             5000,
@@ -122,7 +122,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @Given wait :seconds seconds
      */
-    public function waitSeconds($seconds)
+    public function waitSeconds(int $seconds): void
     {
         $this->getSession()->wait($seconds * 1000);
     }
@@ -130,7 +130,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @When I click Element with class :cssSelectorClass
      */
-    public function iClickElementWithClass($cssSelectorClass)
+    public function iClickElementWithClass(string $cssSelectorClass): void
     {
         $this->getSession()->getPage()->find('css', "." . $cssSelectorClass)->click();
     }
@@ -138,7 +138,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @When I am on task_scheduler with params
      */
-    public function iAmOnTaskSchedulerWithParams()
+    public function iAmOnTaskSchedulerWithParams(): void
     {
         $link = $this->router->generate('task_scheduler', [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION]);
         $this->visitPath($link);

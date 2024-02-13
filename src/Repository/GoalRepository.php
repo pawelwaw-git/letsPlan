@@ -40,7 +40,7 @@ class GoalRepository extends ServiceEntityRepository
         }
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->getEntityManager()->flush();
     }

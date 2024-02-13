@@ -65,7 +65,10 @@ final class GoalFactory extends ModelFactory
         return Goal::class;
     }
 
-    public static function getProperTypeAndRepatableValues(): array
+    /**
+     * @return array<string, string>
+     */
+    public static function getProperTypeAndRepeatableValues(): array
     {
         $random_type = GoalTypes::randomCase();
         $repeatable_values = match ($random_type) {

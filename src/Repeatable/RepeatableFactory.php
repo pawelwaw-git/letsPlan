@@ -3,14 +3,11 @@
 namespace App\Repeatable;
 
 use App\Enum\RepeatableTypes;
-use App\Repeatable\EveryDayRepeatableType;
-use App\Repeatable\EveryMonthRepeatableType;
-use App\Repeatable\EveryWeekRepeatableType;
-use App\Repeatable\NoneRepeatableType;
+
 
 class RepeatableFactory
 {
-    public static function getSuitableRepeatableType(string $intervalName)
+    public static function getSuitableRepeatableType(string $intervalName): EveryDayRepeatableType|RepetableTypeException|EveryMonthRepeatableType|EveryWeekRepeatableType|NoneRepeatableType
     {
         return match ($intervalName) {
             RepeatableTypes::EveryDay->value => new EveryDayRepeatableType(),

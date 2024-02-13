@@ -11,7 +11,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    private $goalScheduler;
+    private GoalScheduler $goalScheduler;
 
     public function __construct(GoalScheduler $goalScheduler)
     {
@@ -24,14 +24,14 @@ class AppFixtures extends Fixture
         $this->loadUsers();
         $this->loadCategories();
         GoalFactory::createMany(25, function () {
-            return GoalFactory::getProperTypeAndRepatableValues();
+            return GoalFactory::getProperTypeAndRepeatableValues();
         });
         $this->goalScheduler->setPermissionToSchedule(true);
         $this->goalScheduler->scheduleGoals();
         $manager->flush();
     }
 
-    private function loadUsers()
+    private function loadUsers(): void
     {
         AdminFactory::new()
             ->withAttributes([
@@ -66,7 +66,7 @@ class AppFixtures extends Fixture
             ->create();
     }
 
-    public function loadCategories()
+    public function loadCategories(): void
     {
         $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
         foreach ($categories as $category)

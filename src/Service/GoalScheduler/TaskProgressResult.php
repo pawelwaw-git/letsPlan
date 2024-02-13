@@ -5,9 +5,18 @@ use App\Repository\TaskCalendarRepository;
 
 class TaskProgressResult
 {
-    private $allTasks;
-    private $finishedTasks;
-    private $undoneTasks;
+    /**
+     * @var array<string, int> $allTasks
+     */
+    private array $allTasks;
+    /**
+     * @var array<string, int> $finishedTasks
+     */
+    private array $finishedTasks;
+    /**
+     * @var array<string, int> $undoneTasks
+     */
+    private array $undoneTasks;
 
     private TaskCalendarRepository $taskCalendarRepository;
 
@@ -16,34 +25,43 @@ class TaskProgressResult
         $this->taskCalendarRepository = $taskCalendarRepository;
     }
 
-    private function resetProgressResult()
+    private function resetProgressResult(): void
     {
         $this->allTasks = [];
         $this->finishedTasks = [];
         $this->undoneTasks = [];
     }
 
-    public function getProgressResult(string $before)
+    public function getProgressResult(string $before): void
     {
         $this->resetProgressResult();
-        $PreviousTasks = $this->taskCalendarRepository->getStatsForPreviosTasks(new \Datetime($before));
+        $PreviousTasks = $this->taskCalendarRepository->getStatsForPreviousTasks(new \Datetime($before));
         foreach ($PreviousTasks as $statisticTaskRow) {
             $this->initTableIfNotExists($statisticTaskRow);
             $this->incrementValues($statisticTaskRow);
         }
     }
 
-    private function initTableIfNotExists(array $statisticTaskRow)
+    /**
+     * @param array<string, mixed> $statisticTaskRow
+     */
+    private function initTableIfNotExists(array $statisticTaskRow): void
     {
-        if (!isset($this->allTasks[$statisticTaskRow['Date']->format("Y-m-d")]))
+        if (!isset($this->allTasks[$statisticTaskRow['Date']->format("Y-m-d")])) {
             $this->allTasks[$statisticTaskRow['Date']->format("Y-m-d")] = 0;
-        if (!isset($this->undoneTasks[$statisticTaskRow['Date']->format("Y-m-d")]))
+        }
+        if (!isset($this->undoneTasks[$statisticTaskRow['Date']->format("Y-m-d")])) {
             $this->undoneTasks[$statisticTaskRow['Date']->format("Y-m-d")] = 0;
-        if (!isset($this->finishedTasks[$statisticTaskRow['Date']->format("Y-m-d")]))
+        }
+        if (!isset($this->finishedTasks[$statisticTaskRow['Date']->format("Y-m-d")])) {
             $this->finishedTasks[$statisticTaskRow['Date']->format("Y-m-d")] = 0;
+        }
     }
 
-    private function incrementValues(array $statisticTaskRow)
+    /**
+     * @param array<string, mixed> $statisticTaskRow
+     */
+    private function incrementValues(array $statisticTaskRow): void
     {
         if ($statisticTaskRow['isDone']) {
             $this->finishedTasks[$statisticTaskRow['Date']->format("Y-m-d")] += $statisticTaskRow['Quantity'];
@@ -53,17 +71,26 @@ class TaskProgressResult
         $this->allTasks[$statisticTaskRow['Date']->format("Y-m-d")] += $statisticTaskRow['Quantity'];
     }
 
-    public function getAllTasks()
+    /**
+     * @return  array<string, int> $allTasks
+     */
+    public function getAllTasks(): array
     {
         return $this->allTasks;
     }
 
-    public function getUndoneTasks()
+    /**
+     * @return  array<string, int> $undoneTasks
+     */
+    public function getUndoneTasks(): array
     {
         return $this->undoneTasks;
     }
 
-    public function getFinishedTasks()
+    /**
+     * @return  array<string, int> $finishedTasks
+     */
+    public function getFinishedTasks(): array
     {
         return $this->finishedTasks;
     }
