@@ -34,3 +34,7 @@ yarn-error.log
 /.php-cs-fixer.cache
 
 /tools/
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

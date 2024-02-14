@@ -85,6 +85,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
+        "phpstan": "vendor/bin/phpstan",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi"
     },
@@ -105,6 +106,7 @@
         "friends-of-behat/mink-browserkit-driver": "^1.6",
         "friends-of-behat/mink-extension": "^2.7",
         "friends-of-behat/symfony-extension": "^2.3",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5",
         "roave/security-advisories": "dev-latest",
         "symfony/browser-kit": "5.4.*",

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\GoalScheduler;
 
+use App\Contracts\IsScheduled;
+use App\Contracts\Repeatable;
 use App\Entity\Goal;
 use App\Entity\TaskCalendar;
 use App\Repeatable\RepeatableFactory;
@@ -15,13 +17,22 @@ class GoalScheduler
 {
     public const SCHEDULE_ACTION = 'schedule';
     public const QUERY_PARAMS = 'goal_scheduler_param';
-    public const SCHEDULE_DATEINTERVAL_TEXT = 'P2M';
+    public const SCHEDULE_DATE_INTERVAL_TEXT = 'P2M';
 
     private GoalRepository $goalRepository;
     private TaskCalendarRepository $taskCalendarRepository;
     private RequestStack $request;
     private bool $isScheduleAllowed = false;
+
+    /**
+     * @var array<Goal>
+     */
     private array $goalsToSchedule;
+
+    /**
+     * @var IsScheduled|Repeatable
+     *                             TODO I need to fix code later
+     */
     private $repeatableType;
 
     public function __construct(GoalRepository $goalRepository, TaskCalendarRepository $taskCalendarRepository, RequestStack $request)
@@ -31,7 +42,7 @@ class GoalScheduler
         $this->request = $request;
     }
 
-    public function scheduleGoals()
+    public function scheduleGoals(): void
     {
         if ($this->isScheduleGoalsAllowed()) {
             $this->getGoalsToSchedule();
@@ -48,26 +59,26 @@ class GoalScheduler
 
     public function isScheduleGoalsAllowed(): bool
     {
-        $this->checkPermissionBasedOnReqestQuery();
+        $this->checkPermissionBasedOnRequestQuery();
 
         return $this->isScheduleAllowed;
     }
 
-    public function setPermissionToSchedule($allowed = false)
+    public function setPermissionToSchedule(bool $allowed = false): void
     {
         $this->isScheduleAllowed = $allowed;
     }
 
-    private function setRepeatableType(Goal $goal)
+    private function setRepeatableType(Goal $goal): void
     {
         $this->repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
     }
 
-    private function checkPermissionBasedOnReqestQuery()
+    private function checkPermissionBasedOnRequestQuery(): void
     {
         if ($this->request->getCurrentRequest()) {
-            $inputParams = $this->request->getCurrentRequest()->query->get(GoalScheduler::QUERY_PARAMS);
-            if (GoalScheduler::SCHEDULE_ACTION == $inputParams) {
+            $inputParams = $this->request->getCurrentRequest()->query->get(self::QUERY_PARAMS);
+            if ($inputParams === self::SCHEDULE_ACTION) {
                 $this->isScheduleAllowed = true;
             }
         }
@@ -77,7 +88,7 @@ class GoalScheduler
     {
         $lastScheduleDate = new \DateTime('today');
 
-        return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT))->setTime(0, 0, 0);
+        return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT))->setTime(0, 0, 0);
     }
 
     private function getScheduledPeriod(Goal $goal): \DatePeriod
@@ -85,7 +96,7 @@ class GoalScheduler
         $startDate = $this->repeatableType->getStartDate();
         $startDate->setTime(0, 0, 0);
         $finishDate = clone $startDate;
-        $finishDate->add(new \DateInterval(self::SCHEDULE_DATEINTERVAL_TEXT));
+        $finishDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT));
         $finishDate->setTime(0, 0, 0);
         if (is_null($goal->getLastDateSchedule())) {
             return new \DatePeriod($startDate, $this->repeatableType->getInterval(), $finishDate);
@@ -99,7 +110,7 @@ class GoalScheduler
         return $this->repeatableType->isScheduled();
     }
 
-    private function createTasksBasedOnPeriod(Goal $goal)
+    private function createTasksBasedOnPeriod(Goal $goal): void
     {
         $scheduledPeriod = $this->getScheduledPeriod($goal);
         foreach ($scheduledPeriod as $date) {
@@ -112,17 +123,17 @@ class GoalScheduler
         }
     }
 
-    private function getGoalsToSchedule()
+    private function getGoalsToSchedule(): void
     {
         $this->goalsToSchedule = $this->goalRepository->findGoalsToSchedule($this->getLastScheduleDate());
     }
 
-    private function resetPermission()
+    private function resetPermission(): void
     {
         $this->isScheduleAllowed = false;
     }
 
-    private function saveData()
+    private function saveData(): void
     {
         $this->goalRepository->flush();
         $this->taskCalendarRepository->flush();

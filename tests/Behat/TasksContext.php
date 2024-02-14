@@ -14,8 +14,6 @@ use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
-use DateInterval;
-use DateTime;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -27,10 +25,10 @@ use function PHPUnit\Framework\assertEquals;
  */
 final class TasksContext implements Context
 {
-    protected TaskCalendarRepository $taskCalendarRepository;
-    protected GoalRepository $goalRepository;
+    private TaskCalendarRepository $taskCalendarRepository;
+    private GoalRepository $goalRepository;
 
-    protected $goalScheduler;
+    private GoalScheduler $goalScheduler;
 
     public function __construct(TaskCalendarRepository $taskCalendarRepository, GoalRepository $goalRepository, GoalScheduler $goalScheduler)
     {
@@ -42,7 +40,7 @@ final class TasksContext implements Context
     /**
      * @Given There are different goal types
      */
-    public function thereAreDifferentGoalTypes()
+    public function thereAreDifferentGoalTypes(): void
     {
         $fixtures = new AppFixtures($this->goalScheduler);
         $fixtures->loadCategories();
@@ -56,43 +54,29 @@ final class TasksContext implements Context
         );
     }
 
-    private function getQuantityOfPlannedDays(?DateTime $startDate): DateInterval
-    {
-        $today = new \DateTime('today');
-        if ($startDate == null)
-            $startDate = new \DateTime('today');
-        else {
-            $startDate->modify('+1 day');
-        }
-        $startDate->setTime(0, 0, 0);
-        $end = clone $today;
-        $end->add(new DateInterval(GoalScheduler::SCHEDULE_DATEINTERVAL_TEXT));
-        return $end->diff($startDate);
-    }
-
     /**
      * @Given there is :type Goal with  lastDate :lastDateOrNull in db
      */
-    public function thereIsGoalWithLastdateInDb($type, $lastDateOrNull)
+    public function thereIsGoalWithLatestInDb(?string $type, ?string $lastDateOrNull): void
     {
         $goal = new Goal();
         $goal->setName('test Goal');
         $goal->setPriority(1);
         $goal->setDescription('test Goal');
-        $goal->setType(GoalTypes::SimpleHabbit->value);
+        $goal->setType(GoalTypes::SimpleHabit->value);
         $goal->setRepeatable($type);
         $goal->setActive(true);
-        if ($lastDateOrNull !== "null")
-            $goal->setLastDateSchedule(DateTime::createFromFormat("Y-m-d", $lastDateOrNull));
+        if ($lastDateOrNull !== 'null') {
+            $goal->setLastDateSchedule(\DateTime::createFromFormat('Y-m-d', $lastDateOrNull));
+        }
         $this->goalRepository->save($goal, true);
     }
 
     /**
      * @Given there is no active Goals in db
      */
-    public function thereIsNoActiveGoalsInDb()
+    public function thereIsNoActiveGoalsInDb(): void
     {
-
         $tasks = $this->taskCalendarRepository->findAll();
         foreach ($tasks as $task) {
             $this->taskCalendarRepository->remove($task);
@@ -108,7 +92,7 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db
      */
-    public function thereArePlanedTasksInDb($type, $startDate)
+    public function thereArePlanedTasksInDb(?string $type, ?string $startDate): void
     {
         $this->thereArePlanedTasksInDbFromDate($type, $startDate);
     }
@@ -116,23 +100,23 @@ final class TasksContext implements Context
     /**
      * @Then there are planed :type tasks in db from date :startDate
      */
-    public function thereArePlanedTasksInDbFromDate($type, $startDate = null)
+    public function thereArePlanedTasksInDbFromDate(?string $type, ?string $startDate = null): void
     {
         if ($startDate !== false) {
-            $startDate = DateTime::createFromFormat("Y-m-d", $startDate);
+            $startDate = \DateTime::createFromFormat('Y-m-d', $startDate);
         }
         // strange this, $startDate return false in console, but if I use else there is not working !== don't work also
-        if ($startDate == false) {
+        if ($startDate === false) {
             $startDate = null;
         }
 
         $days_diff = $this->getQuantityOfPlannedDays($startDate);
 
         $from_days = match ($type) {
-            RepeatableTypes::EveryMonth->value =>  (int) $days_diff->format("%y") * 12 + (int) $days_diff->format("%m"),
+            RepeatableTypes::EveryMonth->value => (int) $days_diff->format('%y') * 12 + (int) $days_diff->format('%m'),
             RepeatableTypes::EveryWeek->value => ceil($days_diff->days / 7),
             RepeatableTypes::EveryDay->value => $days_diff->days,
-            RepeatableTypes::None->value => 0,
+            default => 0,
         };
 
         $expected_from_db = $this->taskCalendarRepository->getQuantityOfTasksTypes($type);
@@ -142,20 +126,35 @@ final class TasksContext implements Context
     /**
      * @Given there are following Goals with lastDates in db:
      */
-    public function thereAreFollowingGoalsWithLastdatesInDb(TableNode $table)
+    public function thereAreFollowingGoalsWithLastDatesInDb(TableNode $table): void
     {
         foreach ($table as $row) {
-            $this->thereIsGoalWithLastdateInDb($row['goal_type'], $row['lastDate']);
+            $this->thereIsGoalWithLatestInDb($row['goal_type'], $row['lastDate']);
         }
     }
 
     /**
      * @Then there are following planed tasks in db:
      */
-    public function thereAreFollowingPlanedTasksInDb(TableNode $table)
+    public function thereAreFollowingPlanedTasksInDb(TableNode $table): void
     {
         foreach ($table as $row) {
             $this->thereArePlanedTasksInDb($row['goal_type'], $row['startDate']);
         }
+    }
+
+    private function getQuantityOfPlannedDays(?\DateTime $startDate): \DateInterval
+    {
+        $today = new \DateTime('today');
+        if ($startDate == null) {
+            $startDate = new \DateTime('today');
+        } else {
+            $startDate->modify('+1 day');
+        }
+        $startDate->setTime(0, 0, 0);
+        $end = clone $today;
+        $end->add(new \DateInterval(GoalScheduler::SCHEDULE_DATE_INTERVAL_TEXT));
+
+        return $end->diff($startDate);
     }
 }

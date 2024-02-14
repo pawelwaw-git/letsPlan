@@ -17,7 +17,7 @@ class EveryWeekRepeatableType implements IsScheduled, Repeatable
     public function getStartDate(): \DateTime
     {
         $week = new \DateTime('today');
-        while (1 != $week->format('N')) {
+        while ($week->format('N') != 1) {
             $week->modify('+1 day');
         }
         $week->setTime(0, 0, 0);

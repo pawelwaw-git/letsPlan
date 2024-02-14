@@ -40,17 +40,21 @@ final class GoalFactory extends ModelFactory
         // TODO inject services if required (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services)
     }
 
-    public static function getProperTypeAndRepatableValues()
+    /**
+     * @return array<string, string>
+     */
+    public static function getProperTypeAndRepeatableValues(): array
     {
         $random_type = GoalTypes::randomCase();
-        $repeatble_values = match ($random_type) {
+        $repeatable_values = match ($random_type) {
             GoalTypes::Rule->value, GoalTypes::Limit->value, GoalTypes::Task->value => [RepeatableTypes::None->value],
-            GoalTypes::SimpleHabbit->value, GoalTypes::ComplexHabbit->value => [RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value],
+            GoalTypes::SimpleHabit->value, GoalTypes::ComplexHabit->value => [RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value],
+            default => [],
         };
 
         return [
             'Type' => $random_type,
-            'Repeatable' => self::faker()->randomElement($repeatble_values),
+            'Repeatable' => self::faker()->randomElement($repeatable_values),
         ];
     }
 

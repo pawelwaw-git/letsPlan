@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\TaskCalendar;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,7 +42,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
         }
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->getEntityManager()->flush();
     }
@@ -64,7 +65,10 @@ class TaskCalendarRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getTodaysUnFinishedTasksWithGoals(): array
+    /**
+     * @return array<int, TaskCalendar[]>
+     */
+    public function getTodaysUnfinishedTasksWithGoals(): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.Date = :today')
@@ -77,7 +81,10 @@ class TaskCalendarRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getStatsForPreviosTasks(\DateTime $lastDay): array
+    /**
+     * @return array<int, mixed>
+     */
+    public function getStatsForPreviousTasks(\DateTime $lastDay): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.Date >= :lastDay')
@@ -105,7 +112,10 @@ class TaskCalendarRepository extends ServiceEntityRepository
         ;
     }
 
-    public function truncate()
+    /**
+     * @throws Exception
+     */
+    public function truncate(): void
     {
         $connection = $this->getEntityManager()->getConnection();
         $platform = $connection->getDatabasePlatform();

@@ -18,7 +18,7 @@ class EveryMonthRepeatableType implements IsScheduled, Repeatable
     {
         $today = new \DateTime('today');
         $month = new \DateTime('first day of this month');
-        if (1 != $today->format('j')) {
+        if ($today->format('j') != 1) {
             $month->add($this->getInterval());
         }
         $month->setTime(0, 0, 0);

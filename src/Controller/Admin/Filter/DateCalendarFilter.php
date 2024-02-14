@@ -11,12 +11,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\FilterTrait;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 class DateCalendarFilter implements FilterInterface
 {
     use FilterTrait;
 
-    public static function new(string $propertyName, $label = null): self
+    public static function new(string $propertyName, bool|string|TranslatableInterface $label = null): self
     {
         return (new self())
             ->setFilterFqcn(__CLASS__)
@@ -26,10 +27,16 @@ class DateCalendarFilter implements FilterInterface
         ;
     }
 
-    public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
-    {
+    public function apply(
+        QueryBuilder $queryBuilder,
+        FilterDataDto $filterDataDto,
+        ?FieldDto $fieldDto,
+        EntityDto $entityDto
+    ): void {
         if ('today' === $filterDataDto->getValue()) {
-            $queryBuilder->andWhere(sprintf('%s.%s = :today', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty()))
+            $queryBuilder->andWhere(
+                sprintf('%s.%s = :today', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty())
+            )
                 ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'))
             ;
         }

@@ -8,7 +8,6 @@ use App\Entity\Admin;
 use App\Entity\Category;
 use App\Repository\AdminRepository;
 use App\Repository\CategoryRepository;
-use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
@@ -25,69 +24,53 @@ use Symfony\Component\Routing\RouterInterface;
  */
 final class FormContext extends MinkContext implements Context
 {
-    private $userEntity;
-    private $categoryEntity;
-    private $passwordHasher;
-    private $tasksRepo;
-    private $router;
+    private AdminRepository $userEntity;
+    private CategoryRepository $categoryEntity;
+    private UserPasswordHasherInterface $passwordHarsher;
+    private RouterInterface $router;
 
     public function __construct(
         AdminRepository $user,
         CategoryRepository $category,
-        TaskCalendarRepository $tasksRepo,
-        UserPasswordHasherInterface $passwordHasher,
+        UserPasswordHasherInterface $passwordHarsher,
         RouterInterface $router
     ) {
         $this->userEntity = $user;
         $this->categoryEntity = $category;
-        $this->passwordHasher = $passwordHasher;
-        $this->tasksRepo = $tasksRepo;
+        $this->passwordHarsher = $passwordHarsher;
         $this->router = $router;
     }
 
     /** @BeforeFeature */
     public static function setupFeature(BeforeFeatureScope $scope): void
     {
-        shell_exec("php bin/console doctrine:database:create --env=test");
-        shell_exec("php bin/console doctrine:schema:create --env=test");
+        shell_exec('php bin/console doctrine:database:create --env=test');
+        shell_exec('php bin/console doctrine:schema:create --env=test');
     }
 
     /** @AfterFeature */
     public static function teardownFeature(AfterFeatureScope $scope): void
     {
-        shell_exec("php bin/console doctrine:database:drop --env=test --force");
+        shell_exec('php bin/console doctrine:database:drop --env=test --force');
     }
 
     /**
      * @Given there is an admin user :email with password :plaintextPassword
      */
-    public function thereIsAnAdminUserWithPassword(string $email, string $plaintextPassword)
+    public function thereIsAnAdminUserWithPassword(string $email, string $plaintextPassword): Admin
     {
         $user = $this->userEntity->findByEmail($email);
         if (!$user) {
             $user = $this->creteNewUser($email, $plaintextPassword);
         }
-        return $user;
-    }
 
-    private function creteNewUser(string $email, string $plaintextPassword): Admin
-    {
-        $user = new Admin();
-        $user->setEmail($email);
-        $user->setRoles(array('ROLE_ADMIN', 'ROLE_USER'));
-        $hashedPassword = $this->passwordHasher->hashPassword(
-            $user,
-            $plaintextPassword
-        );
-        $user->setPassword($hashedPassword);
-        $this->userEntity->save($user, true);
         return $user;
     }
 
     /**
      * @Given I am login as admin
      */
-    public function iAmLoginAsAdmin()
+    public function iAmLoginAsAdmin(): void
     {
         $email = 'admin@example.com';
         $password = 'adminpass';
@@ -101,9 +84,9 @@ final class FormContext extends MinkContext implements Context
     /**
      * @Given There are standard types of categories
      */
-    public function thereAreStandardTypesOfCategories()
+    public function thereAreStandardTypesOfCategories(): void
     {
-        $categories = ['God', 'Health', 'Finance', 'Carrier','Hobby','Development'];
+        $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
         foreach ($categories as $name) {
             $category = new Category();
             $category->setName($name);
@@ -114,7 +97,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @When I wait for Modal
      */
-    public function iWaitForModal()
+    public function iWaitForModal(): void
     {
         $this->getSession()->wait(
             5000,
@@ -125,7 +108,7 @@ final class FormContext extends MinkContext implements Context
     /**
      * @Given wait :seconds seconds
      */
-    public function waitSeconds($seconds)
+    public function waitSeconds(int $seconds): void
     {
         $this->getSession()->wait($seconds * 1000);
     }
@@ -133,17 +116,32 @@ final class FormContext extends MinkContext implements Context
     /**
      * @When I click Element with class :cssSelectorClass
      */
-    public function iClickElementWithClass($cssSelectorClass)
+    public function iClickElementWithClass(string $cssSelectorClass): void
     {
-        $this->getSession()->getPage()->find('css', "." . $cssSelectorClass)->click();
+        $this->getSession()->getPage()->find('css', '.'.$cssSelectorClass)->click();
     }
 
     /**
      * @When I am on task_scheduler with params
      */
-    public function iAmOnTaskSchedulerWithParams()
+    public function iAmOnTaskSchedulerWithParams(): void
     {
         $link = $this->router->generate('task_scheduler', [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION]);
         $this->visitPath($link);
+    }
+
+    private function creteNewUser(string $email, string $plaintextPassword): Admin
+    {
+        $user = new Admin();
+        $user->setEmail($email);
+        $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $hashedPassword = $this->passwordHarsher->hashPassword(
+            $user,
+            $plaintextPassword
+        );
+        $user->setPassword($hashedPassword);
+        $this->userEntity->save($user, true);
+
+        return $user;
     }
 }

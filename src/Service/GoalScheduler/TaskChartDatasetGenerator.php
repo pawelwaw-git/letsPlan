@@ -13,7 +13,10 @@ class TaskChartDatasetGenerator
         $this->taskProgressResult = $taskProgressResult;
     }
 
-    public function getChartDatasetDaysBefore(string $before)
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public function getChartDatasetDaysBefore(string $before): array
     {
         $this->taskProgressResult->getProgressResult($before);
 

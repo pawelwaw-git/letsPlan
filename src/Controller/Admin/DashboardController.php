@@ -45,7 +45,7 @@ class DashboardController extends AbstractDashboardController
 
         return $this->render('admin/index.html.twig', [
             'todays_finished_tasks' => $this->taskCalendarRepository->getTodaysFinishedTasksWithGoals(),
-            'todays_unfinished_tasks' => $this->taskCalendarRepository->getTodaysUnFinishedTasksWithGoals(),
+            'todays_unfinished_tasks' => $this->taskCalendarRepository->getTodaysUnfinishedTasksWithGoals(),
             'chart_last_7days' => $this->createChartForLastTasks('- 7 days'),
             'chart_last_month' => $this->createChartForLastTasks('- 1 month'),
         ]);
@@ -77,7 +77,7 @@ class DashboardController extends AbstractDashboardController
         return Assets::new()->addWebpackEncoreEntry('app');
     }
 
-    private function createChartForLastTasks(string $period)
+    private function createChartForLastTasks(string $period): Chart
     {
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $dataset = $this->taskChartDatasetFactory->getChartDatasetDaysBefore($period);

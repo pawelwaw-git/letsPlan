@@ -11,6 +11,9 @@ enum RepeatableTypes: string
     case EveryWeek = 'every_week';
     case EveryMonth = 'every_month';
 
+    /**
+     * @return array<string>
+     */
     public static function getAsKeyValueArray(): array
     {
         $values = [];
@@ -21,7 +24,7 @@ enum RepeatableTypes: string
         return $values;
     }
 
-    public static function randomCase()
+    public static function randomCase(): string
     {
         return array_rand(array_flip(self::getAsKeyValueArray()));
     }

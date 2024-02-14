@@ -10,7 +10,7 @@ class ResultBibleApi
     private string $errorMessage;
     private bool $success = false;
 
-    public function __construct($content, $errorMessage, $success)
+    public function __construct(string $content, string $errorMessage, bool $success)
     {
         $this->content = $content;
         $this->errorMessage = $errorMessage;
@@ -27,7 +27,7 @@ class ResultBibleApi
         return $this->content;
     }
 
-    public function isSuccefull()
+    public function isSuccessful(): bool
     {
         return $this->success;
     }

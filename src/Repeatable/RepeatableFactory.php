@@ -8,7 +8,7 @@ use App\Enum\RepeatableTypes;
 
 class RepeatableFactory
 {
-    public static function getSuitableRepeatableType(string $intervalName)
+    public static function getSuitableRepeatableType(string $intervalName): EveryDayRepeatableType|EveryMonthRepeatableType|EveryWeekRepeatableType|NoneRepeatableType|RepetableTypeException
     {
         return match ($intervalName) {
             RepeatableTypes::EveryDay->value => new EveryDayRepeatableType(),
