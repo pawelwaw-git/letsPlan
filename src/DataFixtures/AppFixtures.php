@@ -39,7 +39,8 @@ class AppFixtures extends Fixture
             CategoryFactory::new()
                 ->withAttributes([
                     'name' => $category,
-                ])->create();
+                ])->create()
+            ;
         }
     }
 
@@ -78,6 +79,7 @@ class AppFixtures extends Fixture
                 // 'password' => 'tishapass',
                 'password' => '$2y$13$jeJsCrAHWizlS3gPM332.uMZ/YIFv0quIMOjrhehkBAxsdhVlemq6',
             ])
-            ->create();
+            ->create()
+        ;
     }
 }
