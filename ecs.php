@@ -11,8 +11,7 @@ use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
     ->withPaths([
-        __DIR__ . '/config',
-        __DIR__ . '/public',
+        __DIR__ . '/tests',
         __DIR__ . '/src',
     ])
     ->withRules([
