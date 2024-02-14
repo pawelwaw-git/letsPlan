@@ -92,6 +92,9 @@ RUN useradd headless --shell /bin/bash --create-home \
   && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
   && echo 'headless:nopassword' | chpasswd
 
+# Copy configurations
+COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+
 USER www
 
 WORKDIR /var/www/html

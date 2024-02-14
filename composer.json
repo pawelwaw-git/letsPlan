@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "dmore/behat-chrome-extension": "^1.4",
@@ -84,7 +84,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "check-cs": "vendor/bin/ecs check --ansi",
+        "fix-cs": "vendor/bin/ecs check --fix --ansi"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -96,8 +98,6 @@
         }
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
-        ,
         "behat/mink-selenium2-driver": "^1.6",
         "dbrekelmans/bdi": "^1.0",
         "dmore/chrome-mink-driver": "^2.8",
@@ -106,6 +106,7 @@
         "friends-of-behat/mink-extension": "^2.7",
         "friends-of-behat/symfony-extension": "^2.3",
         "phpunit/phpunit": "^9.5",
+        "roave/security-advisories": "dev-latest",
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
         "symfony/debug-bundle": "5.4.*",
@@ -113,6 +114,7 @@
         "symfony/phpunit-bridge": "^6.1",
         "symfony/stopwatch": "5.4.*",
         "symfony/web-profiler-bundle": "5.4.*",
+        "symplify/easy-coding-standard": "^12.1",
         "zenstruck/foundry": "^1.22"
     }
 }

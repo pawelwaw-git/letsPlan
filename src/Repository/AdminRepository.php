@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Admin;
@@ -12,8 +14,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 /**
  * @extends ServiceEntityRepository<Admin>
  *
- * @method Admin|null find($id, $lockMode = null, $lockVersion = null)
- * @method Admin|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Admin find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Admin findOneBy(array $criteria, array $orderBy = null)
  * @method Admin[]    findAll()
  * @method Admin[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -56,24 +58,24 @@ class AdminRepository extends ServiceEntityRepository implements PasswordUpgrade
         $this->save($user, true);
     }
 
-   public function findByEmail($email): ?Admin
-   {
-       return $this->createQueryBuilder('a')
-           ->andWhere('a.email = :email')
-           ->setParameter('email', $email)
-           ->orderBy('a.id', 'ASC')
-           ->getQuery()
-           ->getOneOrNullResult()
-       ;
-   }
+    public function findByEmail($email): ?Admin
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.email = :email')
+            ->setParameter('email', $email)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 
-//    public function findOneBySomeField($value): ?Admin
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Admin
+    //    {
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

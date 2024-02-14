@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\GoalScheduler;
 
 class TaskChartDatasetGenerator
@@ -14,6 +16,7 @@ class TaskChartDatasetGenerator
     public function getChartDatasetDaysBefore(string $before)
     {
         $this->taskProgressResult->getProgressResult($before);
+
         return [
             [
                 'type' => 'bar',
