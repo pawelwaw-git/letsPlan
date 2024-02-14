@@ -64,7 +64,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, TaskCalendar[]>
      */
     public function getTodaysUnfinishedTasksWithGoals(): array
     {
@@ -78,8 +78,9 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
     /**
-     * @return array<int, string>
+     * @return array<int, mixed>
      */
     public function getStatsForPreviousTasks(DateTime $lastDay): array
     {

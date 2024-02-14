@@ -37,6 +37,7 @@ class TaskProgressResult
         $this->resetProgressResult();
         $PreviousTasks = $this->taskCalendarRepository->getStatsForPreviousTasks(new \Datetime($before));
         foreach ($PreviousTasks as $statisticTaskRow) {
+            /** @var array<int, array<int,string,bool> $statisticTaskRow */
             $this->initTableIfNotExists($statisticTaskRow);
             $this->incrementValues($statisticTaskRow);
         }
