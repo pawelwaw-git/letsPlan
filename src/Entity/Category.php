@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
@@ -28,6 +30,11 @@ class Category
     public function __construct()
     {
         $this->goals = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->id.'#'.$this->Name;
     }
 
     public function getId(): ?int
@@ -75,10 +82,5 @@ class Category
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->id.'#'.$this->Name;
     }
 }

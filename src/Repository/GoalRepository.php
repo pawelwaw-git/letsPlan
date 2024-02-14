@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Goal;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Goal>
  *
- * @method Goal|null find($id, $lockMode = null, $lockVersion = null)
- * @method Goal|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|Goal find($id, $lockMode = null, $lockVersion = null)
+ * @method null|Goal findOneBy(array $criteria, array $orderBy = null)
  * @method Goal[]    findAll()
  * @method Goal[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -48,7 +49,7 @@ class GoalRepository extends ServiceEntityRepository
     /**
      * @return Goal[] Returns an array of Goal objects
      */
-    public function findGoalsToSchedule(DateTime $lastScheduleDate): array
+    public function findGoalsToSchedule(\DateTime $lastScheduleDate): array
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.Active = :isActive')
@@ -57,6 +58,7 @@ class GoalRepository extends ServiceEntityRepository
             ->setParameter('lastScheduleDate', $lastScheduleDate)
             ->orderBy('g.id', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 }

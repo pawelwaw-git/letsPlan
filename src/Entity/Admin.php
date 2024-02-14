@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\AdminRepository;
@@ -68,6 +70,7 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     *
      * @return array<string>
      */
     public function getRoles(): array
@@ -81,6 +84,7 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param array<string> $roles
+     *
      * @return $this
      */
     public function setRoles(array $roles): self

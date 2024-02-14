@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Bible;
 
 use App\Entity\BibleQuote;
@@ -16,7 +18,6 @@ class RandomBibleText
     private BibleQuoteRepository $BibleQuoteRepository;
     private ?ResultBibleApi $result_bible_api = null;
 
-
     public function __construct(ApiBible $apiBible, BibleQuoteRepository $BibleQuoteRepository)
     {
         $this->IdBible = $this->getRandomBibleId();
@@ -28,7 +29,7 @@ class RandomBibleText
 
     public function getRandomBibleVerse(): string
     {
-        //TODO check if quote in db then if not then call Api. - max is 5000 per day.
+        // TODO check if quote in db then if not then call Api. - max is 5000 per day.
         if ($this->isCached()) {
             $this->wordOfGod = $this->cached_obeject->getHtml();
         } else {
@@ -45,13 +46,30 @@ class RandomBibleText
         return $this->createQuote();
     }
 
+    public function getId(): string
+    {
+        return $this->IdBible;
+    }
+
+    public function getName(): string
+    {
+        return $this->BibleName;
+    }
+
+    public function getChapterVerse(): string
+    {
+        return $this->BibleChapterAverse;
+    }
+
     private function isCached(): bool
     {
         $bibleEntity = $this->BibleQuoteRepository->findByBibleAndChapter($this);
         if ($bibleEntity) {
             $this->cached_obeject = $bibleEntity;
+
             return true;
         }
+
         return false;
     }
 
@@ -69,10 +87,10 @@ class RandomBibleText
         return '<div>
         <figure id="homepage_blockquote">
         <blockquote class="blockquote text-center">
-          ' . $this->wordOfGod . '
+          '.$this->wordOfGod.'
         </blockquote>
         <figcaption class="blockquote-footer text-center">
-            ' . $this->getName() . ' - <cite title="Source Title">' . $this->getChapterVerse() . '</cite>
+            '.$this->getName().' - <cite title="Source Title">'.$this->getChapterVerse().'</cite>
         </figcaption>
       </figure>
       </div>';
@@ -89,6 +107,7 @@ class RandomBibleText
     private function getRandomBibleId(): string
     {
         $ids = $this->getBibleVersions();
+
         return $ids[array_rand($ids, 1)];
     }
 
@@ -112,6 +131,7 @@ class RandomBibleText
     private function getRandomBibleVerseNumber(): string
     {
         $verses = $this->getBibleVerses();
+
         return $verses[array_rand($verses, 1)];
     }
 
@@ -123,23 +143,8 @@ class RandomBibleText
         return [
             'SIR.1.23',
             'SIR.14.20',
-            // MT.7.12 
-            // LUK, 8.5 
+            // MT.7.12
+            // LUK, 8.5
         ];
-    }
-
-    public function getId(): string
-    {
-        return $this->IdBible;
-    }
-
-    public function getName(): string
-    {
-        return $this->BibleName;
-    }
-
-    public function getChapterVerse(): string
-    {
-        return $this->BibleChapterAverse;
     }
 }

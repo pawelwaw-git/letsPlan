@@ -85,7 +85,9 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "phpstan": "vendor/bin/phpstan"
+        "phpstan": "vendor/bin/phpstan",
+        "check-cs": "vendor/bin/ecs check --ansi",
+        "fix-cs": "vendor/bin/ecs check --fix --ansi"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -114,6 +116,7 @@
         "symfony/phpunit-bridge": "^6.1",
         "symfony/stopwatch": "5.4.*",
         "symfony/web-profiler-bundle": "5.4.*",
+        "symplify/easy-coding-standard": "^12.1",
         "zenstruck/foundry": "^1.22"
     }
 }

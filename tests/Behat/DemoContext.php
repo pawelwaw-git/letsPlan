@@ -20,7 +20,7 @@ final class DemoContext implements Context
     /** @var KernelInterface */
     private $kernel;
 
-    /** @var Response|null */
+    /** @var null|Response */
     private $response;
 
     public function __construct(KernelInterface $kernel)
