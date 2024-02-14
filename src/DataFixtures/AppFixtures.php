@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Factory\AdminFactory;
@@ -20,7 +22,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-
         $this->loadUsers();
         $this->loadCategories();
         GoalFactory::createMany(25, function () {
@@ -29,6 +30,17 @@ class AppFixtures extends Fixture
         $this->goalScheduler->setPermissionToSchedule(true);
         $this->goalScheduler->scheduleGoals();
         $manager->flush();
+    }
+
+    public function loadCategories(): void
+    {
+        $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
+        foreach ($categories as $category) {
+            CategoryFactory::new()
+                ->withAttributes([
+                    'name' => $category,
+                ])->create();
+        }
     }
 
     private function loadUsers(): void
@@ -40,7 +52,8 @@ class AppFixtures extends Fixture
                 // 'password' => 'adminpass',
             ])
             ->promoteRole('ROLE_SUPER_ADMIN')
-            ->create();
+            ->create()
+        ;
         AdminFactory::new()
             ->withAttributes([
                 'email' => 'admin@example.com',
@@ -48,7 +61,8 @@ class AppFixtures extends Fixture
                 // 'password' => 'adminpass',
             ])
             ->promoteRole('ROLE_ADMIN')
-            ->create();
+            ->create()
+        ;
         AdminFactory::new()
             ->withAttributes([
                 'email' => 'moderatoradmin@example.com',
@@ -56,7 +70,8 @@ class AppFixtures extends Fixture
                 // 'password' => 'adminpass',
             ])
             ->promoteRole('ROLE_MODERATOR')
-            ->create();
+            ->create()
+        ;
         AdminFactory::new()
             ->withAttributes([
                 'email' => 'tisha@symfonycasts.com',
@@ -64,15 +79,5 @@ class AppFixtures extends Fixture
                 'password' => '$2y$13$jeJsCrAHWizlS3gPM332.uMZ/YIFv0quIMOjrhehkBAxsdhVlemq6',
             ])
             ->create();
-    }
-
-    public function loadCategories(): void
-    {
-        $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
-        foreach ($categories as $category)
-            CategoryFactory::new()
-                ->withAttributes([
-                    'name' => $category,
-                ])->create();
     }
 }

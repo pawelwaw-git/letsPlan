@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
@@ -40,28 +42,34 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $this->scheduler->scheduleGoals();
+
         return $this->render('admin/index.html.twig', [
             'todays_finished_tasks' => $this->taskCalendarRepository->getTodaysFinishedTasksWithGoals(),
             'todays_unfinished_tasks' => $this->taskCalendarRepository->getTodaysUnfinishedTasksWithGoals(),
-            'chart_last_7days' => $this->createChartForLastTasks("- 7 days"),
-            'chart_last_month' => $this->createChartForLastTasks("- 1 month"),
+            'chart_last_7days' => $this->createChartForLastTasks('- 7 days'),
+            'chart_last_month' => $this->createChartForLastTasks('- 1 month'),
         ]);
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Let\' Plan');
+            ->setTitle('Let\' Plan')
+        ;
     }
 
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', Category::class);
+
         yield MenuItem::linkToCrud('Goals', 'fas fa-dashboard', Goal::class);
+
         yield MenuItem::linkToCrud('Check Tasks', 'fas fa-tasks', TaskCalendar::class)
             ->setQueryParameter('filters[Date]', 'today')
-            ->setQueryParameter('filters[isDone]', '0');
+            ->setQueryParameter('filters[isDone]', '0')
+        ;
     }
 
     public function configureAssets(): Assets
@@ -78,6 +86,7 @@ class DashboardController extends AbstractDashboardController
                 'datasets' => $dataset,
             ]
         );
+
         return $chart;
     }
 }

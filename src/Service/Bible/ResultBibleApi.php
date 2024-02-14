@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Service\Bible;
+declare(strict_types=1);
 
-use App\Entity\BibleQuote;
-use App\Repository\BibleQuoteRepository;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+namespace App\Service\Bible;
 
 class ResultBibleApi
 {
@@ -20,17 +17,18 @@ class ResultBibleApi
         $this->success = $success;
     }
 
-    public function getErrorMessage():string {
+    public function getErrorMessage(): string
+    {
         return $this->errorMessage;
     }
-    public function getContent():string {
+
+    public function getContent(): string
+    {
         return $this->content;
     }
 
-    public function isSuccessful():bool {
+    public function isSuccessful(): bool
+    {
         return $this->success;
     }
-
-   
-    
 }

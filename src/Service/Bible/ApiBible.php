@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Bible;
 
-use App\Entity\BibleQuote;
-use App\Repository\BibleQuoteRepository;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -21,12 +21,14 @@ class ApiBible
 
     public function createChapterVerseLink(string $BibleId, string $chapterVerse): void
     {
-        $this->apiLink = 'https://api.scripture.api.bible/v1/bibles/' .  $BibleId . '/verses/' . $chapterVerse;
+        $this->apiLink = 'https://api.scripture.api.bible/v1/bibles/'.$BibleId.'/verses/'.$chapterVerse;
     }
 
     public function call(): ResultBibleApi
     {
-        if ($this->apiLink == '') return new ResultBibleApi('', 'Api link wasn\'t set', false);
+        if ($this->apiLink == '') {
+            return new ResultBibleApi('', 'Api link wasn\'t set', false);
+        }
         $response = $this->client->request(
             'GET',
             $this->apiLink,
@@ -41,13 +43,13 @@ class ApiBible
             $data = $response->toArray();
             if ($data['data']['content']) {
                 return new ResultBibleApi($data['data']['content'], '', true);
-            } else {
-                return new ResultBibleApi('', 'No Content', false);
             }
-        } else {
-            // this should more specific
-            return new ResultBibleApi('', 'I can\'t reach API.BIBLE', false);
+
+            return new ResultBibleApi('', 'No Content', false);
         }
+
+        // this should more specific
+        return new ResultBibleApi('', 'I can\'t reach API.BIBLE', false);
     }
 
     public function getApiKey(): string

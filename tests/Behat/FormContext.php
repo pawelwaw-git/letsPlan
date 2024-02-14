@@ -8,7 +8,6 @@ use App\Entity\Admin;
 use App\Entity\Category;
 use App\Repository\AdminRepository;
 use App\Repository\CategoryRepository;
-use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
@@ -45,14 +44,14 @@ final class FormContext extends MinkContext implements Context
     /** @BeforeFeature */
     public static function setupFeature(BeforeFeatureScope $scope): void
     {
-        shell_exec("php bin/console doctrine:database:create --env=test");
-        shell_exec("php bin/console doctrine:schema:create --env=test");
+        shell_exec('php bin/console doctrine:database:create --env=test');
+        shell_exec('php bin/console doctrine:schema:create --env=test');
     }
 
     /** @AfterFeature */
     public static function teardownFeature(AfterFeatureScope $scope): void
     {
-        shell_exec("php bin/console doctrine:database:drop --env=test --force");
+        shell_exec('php bin/console doctrine:database:drop --env=test --force');
     }
 
     /**
@@ -64,20 +63,7 @@ final class FormContext extends MinkContext implements Context
         if (!$user) {
             $user = $this->creteNewUser($email, $plaintextPassword);
         }
-        return $user;
-    }
 
-    private function creteNewUser(string $email, string $plaintextPassword): Admin
-    {
-        $user = new Admin();
-        $user->setEmail($email);
-        $user->setRoles(array('ROLE_ADMIN', 'ROLE_USER'));
-        $hashedPassword = $this->passwordHarsher->hashPassword(
-            $user,
-            $plaintextPassword
-        );
-        $user->setPassword($hashedPassword);
-        $this->userEntity->save($user, true);
         return $user;
     }
 
@@ -100,7 +86,7 @@ final class FormContext extends MinkContext implements Context
      */
     public function thereAreStandardTypesOfCategories(): void
     {
-        $categories = ['God', 'Health', 'Finance', 'Carrier','Hobby','Development'];
+        $categories = ['God', 'Health', 'Finance', 'Carrier', 'Hobby', 'Development'];
         foreach ($categories as $name) {
             $category = new Category();
             $category->setName($name);
@@ -132,7 +118,7 @@ final class FormContext extends MinkContext implements Context
      */
     public function iClickElementWithClass(string $cssSelectorClass): void
     {
-        $this->getSession()->getPage()->find('css', "." . $cssSelectorClass)->click();
+        $this->getSession()->getPage()->find('css', '.'.$cssSelectorClass)->click();
     }
 
     /**
@@ -142,5 +128,20 @@ final class FormContext extends MinkContext implements Context
     {
         $link = $this->router->generate('task_scheduler', [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION]);
         $this->visitPath($link);
+    }
+
+    private function creteNewUser(string $email, string $plaintextPassword): Admin
+    {
+        $user = new Admin();
+        $user->setEmail($email);
+        $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $hashedPassword = $this->passwordHarsher->hashPassword(
+            $user,
+            $plaintextPassword
+        );
+        $user->setPassword($hashedPassword);
+        $this->userEntity->save($user, true);
+
+        return $user;
     }
 }

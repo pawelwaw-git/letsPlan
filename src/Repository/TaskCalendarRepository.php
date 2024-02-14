@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\TaskCalendar;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,8 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<TaskCalendar>
  *
- * @method TaskCalendar|null find($id, $lockMode = null, $lockVersion = null)
- * @method TaskCalendar|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|TaskCalendar find($id, $lockMode = null, $lockVersion = null)
+ * @method null|TaskCalendar findOneBy(array $criteria, array $orderBy = null)
  * @method TaskCalendar[]    findAll()
  * @method TaskCalendar[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
@@ -60,7 +61,8 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->addSelect('g')
             ->orderBy('t.id', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     /**
@@ -75,14 +77,14 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->setParameter('isDone', false)
             ->orderBy('t.id', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
-
 
     /**
      * @return array<int, mixed>
      */
-    public function getStatsForPreviousTasks(DateTime $lastDay): array
+    public function getStatsForPreviousTasks(\DateTime $lastDay): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.Date >= :lastDay')
@@ -94,7 +96,8 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->orderBy('t.Date', 'ASC')
             ->select('count(t.id) as Quantity', 't.Date', 't.isDone')
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     public function getQuantityOfTasksTypes(string $period): int
@@ -105,7 +108,8 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->leftJoin('t.Goal', 'g')
             ->select('count(t.id) as Quantity')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getSingleScalarResult()
+        ;
     }
 
     /**
