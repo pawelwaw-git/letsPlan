@@ -73,7 +73,7 @@ class GoalScheduler
     {
         $lastScheduleDate = new \DateTime('today');
 
-        return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT))->setTime(0, 0, 0);
+        return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT))->setTime(0, 0);
     }
 
     private function getScheduledPeriod(Goal $goal): \DatePeriod
@@ -81,10 +81,10 @@ class GoalScheduler
         $repeatableType = $goal->getRepeatableType();
 
         $startDate = $repeatableType->getStartDate();
-        $startDate->setTime(0, 0, 0);
+        $startDate->setTime(0, 0);
         $finishDate = clone $startDate;
         $finishDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT));
-        $finishDate->setTime(0, 0, 0);
+        $finishDate->setTime(0, 0);
         if (is_null($goal->getLastDateSchedule())) {
             return new \DatePeriod($startDate, $repeatableType->getInterval(), $finishDate);
         }
