@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\GoalScheduler;
 
-use App\Contracts\IsScheduled;
-use App\Contracts\Repeatable;
 use App\Entity\Goal;
 use App\Entity\TaskCalendar;
 use App\Repeatable\RepeatableFactory;
@@ -29,12 +27,6 @@ class GoalScheduler
      */
     private array $goalsToSchedule;
 
-    /**
-     * @var IsScheduled|Repeatable
-     *                             TODO I need to fix code later
-     */
-    private $repeatableType;
-
     public function __construct(GoalRepository $goalRepository, TaskCalendarRepository $taskCalendarRepository, RequestStack $request)
     {
         $this->goalRepository = $goalRepository;
@@ -47,8 +39,7 @@ class GoalScheduler
         if ($this->isScheduleGoalsAllowed()) {
             $this->getGoalsToSchedule();
             foreach ($this->goalsToSchedule as $goal) {
-                $this->setRepeatableType($goal);
-                if ($this->isRepeatable()) {
+                if ($this->isRepeatable($goal)) {
                     $this->createTasksBasedOnPeriod($goal);
                 }
                 $this->saveData();
@@ -67,11 +58,6 @@ class GoalScheduler
     public function setPermissionToSchedule(bool $allowed = false): void
     {
         $this->isScheduleAllowed = $allowed;
-    }
-
-    private function setRepeatableType(Goal $goal): void
-    {
-        $this->repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
     }
 
     private function checkPermissionBasedOnRequestQuery(): void
@@ -93,21 +79,25 @@ class GoalScheduler
 
     private function getScheduledPeriod(Goal $goal): \DatePeriod
     {
-        $startDate = $this->repeatableType->getStartDate();
+        $repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
+
+        $startDate = $repeatableType->getStartDate();
         $startDate->setTime(0, 0, 0);
         $finishDate = clone $startDate;
         $finishDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT));
         $finishDate->setTime(0, 0, 0);
         if (is_null($goal->getLastDateSchedule())) {
-            return new \DatePeriod($startDate, $this->repeatableType->getInterval(), $finishDate);
+            return new \DatePeriod($startDate, $repeatableType->getInterval(), $finishDate);
         }
 
-        return new \DatePeriod($goal->getLastDateSchedule(), $this->repeatableType->getInterval(), $finishDate, 1);
+        return new \DatePeriod($goal->getLastDateSchedule(), $repeatableType->getInterval(), $finishDate, 1);
     }
 
-    private function isRepeatable(): bool
+    private function isRepeatable(Goal $goal): bool
     {
-        return $this->repeatableType->isScheduled();
+        $repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
+
+        return $repeatableType->isScheduled();
     }
 
     private function createTasksBasedOnPeriod(Goal $goal): void
