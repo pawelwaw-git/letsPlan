@@ -6,7 +6,6 @@ namespace App\Service\GoalScheduler;
 
 use App\Entity\Goal;
 use App\Entity\TaskCalendar;
-use App\Repeatable\RepeatableFactory;
 use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -79,7 +78,7 @@ class GoalScheduler
 
     private function getScheduledPeriod(Goal $goal): \DatePeriod
     {
-        $repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
+        $repeatableType = $goal->getRepeatableType();
 
         $startDate = $repeatableType->getStartDate();
         $startDate->setTime(0, 0, 0);
@@ -95,9 +94,7 @@ class GoalScheduler
 
     private function isRepeatable(Goal $goal): bool
     {
-        $repeatableType = RepeatableFactory::getSuitableRepeatableType($goal->getRepeatable());
-
-        return $repeatableType->isScheduled();
+        return $goal->getRepeatableType()->isScheduled();
     }
 
     private function createTasksBasedOnPeriod(Goal $goal): void
