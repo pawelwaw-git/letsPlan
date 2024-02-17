@@ -15,7 +15,7 @@ class RepeatableFactory
             RepeatableTypes::EveryWeek->value => new EveryWeekRepeatableType(),
             RepeatableTypes::EveryMonth->value => new EveryMonthRepeatableType(),
             RepeatableTypes::None->value => new NoneRepeatableType(),
-            default => new RepetableTypeException('No sutiable interval'),
+            default => new RepetableTypeException('No suitable interval'),
         };
     }
 }
