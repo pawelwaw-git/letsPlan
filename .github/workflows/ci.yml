@@ -38,7 +38,7 @@ jobs:
         compose-file: "./docker-compose.yml"
         down-flags: "--volumes"
         test-container: lets-plan-db
-        test-command: "make test"
+        test-command: "composer test"
 
 #    - name: Run test suite
 #      run: composer run-script test
