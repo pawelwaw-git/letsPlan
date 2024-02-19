@@ -19,10 +19,3 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        image: pawelwaw/docker-images:latest
-        run: |
-          composer validate --strict
-          composer install
-          npm install
-          npm run dev
