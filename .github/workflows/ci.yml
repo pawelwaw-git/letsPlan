@@ -16,11 +16,20 @@ jobs:
     container:
       image: pawelwaw/docker-images:latest
 
+
     steps:
     - uses: actions/checkout@v2
+      with:
+        image: pawelwaw/docker-images:latest
+        run: |
+          composer validate --strict
+          composer install
+          npm install
+          npm run dev
+          composer test
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+#    - name: Validate composer.json and composer.lock
+#      run: composer validate --strict
 #
 #    - name: Cache Composer packages
 #      id: composer-cache
@@ -31,8 +40,8 @@ jobs:
 #        restore-keys: |
 #          ${{ runner.os }}-php-
 #
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+#    - name: Install dependencies
+#      run: composer install --prefer-dist --no-progress
 
       # need checkout before using docker-compose-action
 #    - uses: adambirds/docker-compose-action@v1.3.0
@@ -42,5 +51,5 @@ jobs:
 #        test-container: lets-plan-db
 #        test-command: "composer test"
 
-    - name: Run test suite
-      run: composer test
+#    - name: Run test suite
+#      run: composer test
