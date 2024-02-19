@@ -26,30 +26,3 @@ jobs:
           composer install
           npm install
           npm run dev
-          composer test
-
-#    - name: Validate composer.json and composer.lock
-#      run: composer validate --strict
-#
-#    - name: Cache Composer packages
-#      id: composer-cache
-#      uses: actions/cache@v3
-#      with:
-#        path: vendor
-#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-#        restore-keys: |
-#          ${{ runner.os }}-php-
-#
-#    - name: Install dependencies
-#      run: composer install --prefer-dist --no-progress
-
-      # need checkout before using docker-compose-action
-#    - uses: adambirds/docker-compose-action@v1.3.0
-#      with:
-#        compose-file: "./docker-compose.yml"
-#        down-flags: "--volumes"
-#        test-container: lets-plan-db
-#        test-command: "composer test"
-
-#    - name: Run test suite
-#      run: composer test
