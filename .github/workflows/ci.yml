@@ -17,6 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: "install composer"
+        run: composer install
+      - name: Start stack
+        shell: bash
         run: |
-          composer install
+          docker-compose -f docker-compose.yml up -d
           docker ps
