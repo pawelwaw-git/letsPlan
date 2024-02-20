@@ -26,5 +26,4 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d
           docker ps
-          docker exec -it lets-plan-php bash
-          composer test
+          docker exec -it lets-plan-php composer test
