@@ -19,3 +19,4 @@ jobs:
           file: docker-compose.yml
           service: php
           command: composer test
+          workdir: /var/www/html
