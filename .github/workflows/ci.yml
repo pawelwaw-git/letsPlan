@@ -26,4 +26,5 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d
           docker ps
+          docker network ls
           docker exec -t lets-plan-php composer test
