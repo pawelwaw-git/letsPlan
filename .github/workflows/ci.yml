@@ -16,10 +16,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: "install composer"
-        run: composer install
+      - name: "install composer/npm"
+        run: |
+          composer install
+          npm install
+          npm run dev
       - name: Start stack
         shell: bash
         run: |
           docker-compose -f docker-compose.yml up -d
           docker ps
+          docker exec -it lets-plan-php bash
+          composer test
