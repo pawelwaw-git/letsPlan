@@ -29,6 +29,9 @@ jobs:
           docker ps
           docker network ls
           docker exec -t lets-plan-php ls -la
+#          docker exec -t lets-plan-php composer fix-cs
+#          docker exec -t lets-plan-php composer phpstan
           docker inspect lets-plan-db
-          docker inspect lets-plan-php
-#          docker exec -t lets-plan-php vendor/bin/behat
+          docker logs lets-plan-db
+#          docker inspect lets-plan-php
+          docker exec -t lets-plan-php vendor/bin/behat
