@@ -29,5 +29,5 @@ jobs:
           docker ps
           docker network ls
           docker exec -t lets-plan-php ls -la
-          docker inspect mysql | grep IPAddress
+          docker inspect lets-plan-db  | grep IPAddress
 #          docker exec -t lets-plan-php vendor/bin/behat
