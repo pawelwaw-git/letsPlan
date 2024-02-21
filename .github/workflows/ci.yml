@@ -24,13 +24,8 @@ jobs:
       - name: Start stack
         shell: bash
         run: |
-          docker-compose -f docker-compose.yml up --verbose -d
+          docker-compose -f docker-compose.yml up -d
           cp behat.yml.dist behat.yml
-          docker ps
-          docker network ls
-          docker exec -t lets-plan-php ls -la
           docker exec -t lets-plan-php bin/console doctrine:migrations:migrate
           docker exec -t lets-plan-php bin/console doctrine:fixtures:load
-          docker inspect lets-plan-db
-          docker logs lets-plan-db
           docker exec -t lets-plan-php vendor/bin/behat
