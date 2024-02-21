@@ -26,6 +26,4 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d
           cp behat.yml.dist behat.yml
-          docker exec -t lets-plan-php bin/console doctrine:migrations:migrate
-          docker exec -t lets-plan-php bin/console doctrine:fixtures:load
           docker exec -t lets-plan-php vendor/bin/behat
