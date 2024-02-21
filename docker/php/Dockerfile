@@ -98,3 +98,7 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 USER www
 
 WORKDIR /var/www/html
+
+EXPOSE 3306
+EXPOSE 33306
+EXPOSE 8080
