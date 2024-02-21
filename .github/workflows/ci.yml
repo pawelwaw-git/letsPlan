@@ -24,7 +24,7 @@ jobs:
       - name: Start stack
         shell: bash
         run: |
-          docker-compose -f docker-compose.yml up -d
+          docker-compose -f docker-compose.yml up --verbose -d
           cp behat.yml.dist behat.yml
           docker ps
           docker network ls
