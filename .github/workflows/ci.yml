@@ -29,8 +29,8 @@ jobs:
           docker ps
           docker network ls
           docker exec -t lets-plan-php ls -la
-          docker exec -t php bin/console doctrine:migrations:migrate
-          docker exec -t php bin/console doctrine:fixtures:load
+          docker exec -t lets-plan-php php bin/console doctrine:migrations:migrate
+          docker exec -t lets-plan-php php bin/console doctrine:fixtures:load
           docker inspect lets-plan-db
           docker logs lets-plan-db
           docker exec -t lets-plan-php vendor/bin/behat
