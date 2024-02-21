@@ -1,7 +1,5 @@
 {
     "type": "project",
-    "name": "pawelwaw/letsplan",
-    "description": "packages for letsPlan Project",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
