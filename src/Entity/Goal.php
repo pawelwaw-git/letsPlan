@@ -9,6 +9,7 @@ use App\Enum\RepeatableTypes;
 use App\Repeatable\RepeatableFactory;
 use App\Repeatable\RepeatableTypeException;
 use App\Repository\GoalRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +41,12 @@ class Goal
 
     #[ORM\Column]
     private ?bool $Active = false;
+
+    /**
+     * @var Collection<int, TaskCalendar>
+     */
+    #[ORM\OneToMany(mappedBy: 'Goal', targetEntity: TaskCalendar::class, cascade: ['remove'])]
+    private Collection $tasksCalendar;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $LastDateSchedule = null;
@@ -148,6 +155,22 @@ class Goal
         $this->LastDateSchedule = $LastDateSchedule;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, TaskCalendar>
+     */
+    public function getTasksCalendar(): Collection
+    {
+        return $this->tasksCalendar;
+    }
+
+    /**
+     * @param Collection<int, TaskCalendar> $tasks_calendar
+     */
+    public function setTasksCalendar(Collection $tasks_calendar): void
+    {
+        $this->tasksCalendar = $tasks_calendar;
     }
 
     /**
