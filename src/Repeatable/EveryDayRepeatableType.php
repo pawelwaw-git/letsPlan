@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repeatable;
 
-use App\Contracts\IsScheduled;
 use App\Contracts\Repeatable;
 
-class EveryDayRepeatableType implements IsScheduled, Repeatable
+class EveryDayRepeatableType implements Repeatable
 {
     public function __construct() {}
-
-    public function isScheduled(): bool
-    {
-        return true;
-    }
 
     public function getStartDate(): \DateTime
     {

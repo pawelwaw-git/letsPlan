@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repeatable\EveryDayRepeatableType;
-use App\Repeatable\EveryMonthRepeatableType;
-use App\Repeatable\EveryWeekRepeatableType;
-use App\Repeatable\NoneRepeatableType;
+use App\Contracts\Repeatable;
+use App\Enum\RepeatableTypes;
 use App\Repeatable\RepeatableFactory;
-use App\Repeatable\RepetableTypeException;
+use App\Repeatable\RepeatableTypeException;
 use App\Repository\GoalRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -152,8 +150,19 @@ class Goal
         return $this;
     }
 
-    public function getRepeatableType(): EveryDayRepeatableType|EveryMonthRepeatableType|EveryWeekRepeatableType|NoneRepeatableType|RepetableTypeException
-    {
+    /**
+     * @throws RepeatableTypeException
+     */
+    public function getRepeatableType(
+    ): Repeatable {
         return RepeatableFactory::getSuitableRepeatableType($this->Repeatable);
+    }
+
+    public function isPossibleToPlan(): bool
+    {
+        return match ($this->Repeatable) {
+            RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value => true,
+            default => false,
+        };
     }
 }

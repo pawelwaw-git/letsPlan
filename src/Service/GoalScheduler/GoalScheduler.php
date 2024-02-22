@@ -6,8 +6,10 @@ namespace App\Service\GoalScheduler;
 
 use App\Entity\Goal;
 use App\Entity\TaskCalendar;
+use App\Repeatable\RepeatableTypeException;
 use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class GoalScheduler
@@ -19,6 +21,8 @@ class GoalScheduler
     private GoalRepository $goalRepository;
     private TaskCalendarRepository $taskCalendarRepository;
     private RequestStack $request;
+    private LoggerInterface $logger;
+
     private bool $isScheduleAllowed = false;
 
     /**
@@ -26,11 +30,16 @@ class GoalScheduler
      */
     private array $goalsToSchedule;
 
-    public function __construct(GoalRepository $goalRepository, TaskCalendarRepository $taskCalendarRepository, RequestStack $request)
-    {
+    public function __construct(
+        GoalRepository $goalRepository,
+        TaskCalendarRepository $taskCalendarRepository,
+        RequestStack $request,
+        LoggerInterface $logger
+    ) {
         $this->goalRepository = $goalRepository;
         $this->taskCalendarRepository = $taskCalendarRepository;
         $this->request = $request;
+        $this->logger = $logger;
     }
 
     public function scheduleGoals(): void
@@ -38,10 +47,14 @@ class GoalScheduler
         if ($this->isScheduleGoalsAllowed()) {
             $this->getGoalsToSchedule();
             foreach ($this->goalsToSchedule as $goal) {
-                if ($this->isRepeatable($goal)) {
-                    $this->createTasksBasedOnPeriod($goal);
+                if ($goal->isPossibleToPlan()) {
+                    try {
+                        $this->createTasksBasedOnPeriod($goal);
+                        $this->saveData();
+                    } catch (RepeatableTypeException $e) {
+                        $this->logger->error($e->getMessage(), $e->getTrace());
+                    }
                 }
-                $this->saveData();
             }
         }
         $this->resetPermission();
@@ -76,6 +89,9 @@ class GoalScheduler
         return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT))->setTime(0, 0);
     }
 
+    /**
+     * @throws RepeatableTypeException
+     */
     private function getScheduledPeriod(Goal $goal): \DatePeriod
     {
         $repeatableType = $goal->getRepeatableType();
@@ -92,11 +108,9 @@ class GoalScheduler
         return new \DatePeriod($goal->getLastDateSchedule(), $repeatableType->getInterval(), $finishDate, 1);
     }
 
-    private function isRepeatable(Goal $goal): bool
-    {
-        return $goal->getRepeatableType()->isScheduled();
-    }
-
+    /**
+     * @throws RepeatableTypeException
+     */
     private function createTasksBasedOnPeriod(Goal $goal): void
     {
         $scheduledPeriod = $this->getScheduledPeriod($goal);
