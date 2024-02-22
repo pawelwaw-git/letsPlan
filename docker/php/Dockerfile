@@ -70,6 +70,9 @@ RUN docker-php-ext-install \
 # Install XDebug \
 RUN pecl install xdebug-3.2.1 && docker-php-ext-enable xdebug
 
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
+RUN sudo apt install symfony-cli
+
 RUN groupadd -g 1000 1000
 RUN useradd -u 1000 -ms /bin/bash -g 1000 www
 
