@@ -153,8 +153,8 @@ class Goal
     /**
      * @throws RepeatableTypeException
      */
-    public function getRepeatableType(
-    ): Repeatable {
+    public function getRepeatableType(): Repeatable
+    {
         return RepeatableFactory::getSuitableRepeatableType($this->Repeatable);
     }
 
