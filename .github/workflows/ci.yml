@@ -26,4 +26,6 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d --build
           cp behat.yml.dist behat.yml
+          mysql --host=127.0.0.1 --user=root --password="$(cat pass.test)"
+          show databases;
           docker exec -t lets-plan-php vendor/bin/behat
