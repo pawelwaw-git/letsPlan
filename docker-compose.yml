@@ -30,6 +30,8 @@ services:
         APACHE_RUN_GROUP: www-data
       networks:
         - my-network
+      depends_on:
+        - database
 
 networks:
   my-network:
