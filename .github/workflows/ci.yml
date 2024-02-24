@@ -26,6 +26,7 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d --build
           cp behat.yml.dist behat.yml
+          docker ps 
           mysql --host=127.0.0.1 --user=root --password="$(cat pass.test)"
           show databases;
           exit
