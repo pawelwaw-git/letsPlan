@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace App\Repeatable;
 
-use App\Contracts\IsScheduled;
 use App\Contracts\Repeatable;
 
-class EveryWeekRepeatableType implements IsScheduled, Repeatable
+class EveryWeekRepeatableType implements Repeatable
 {
-    public function isScheduled(): bool
-    {
-        return true;
-    }
-
     public function getStartDate(): \DateTime
     {
         $week = new \DateTime('today');
