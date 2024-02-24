@@ -28,6 +28,4 @@ jobs:
           cp behat.yml.dist behat.yml
           docker ps 
           mysql --host=127.0.0.1 --user=root --password="$(cat pass.test)"
-          show databases;
-          exit
           docker exec -t lets-plan-php vendor/bin/behat
