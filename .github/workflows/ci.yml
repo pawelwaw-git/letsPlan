@@ -26,11 +26,6 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d --build
           cp behat.yml.dist behat.yml
-          docker ps 
-          docker network ls
-          docker volume ls
-          docker inspect lets-plan-php
-          docker inspect lets-plan-db
           sleep 10
-          docker ps
           docker exec -t lets-plan-php vendor/bin/phpunit
+          docker exec -t lets-plan-php vendor/bin/behat
