@@ -31,3 +31,6 @@ jobs:
           docker volume ls
           docker inspect lets-plan-php
           docker inspect lets-plan-db
+          sleep 10
+          docker ps
+          docker exec -t lets-plan-php vendor/bin/phpunit
