@@ -48,7 +48,6 @@ class DeleteGoalTest extends KernelTestCase
         // WHEN
         $this->removeGoal($goal);
 
-        $result = $this->tribonacci([1,1,1],10);
         // THEN
         $this->goalIsNotExists($goal);
     }
@@ -72,17 +71,5 @@ class DeleteGoalTest extends KernelTestCase
     {
         $result = $this->goal_repository->findAll();
         $this->assertEmpty($result);
-    }
-
-    public function tribonacci($signature, $n) {
-        if ($n <= 3) {
-            return array_slice($signature, 0, $n);
-        }
-
-        $next_tribonnaci[] = array_sum(array_slice($signature,-3,3));
-        $next_signature = array_merge(array_slice($signature,-2,2), $next_tribonnaci);
-
-
-        return array_merge([$signature[0]],$this->tribonacci($next_signature,$n -1));
     }
 }
