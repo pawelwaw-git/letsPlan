@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Start container
+        shell: bash
+        run: |
+          docker-compose -f docker-compose.yml up -d --build
+          cp behat.yml.dist behat.yml
+      - name: "install composer/npm"
+        run: |
+          composer install
+          npm install
+          npm run dev
+      - name: Run fixer and phpstan
+        shell: bash
+        run: |
+          docker exec -t lets-plan-php composer phpstan
+          docker exec -t lets-plan-php composer check-cs
+      - name: Run Tests
+        shell: bash
+        run: |
+          docker exec -t lets-plan-php composer behat_test
+          docker exec -t lets-plan-php composer phunit_test
