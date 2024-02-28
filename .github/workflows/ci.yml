@@ -30,8 +30,9 @@ jobs:
         shell: bash
         run: |
           docker exec -t lets-plan-php composer phpstan
-          docker exec -t lets-plan-php composer fix-cs
+          docker exec -t lets-plan-php composer check-cs
       - name: Run Tests
         shell: bash
         run: |
-          docker exec -t lets-plan-php composer test
+          docker exec -t lets-plan-php composer behat_test
+          docker exec -t lets-plan-php composer phunit_test
