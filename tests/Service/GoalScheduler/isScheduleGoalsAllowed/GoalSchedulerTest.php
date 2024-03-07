@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service\GoalScheduler\ScheduleGoals;
+namespace App\Tests\Service\GoalScheduler\isScheduleGoalsAllowed;
 
 use App\Service\GoalScheduler\GoalScheduler;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
