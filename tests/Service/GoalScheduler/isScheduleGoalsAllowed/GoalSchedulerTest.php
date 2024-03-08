@@ -23,16 +23,36 @@ class GoalSchedulerTest extends KernelTestCase
         self::bootKernel();
     }
 
+    public function RequestDataProvider(): iterable
+    {
+        yield 'Schedule is allowed for valid params in request' => [
+            'params' => [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION],
+            'expected' => true,
+        ];
+
+        yield 'Schedule is not allowed for invalid params in request' => [
+            'params' => [GoalScheduler::QUERY_PARAMS => 'test'],
+            'expected' => false,
+        ];
+
+        yield 'Schedule is not allowed for empty params in request' => [
+            'params' => [],
+            'expected' => false,
+        ];
+    }
+
     /**
+     * @param array<string> $params
+     * @dataProvider RequestDataProvider
+     *
      * @test
+     *
      */
-    public function isScheduleGoalsAllowedForRequestWithValidParam(): void
+    public function isScheduleGoalsAllowed(array $params, bool $expected): void
     {
         // GIVEN
-        $request_stack = $this->mockValidParamRequest();
-
         $container = static::getContainer();
-
+        $request_stack = $this->createRequest($params);
         $container->set('request_stack', $request_stack);
 
         /**
@@ -44,55 +64,17 @@ class GoalSchedulerTest extends KernelTestCase
         $result = $goal_scheduler->isScheduleGoalsAllowed();
 
         // THEN
-        $this->assertTrue($result);
+        $this->assertSame($expected, $result);
     }
 
     /**
-     * @test
+     * @param array<string> $params
+     * @return RequestStack
      */
-    public function isScheduleGoalsNotAllowedForRequestWithWrongParam(): void
-    {
-        // GIVEN
-        $request_stack = $this->mockNotValidParamRequest();
-
-        $container = static::getContainer();
-
-        $container->set('request_stack', $request_stack);
-
-        /**
-         * @var GoalScheduler $goal_scheduler
-         */
-        $goal_scheduler = $container->get(GoalScheduler::class);
-
-        // WHEN
-        $result = $goal_scheduler->isScheduleGoalsAllowed();
-
-        // THEN
-        $this->assertFalse($result);
-    }
-
-    private function mockValidParamRequest(): RequestStack
+    private function createRequest(array $params): RequestStack
     {
         $request = new Request(
-            [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION],
-            [],
-            [],
-            [],
-            [],
-            [],
-            'response content'
-        );
-
-        $requestStack = new RequestStack();
-        $requestStack->push($request);
-
-        return $requestStack;
-    }
-
-    private function mockNotValidParamRequest(): RequestStack
-    {
-        $request = new Request(
-            [],
+            $params,
             [],
             [],
             [],
