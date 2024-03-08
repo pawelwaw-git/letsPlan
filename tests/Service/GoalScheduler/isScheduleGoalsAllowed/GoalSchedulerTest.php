@@ -23,6 +23,9 @@ class GoalSchedulerTest extends KernelTestCase
         self::bootKernel();
     }
 
+    /**
+     * @return array<string,array<string,bool>>
+     */
     public function RequestDataProvider(): iterable
     {
         yield 'Schedule is allowed for valid params in request' => [
@@ -43,10 +46,10 @@ class GoalSchedulerTest extends KernelTestCase
 
     /**
      * @param array<string> $params
+     *
      * @dataProvider RequestDataProvider
      *
      * @test
-     *
      */
     public function isScheduleGoalsAllowed(array $params, bool $expected): void
     {
@@ -69,7 +72,6 @@ class GoalSchedulerTest extends KernelTestCase
 
     /**
      * @param array<string> $params
-     * @return RequestStack
      */
     private function createRequest(array $params): RequestStack
     {
