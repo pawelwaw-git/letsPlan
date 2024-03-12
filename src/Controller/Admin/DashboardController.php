@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Entity\Goal;
 use App\Entity\TaskCalendar;
+use App\Repeatable\RepeatableTypeException;
 use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use App\Service\GoalScheduler\TaskChartDatasetGenerator;
@@ -14,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -21,6 +23,9 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class DashboardController extends AbstractDashboardController
 {
+    public const SCHEDULE_ACTION = 'schedule';
+    public const QUERY_PARAMS = 'goal_scheduler_param';
+
     private GoalScheduler $scheduler;
     private ChartBuilderInterface $chartBuilder;
     private TaskCalendarRepository $taskCalendarRepository;
@@ -41,7 +46,13 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $this->scheduler->scheduleGoals();
+        $request = Request::createFromGlobals();
+
+        $goalSchedulerParam = $request->query->get(self::QUERY_PARAMS);
+
+        if ($goalSchedulerParam === self::SCHEDULE_ACTION) {
+            $this->scheduler->scheduleGoals();
+        }
 
         return $this->render('admin/index.html.twig', [
             'todays_finished_tasks' => $this->taskCalendarRepository->getTodaysFinishedTasksWithGoals(),

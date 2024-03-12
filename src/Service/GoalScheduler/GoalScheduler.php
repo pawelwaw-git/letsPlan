@@ -25,11 +25,6 @@ class GoalScheduler
 
     private bool $isScheduleAllowed = false;
 
-    /**
-     * @var array<Goal>
-     */
-    private array $goalsToSchedule;
-
     public function __construct(
         GoalRepository $goalRepository,
         TaskCalendarRepository $taskCalendarRepository,
@@ -44,20 +39,19 @@ class GoalScheduler
 
     public function scheduleGoals(): void
     {
-        if ($this->isScheduleGoalsAllowed()) {
-            $this->getGoalsToSchedule();
-            foreach ($this->goalsToSchedule as $goal) {
-                if ($goal->isPossibleToPlan()) {
-                    try {
-                        $this->createTasksBasedOnPeriod($goal);
-                        $this->saveData();
-                    } catch (RepeatableTypeException $e) {
-                        $this->logger->error($e->getMessage(), $e->getTrace());
-                    }
+        $goalsToSchedule = $this->getGoalsToSchedule();
+
+        foreach ($goalsToSchedule as $goal) {
+            if ($goal->isPossibleToPlan()) {
+                try {
+                    $this->createTasksBasedOnPeriod($goal);
+                } catch (RepeatableTypeException $e) {
+                    $this->logger->error($e->getMessage(), $e->getTrace());
                 }
             }
         }
-        $this->resetPermission();
+
+        $this->saveData();
     }
 
     public function isScheduleGoalsAllowed(): bool
@@ -114,19 +108,25 @@ class GoalScheduler
     private function createTasksBasedOnPeriod(Goal $goal): void
     {
         $scheduledPeriod = $this->getScheduledPeriod($goal);
+
         foreach ($scheduledPeriod as $date) {
+            // TODO: Zamiast setterów wykorzystać konstruktor
             $task = new TaskCalendar();
             $task->setDate($date);
             $task->setIsDone(false);
             $task->setGoal($goal);
             $goal->setLastDateSchedule($date);
+
             $this->taskCalendarRepository->save($task);
         }
     }
 
-    private function getGoalsToSchedule(): void
+    /**
+     * @return Goal[]
+     */
+    private function getGoalsToSchedule(): array
     {
-        $this->goalsToSchedule = $this->goalRepository->findGoalsToSchedule($this->getLastScheduleDate());
+        return $this->goalRepository->findGoalsToSchedule($this->getLastScheduleDate());
     }
 
     private function resetPermission(): void

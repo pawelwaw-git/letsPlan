@@ -20,14 +20,4 @@ class HomepageController extends AbstractController
             'api_text' => $randomBibleText->getRandomBibleVerse(),
         ]);
     }
-
-    #[Route('/cron_task_schedule', name: 'task_scheduler')]
-    public function taskScheduler(GoalScheduler $scheduler): Response
-    {
-        $scheduler->scheduleGoals();
-
-        return $this->render('homepage/index.html.twig', [
-            'controller_name' => 'HomepageController',
-        ]);
-    }
 }

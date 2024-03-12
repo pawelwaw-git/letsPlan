@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\GoalScheduler\isScheduleGoalsAllowed;
 
+use App\Entity\Goal;
+use App\Repeatable\EveryDayRepeatableType;
+use App\Repository\GoalRepository;
+use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,80 +21,87 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @coversNothing
  */
-class GoalSchedulerTest extends KernelTestCase
+class GoalSchedulerTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
+   public function testIfGoalsAreScheduled(): void
+   {
+       $goal = $this->givenSchedulableGoal();
+       $taskCalendarRepository = $this->createTaskCalendarMock();
 
-        self::bootKernel();
-    }
+       $goalScheduler = $this->createGoalScheduler($goal, $taskCalendarRepository);
+
+       $this->thenTaskCalendarIsSaved($taskCalendarRepository);
+
+       $this->whenScheduleGoal($goalScheduler);
+
+       $this->thenGetLastScheduleIsUpdated($goal);
+   }
+
+   private function createGoalRepositoryMock(Goal $goal)
+   {
+       $goalRepository = $this->createMock(GoalRepository::class);
+
+       $goalRepository
+           ->method('findGoalsToSchedule')
+           ->willReturn([
+               $goal
+           ]);
+
+       return $goalRepository;
+   }
+
+   private function createGoalScheduler(Goal $goal, TaskCalendarRepository $taskCalendarRepository): GoalScheduler
+   {
+       $goalRepository = $this->createGoalRepositoryMock($goal);
+
+       $logger = $this->createMock(LoggerInterface::class);
+
+       $goalScheduler = new GoalScheduler(
+           $goalRepository,
+           $taskCalendarRepository,
+           $this->createMock(RequestStack::class),
+           $logger
+       );
+
+       return $goalScheduler;
+   }
+
+   private function givenSchedulableGoal(): Goal
+   {
+       $goal = new Goal();
+       $goal->setRepeatable(EveryDayRepeatableType::class);
+       $goal->setActive(true);
+
+       return $goal;
+   }
+
+   private function whenScheduleGoal(GoalScheduler $goalScheduler): void
+   {
+       $goalScheduler->scheduleGoals();
+   }
 
     /**
-     * @return array<string,array<string,bool>>
+     * @param TaskCalendarRepository|MockObject $taskCalendarRepository
+     * @return void
      */
-    public function RequestDataProvider(): iterable
-    {
-        yield 'Schedule is allowed for valid params in request' => [
-            'params' => [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION],
-            'expected' => true,
-        ];
+   private function thenTaskCalendarIsSaved(TaskCalendarRepository $taskCalendarRepository): void
+   {
+       $taskCalendarRepository
+           ->expects($this->once())
+           ->method('save');
+   }
 
-        yield 'Schedule is not allowed for invalid params in request' => [
-            'params' => [GoalScheduler::QUERY_PARAMS => 'test'],
-            'expected' => false,
-        ];
-
-        yield 'Schedule is not allowed for empty params in request' => [
-            'params' => [],
-            'expected' => false,
-        ];
-    }
+   private function thenGetLastScheduleIsUpdated(Goal $goal): void
+   {
+       $this->assertEquals(/* TODO: Dopisać expected value */, $goal->getLastDateSchedule());
+   }
 
     /**
-     * @param array<string> $params
-     *
-     * @dataProvider RequestDataProvider
-     *
-     * @test
+     * @return TaskCalendarRepository|(TaskCalendarRepository&object&MockObject)|(TaskCalendarRepository&MockObject)|(object&MockObject)|MockObject
      */
-    public function isScheduleGoalsAllowed(array $params, bool $expected): void
+    public function createTaskCalendarMock(): TaskCalendarRepository|MockObject|object
     {
-        // GIVEN
-        $container = static::getContainer();
-        $request_stack = $this->createRequest($params);
-        $container->set('request_stack', $request_stack);
-
-        /**
-         * @var GoalScheduler $goal_scheduler
-         */
-        $goal_scheduler = $container->get(GoalScheduler::class);
-
-        // WHEN
-        $result = $goal_scheduler->isScheduleGoalsAllowed();
-
-        // THEN
-        $this->assertSame($expected, $result);
-    }
-
-    /**
-     * @param array<string> $params
-     */
-    private function createRequest(array $params): RequestStack
-    {
-        $request = new Request(
-            $params,
-            [],
-            [],
-            [],
-            [],
-            [],
-            'response content'
-        );
-
-        $requestStack = new RequestStack();
-        $requestStack->push($request);
-
-        return $requestStack;
+        $taskCalendarRepository = $this->createMock(TaskCalendarRepository::class);
+        return $taskCalendarRepository;
     }
 }
