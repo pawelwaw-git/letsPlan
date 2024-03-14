@@ -4,6 +4,9 @@ phpstan:
 fix-cs:
 	composer fix-cs
 
-test:
+tests:
 	vendor/bin/phpunit
 	vendor/bin/behat
+
+build:
+	make fix-cs tests phpstan
