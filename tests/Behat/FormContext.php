@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
+use App\Controller\Admin\DashboardController;
 use App\Entity\Admin;
 use App\Entity\Category;
 use App\Repository\AdminRepository;
 use App\Repository\CategoryRepository;
-use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
@@ -126,7 +126,7 @@ final class FormContext extends MinkContext implements Context
      */
     public function iAmOnTaskSchedulerWithParams(): void
     {
-        $link = $this->router->generate('task_scheduler', [GoalScheduler::QUERY_PARAMS => GoalScheduler::SCHEDULE_ACTION]);
+        $link = $this->router->generate('task_scheduler', [DashboardController::QUERY_PARAMS => DashboardController::SCHEDULE_ACTION]);
         $this->visitPath($link);
     }
 

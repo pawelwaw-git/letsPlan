@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin\Filter;
 
 use App\Form\Type\Admin\DateCalendarFilterType;
+use Carbon\Carbon;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Filter\FilterInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -37,7 +38,7 @@ class DateCalendarFilter implements FilterInterface
             $queryBuilder->andWhere(
                 sprintf('%s.%s = :today', $filterDataDto->getEntityAlias(), $filterDataDto->getProperty())
             )
-                ->setParameter('today', (new \DateTime('today'))->format('Y-m-d'))
+                ->setParameter('today', Carbon::now()->format('Y-m-d'))
             ;
         }
     }

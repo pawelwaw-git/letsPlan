@@ -14,6 +14,8 @@ use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Carbon\Carbon;
+use Symfony\Component\Process\Process;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -89,13 +91,13 @@ final class TasksContext implements Context
         $this->goalRepository->flush();
     }
 
-    /**
-     * @Then there are planed :type tasks in db
-     */
-    public function thereArePlanedTasksInDb(?string $type, ?string $startDate): void
-    {
-        $this->thereArePlanedTasksInDbFromDate($type, $startDate);
-    }
+    //    /**
+    //     * @Then there are planed :type tasks in db
+    //     */
+    //    public function thereArePlanedTasksInDb(?string $type, ?string $startDate): void
+    //    {
+    //        $this->thereArePlanedTasksInDbFromDate($type, $startDate);
+    //    }
 
     /**
      * @Then there are planed :type tasks in db from date :startDate
@@ -139,15 +141,24 @@ final class TasksContext implements Context
     public function thereAreFollowingPlanedTasksInDb(TableNode $table): void
     {
         foreach ($table as $row) {
-            $this->thereArePlanedTasksInDb($row['goal_type'], $row['startDate']);
+            $expected_from_db = $this->taskCalendarRepository->getQuantityOfTasksTypes($row['goal_type']);
+            assertEquals($row['expected'], $expected_from_db);
         }
+    }
+
+    /**
+     * @When /^I run schedule Goal Command$/
+     */
+    public function iRunScheduleGoalCommand(): void
+    {
+        new Process(['app:goal-schedule']);
     }
 
     private function getQuantityOfPlannedDays(?\DateTime $startDate): \DateInterval
     {
-        $today = new \DateTime('today');
+        $today = Carbon::now();
         if ($startDate == null) {
-            $startDate = new \DateTime('today');
+            $startDate = Carbon::now();
         } else {
             $startDate->modify('+1 day');
         }

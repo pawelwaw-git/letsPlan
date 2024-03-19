@@ -7,7 +7,6 @@ namespace App\Controller\Admin;
 use App\Entity\Goal;
 use App\Enum\GoalTypes;
 use App\Enum\RepeatableTypes;
-use App\Service\GoalScheduler\GoalScheduler;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -48,7 +47,7 @@ class GoalCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $scheduleTasks = Action::new('Schedule Tasks')
-            ->linkToUrl('admin?'.GoalScheduler::QUERY_PARAMS.'='.GoalScheduler::SCHEDULE_ACTION)
+            ->linkToUrl('admin?'.DashboardController::QUERY_PARAMS.'='.DashboardController::SCHEDULE_ACTION)
             ->createAsGlobalAction()
         ;
         $actions->add(Crud::PAGE_INDEX, $scheduleTasks);
