@@ -54,7 +54,6 @@ final class GoalFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'Name' => self::faker()->word(),
             'Priority' => self::faker()->numberBetween(1, 20),
             'Category ' => CategoryFactory::random(),
