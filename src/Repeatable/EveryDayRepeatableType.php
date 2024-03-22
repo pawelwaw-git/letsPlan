@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repeatable;
 
 use App\Contracts\Repeatable;
+use Carbon\Carbon;
 
 class EveryDayRepeatableType implements Repeatable
 {
@@ -12,10 +13,7 @@ class EveryDayRepeatableType implements Repeatable
 
     public function getStartDate(): \DateTime
     {
-        $today = new \DateTime('today');
-        $today->setTime(0, 0, 0);
-
-        return $today;
+        return Carbon::now()->setTime(0, 0);
     }
 
     public function getInterval(): \DateInterval

@@ -5,6 +5,7 @@ Feature: Schedule Tasks
 
   Background:
     Given I am login as admin
+    And There is today "2024-02-21"
 
   Scenario: Create schedule by user with null date
     Given I am on "/admin?crudAction=index&crudControllerFqcn=App\Controller\Admin\GoalCrudController"
@@ -15,38 +16,29 @@ Feature: Schedule Tasks
       | every_week  | null     |
       | every_month | null     |
       | none        | null     |
-    When I request Schedule Tasks
-#    Then I should see "Welcome"
+    When I follow "Schedule Tasks"
+    Then I should see "Welcome"
     Then there are following planed tasks in db:
       | goal_type   | startDate | expected |
-      | every_day   | null      | 61       |
+      | every_day   | null      | 60       |
       | every_week  | null      | 9        |
       | every_month | null      | 2        |
       | none        | null      | 0        |
+
   Scenario: Create schedule by user with 1-12-2022 date
     Given I am on "/admin?crudAction=index&crudControllerFqcn=App\Controller\Admin\GoalCrudController"
     And there is no active Goals in db
     And there are following Goals with lastDates in db:
       | goal_type   | lastDate   |
-      | every_day   | 2022-12-01 |
-      | every_week  | 2022-12-01 |
-      | every_month | 2022-12-01 |
-      | none        | 2022-12-01 |
-    When I request Schedule Tasks
+      | every_day   | 2023-12-01 |
+      | every_week  | 2023-12-01 |
+      | every_month | 2023-12-01 |
+      | none        | 2023-12-01 |
+    When I follow "Schedule Tasks"
     Then I should see "Welcome"
     And there are following planed tasks in db:
       | goal_type   | startDate  | expected |
-      | every_day   | 2022-12-01 | 531      |
-      | every_week  | 2022-12-01 | 76       |
-      | every_month | 2022-12-01 | 17       |
-      | none        | 2022-12-01 | 0        |
-
-#   TODO this should be tested in other way -- to remove, change to command test not
-#  Scenario: Schedule task via Cron
-#    Given there is no active Goals in db
-#    And there is "every_week" Goal with  lastDate "2022-12-01" in db
-#    When I run schedule Goal Command
-#    Then I should see "Welcome"
-#    And there are following planed tasks in db:
-#      | goal_type   | startDate  | expected |
-#      | every_week  | 2022-12-01 | 76       |
+      | every_day   | 2023-12-01 | 141      |
+      | every_week  | 2023-12-01 | 20       |
+      | every_month | 2023-12-01 | 4        |
+      | none        | 2023-12-01 | 0        |

@@ -186,6 +186,6 @@ class Goal
         return match ($this->Repeatable) {
             RepeatableTypes::EveryDay->value, RepeatableTypes::EveryWeek->value, RepeatableTypes::EveryMonth->value => true,
             default => false,
-        };
+        } && $this->isActive();
     }
 }

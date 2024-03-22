@@ -11,13 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'ScheduleGoalCommand',
+    name: 'app:goal-schedule',
     description: 'command to schedule Active Goals',
 )]
 class ScheduleGoalCommand extends Command
 {
-    protected static $defaultName = 'app:goal-schedule';
-
     public function __construct(private readonly GoalScheduler $goal_scheduler)
     {
         parent::__construct(self::$defaultName);

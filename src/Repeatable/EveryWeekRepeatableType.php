@@ -5,18 +5,13 @@ declare(strict_types=1);
 namespace App\Repeatable;
 
 use App\Contracts\Repeatable;
+use Carbon\Carbon;
 
 class EveryWeekRepeatableType implements Repeatable
 {
     public function getStartDate(): \DateTime
     {
-        $week = new \DateTime('today');
-        while ($week->format('N') != 1) {
-            $week->modify('+1 day');
-        }
-        $week->setTime(0, 0, 0);
-
-        return $week;
+        return Carbon::now()->endOfWeek()->setTime(0, 0);
     }
 
     public function getInterval(): \DateInterval

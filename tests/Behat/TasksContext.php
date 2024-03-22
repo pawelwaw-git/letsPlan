@@ -32,8 +32,11 @@ final class TasksContext implements Context
 
     private GoalScheduler $goalScheduler;
 
-    public function __construct(TaskCalendarRepository $taskCalendarRepository, GoalRepository $goalRepository, GoalScheduler $goalScheduler)
-    {
+    public function __construct(
+        TaskCalendarRepository $taskCalendarRepository,
+        GoalRepository $goalRepository,
+        GoalScheduler $goalScheduler
+    ) {
         $this->taskCalendarRepository = $taskCalendarRepository;
         $this->goalRepository = $goalRepository;
         $this->goalScheduler = $goalScheduler;
@@ -91,14 +94,6 @@ final class TasksContext implements Context
         $this->goalRepository->flush();
     }
 
-    //    /**
-    //     * @Then there are planed :type tasks in db
-    //     */
-    //    public function thereArePlanedTasksInDb(?string $type, ?string $startDate): void
-    //    {
-    //        $this->thereArePlanedTasksInDbFromDate($type, $startDate);
-    //    }
-
     /**
      * @Then there are planed :type tasks in db from date :startDate
      */
@@ -152,6 +147,16 @@ final class TasksContext implements Context
     public function iRunScheduleGoalCommand(): void
     {
         new Process(['app:goal-schedule']);
+    }
+
+    /**
+     * @Given There is today :date
+     *
+     * @param mixed $date
+     */
+    public function thereIsToday($date): void
+    {
+        Carbon::setTestNow($date);
     }
 
     private function getQuantityOfPlannedDays(?\DateTime $startDate): \DateInterval
