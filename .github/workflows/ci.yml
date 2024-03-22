@@ -35,4 +35,4 @@ jobs:
         shell: bash
         run: |
           docker exec -t lets-plan-php composer behat_test
-          docker exec -t lets-plan-php composer phunit_test
+          docker exec -t lets-plan-php composer phpunit_test
