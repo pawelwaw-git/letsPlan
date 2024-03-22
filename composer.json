@@ -89,8 +89,8 @@
         "phpstan": "vendor/bin/phpstan",
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
-        "behat_tests": "vendor/bin/behat",
-        "phunit_tests": "vendor/bin/phpunit"
+        "behat_test": "vendor/bin/behat",
+        "phpunit_test": "vendor/bin/phpunit"
     },
     "conflict": {
         "symfony/symfony": "*"
