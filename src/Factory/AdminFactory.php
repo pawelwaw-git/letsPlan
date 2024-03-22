@@ -31,11 +31,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class AdminFactory extends ModelFactory
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function promoteRole(string $role): self
     {
         $defaults = $this->getDefaults();
@@ -62,9 +57,7 @@ final class AdminFactory extends ModelFactory
 
     protected function initialize(): self
     {
-        // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this;
-        // ->afterInstantiate(function(Admin $admin): void {})
     }
 
     protected static function getClass(): string

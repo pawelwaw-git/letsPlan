@@ -31,11 +31,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class CategoryFactory extends ModelFactory
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function getDefaults(): array
     {
         return [
@@ -45,9 +40,7 @@ final class CategoryFactory extends ModelFactory
 
     protected function initialize(): self
     {
-        // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this;
-        // ->afterInstantiate(function(Category $category): void {})
     }
 
     protected static function getClass(): string

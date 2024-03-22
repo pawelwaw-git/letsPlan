@@ -26,6 +26,13 @@ class TaskCalendar
     #[ORM\Column]
     private ?bool $isDone = false;
 
+    public function __construct(?\DateTimeInterface $Date, bool $isDone, Goal $Goal)
+    {
+        $this->Date = $Date;
+        $this->isDone = $isDone;
+        $this->Goal = $Goal;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

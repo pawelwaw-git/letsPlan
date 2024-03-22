@@ -66,9 +66,7 @@ final class GoalFactory extends ModelFactory
 
     protected function initialize(): self
     {
-        // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this;
-        // ->afterInstantiate(function(Goal $goal): void {})
     }
 
     protected static function getClass(): string

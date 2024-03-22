@@ -78,11 +78,7 @@ class GoalScheduler
     {
         $scheduledPeriod = $this->getScheduledPeriod($goal);
         foreach ($scheduledPeriod as $date) {
-            // TODO change to constructor
-            $task = new TaskCalendar();
-            $task->setDate($date);
-            $task->setIsDone(false);
-            $task->setGoal($goal);
+            $task = new TaskCalendar($date, false, $goal);
             $this->taskCalendarRepository->save($task);
         }
 
