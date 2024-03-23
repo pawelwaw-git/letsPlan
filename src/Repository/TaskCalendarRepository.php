@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\TaskCalendar;
+use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
@@ -55,7 +56,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.Date = :today')
             ->andWhere('t.isDone = :isDone')
-            ->setParameter('today', new \DateTime('today'))
+            ->setParameter('today', Carbon::now())
             ->setParameter('isDone', true)
             ->leftJoin('t.Goal', 'g')
             ->addSelect('g')
@@ -73,7 +74,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.Date = :today')
             ->andWhere('t.isDone = :isDone')
-            ->setParameter('today', new \DateTime('today'))
+            ->setParameter('today', Carbon::now())
             ->setParameter('isDone', false)
             ->orderBy('t.id', 'ASC')
             ->getQuery()
@@ -90,7 +91,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->andWhere('t.Date >= :lastDay')
             ->andWhere('t.Date <= :now')
             ->setParameter('lastDay', $lastDay)
-            ->setParameter('now', new \DateTime('now'))
+            ->setParameter('now', Carbon::now())
             ->addGroupBy('t.Date')
             ->addGroupBy('t.isDone')
             ->orderBy('t.Date', 'ASC')

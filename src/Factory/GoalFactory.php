@@ -33,13 +33,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class GoalFactory extends ModelFactory
 {
-    public function __construct()
-    {
-        parent::__construct();
-
-        // TODO inject services if required (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services)
-    }
-
     /**
      * @return array<string, string>
      */
@@ -61,7 +54,6 @@ final class GoalFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'Name' => self::faker()->word(),
             'Priority' => self::faker()->numberBetween(1, 20),
             'Category ' => CategoryFactory::random(),
@@ -74,9 +66,7 @@ final class GoalFactory extends ModelFactory
 
     protected function initialize(): self
     {
-        // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this;
-        // ->afterInstantiate(function(Goal $goal): void {})
     }
 
     protected static function getClass(): string

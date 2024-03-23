@@ -31,26 +31,16 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class CategoryFactory extends ModelFactory
 {
-    public function __construct()
-    {
-        parent::__construct();
-
-        // TODO inject services if required (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services)
-    }
-
     protected function getDefaults(): array
     {
         return [
-            // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'Name' => self::faker()->text(),
         ];
     }
 
     protected function initialize(): self
     {
-        // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this;
-        // ->afterInstantiate(function(Category $category): void {})
     }
 
     protected static function getClass(): string

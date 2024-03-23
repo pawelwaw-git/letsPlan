@@ -9,82 +9,45 @@ use App\Entity\TaskCalendar;
 use App\Repeatable\RepeatableTypeException;
 use App\Repository\GoalRepository;
 use App\Repository\TaskCalendarRepository;
+use Carbon\Carbon;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class GoalScheduler
 {
-    public const SCHEDULE_ACTION = 'schedule';
-    public const QUERY_PARAMS = 'goal_scheduler_param';
     public const SCHEDULE_DATE_INTERVAL_TEXT = 'P2M';
 
     private GoalRepository $goalRepository;
     private TaskCalendarRepository $taskCalendarRepository;
-    private RequestStack $request;
     private LoggerInterface $logger;
-
-    private bool $isScheduleAllowed = false;
-
-    /**
-     * @var array<Goal>
-     */
-    private array $goalsToSchedule;
 
     public function __construct(
         GoalRepository $goalRepository,
         TaskCalendarRepository $taskCalendarRepository,
-        RequestStack $request,
         LoggerInterface $logger
     ) {
         $this->goalRepository = $goalRepository;
         $this->taskCalendarRepository = $taskCalendarRepository;
-        $this->request = $request;
         $this->logger = $logger;
     }
 
     public function scheduleGoals(): void
     {
-        if ($this->isScheduleGoalsAllowed()) {
-            $this->getGoalsToSchedule();
-            foreach ($this->goalsToSchedule as $goal) {
-                if ($goal->isPossibleToPlan()) {
-                    try {
-                        $this->createTasksBasedOnPeriod($goal);
-                        $this->saveData();
-                    } catch (RepeatableTypeException $e) {
-                        $this->logger->error($e->getMessage(), $e->getTrace());
-                    }
+        $goalsToSchedule = $this->getGoalsToSchedule();
+        foreach ($goalsToSchedule as $goal) {
+            if ($goal->isPossibleToPlan()) {
+                try {
+                    $this->createTasksBasedOnPeriod($goal);
+                } catch (RepeatableTypeException $e) {
+                    $this->logger->error($e->getMessage(), $e->getTrace());
                 }
             }
-        }
-        $this->resetPermission();
-    }
-
-    public function isScheduleGoalsAllowed(): bool
-    {
-        $this->checkPermissionBasedOnRequestQuery();
-
-        return $this->isScheduleAllowed;
-    }
-
-    public function setPermissionToSchedule(bool $allowed = false): void
-    {
-        $this->isScheduleAllowed = $allowed;
-    }
-
-    private function checkPermissionBasedOnRequestQuery(): void
-    {
-        if ($this->request->getCurrentRequest()) {
-            $inputParams = $this->request->getCurrentRequest()->query->get(self::QUERY_PARAMS);
-            if ($inputParams === self::SCHEDULE_ACTION) {
-                $this->isScheduleAllowed = true;
-            }
+            $this->saveData();
         }
     }
 
     private function getLastScheduleDate(): \DateTime
     {
-        $lastScheduleDate = new \DateTime('today');
+        $lastScheduleDate = Carbon::now();
 
         return $lastScheduleDate->add(new \DateInterval(self::SCHEDULE_DATE_INTERVAL_TEXT))->setTime(0, 0);
     }
@@ -115,23 +78,19 @@ class GoalScheduler
     {
         $scheduledPeriod = $this->getScheduledPeriod($goal);
         foreach ($scheduledPeriod as $date) {
-            $task = new TaskCalendar();
-            $task->setDate($date);
-            $task->setIsDone(false);
-            $task->setGoal($goal);
-            $goal->setLastDateSchedule($date);
+            $task = new TaskCalendar($date, false, $goal);
             $this->taskCalendarRepository->save($task);
         }
+
+        $goal->setLastDateSchedule($scheduledPeriod->getEndDate());
     }
 
-    private function getGoalsToSchedule(): void
+    /**
+     * @return Goal[]
+     */
+    private function getGoalsToSchedule(): array
     {
-        $this->goalsToSchedule = $this->goalRepository->findGoalsToSchedule($this->getLastScheduleDate());
-    }
-
-    private function resetPermission(): void
-    {
-        $this->isScheduleAllowed = false;
+        return $this->goalRepository->findGoalsToSchedule($this->getLastScheduleDate());
     }
 
     private function saveData(): void

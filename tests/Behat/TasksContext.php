@@ -14,6 +14,8 @@ use App\Repository\TaskCalendarRepository;
 use App\Service\GoalScheduler\GoalScheduler;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Carbon\Carbon;
+use Symfony\Component\Process\Process;
 
 use function PHPUnit\Framework\assertEquals;
 
@@ -30,8 +32,11 @@ final class TasksContext implements Context
 
     private GoalScheduler $goalScheduler;
 
-    public function __construct(TaskCalendarRepository $taskCalendarRepository, GoalRepository $goalRepository, GoalScheduler $goalScheduler)
-    {
+    public function __construct(
+        TaskCalendarRepository $taskCalendarRepository,
+        GoalRepository $goalRepository,
+        GoalScheduler $goalScheduler
+    ) {
         $this->taskCalendarRepository = $taskCalendarRepository;
         $this->goalRepository = $goalRepository;
         $this->goalScheduler = $goalScheduler;
@@ -90,14 +95,6 @@ final class TasksContext implements Context
     }
 
     /**
-     * @Then there are planed :type tasks in db
-     */
-    public function thereArePlanedTasksInDb(?string $type, ?string $startDate): void
-    {
-        $this->thereArePlanedTasksInDbFromDate($type, $startDate);
-    }
-
-    /**
      * @Then there are planed :type tasks in db from date :startDate
      */
     public function thereArePlanedTasksInDbFromDate(?string $type, ?string $startDate = null): void
@@ -139,15 +136,34 @@ final class TasksContext implements Context
     public function thereAreFollowingPlanedTasksInDb(TableNode $table): void
     {
         foreach ($table as $row) {
-            $this->thereArePlanedTasksInDb($row['goal_type'], $row['startDate']);
+            $expected_from_db = $this->taskCalendarRepository->getQuantityOfTasksTypes($row['goal_type']);
+            assertEquals($row['expected'], $expected_from_db);
         }
+    }
+
+    /**
+     * @When /^I run schedule Goal Command$/
+     */
+    public function iRunScheduleGoalCommand(): void
+    {
+        new Process(['app:goal-schedule']);
+    }
+
+    /**
+     * @Given There is today :date
+     *
+     * @param mixed $date
+     */
+    public function thereIsToday($date): void
+    {
+        Carbon::setTestNow($date);
     }
 
     private function getQuantityOfPlannedDays(?\DateTime $startDate): \DateInterval
     {
-        $today = new \DateTime('today');
+        $today = Carbon::now();
         if ($startDate == null) {
-            $startDate = new \DateTime('today');
+            $startDate = Carbon::now();
         } else {
             $startDate->modify('+1 day');
         }

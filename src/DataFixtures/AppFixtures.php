@@ -27,7 +27,6 @@ class AppFixtures extends Fixture
         GoalFactory::createMany(25, function () {
             return GoalFactory::getProperTypeAndRepeatableValues();
         });
-        $this->goalScheduler->setPermissionToSchedule(true);
         $this->goalScheduler->scheduleGoals();
         $manager->flush();
     }
