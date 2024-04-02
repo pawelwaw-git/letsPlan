@@ -35,10 +35,6 @@ class TaskController extends AbstractController
         return new JsonResponse([]);
     }
 
-    //    show list of tasks with pagination and filters - method list() probably
-
-    //    TODO zerknać dalej i dokończyć jeszcze to api.
-
     //    public function list(): JsonResponse
     //    {
     //        // TODO implement
@@ -50,13 +46,4 @@ class TaskController extends AbstractController
     // //        TODO implement
     //    }
     //
-    //    public function create(): JsonResponse
-    //    {
-    //
-    //    }
-    //
-    //    public function delete(): JsonResponse
-    //    {
-    //
-    //    }
 }
