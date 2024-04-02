@@ -8,6 +8,7 @@ use App\Entity\TaskCalendar;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
+use ArrayIterator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -39,11 +40,13 @@ class TaskControllerTest extends WebTestCase
 
     /**
      * @dataProvider UpdateInvalidPayloadProvider
+     * @param array<string, mixed> $payload
      *
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws \JsonException
      */
     public function testUpdateInvalidTaskCalendar(array $payload): void
     {
@@ -56,13 +59,16 @@ class TaskControllerTest extends WebTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            json_encode($payload)
+            json_encode($payload, JSON_THROW_ON_ERROR)
         );
         $response = $client->getResponse();
 
         $this->assertEquals(400, $response->getStatusCode());
     }
 
+    /**
+     * @return iterable<array<string, mixed>>
+     */
     public function UpdateStatusValidPayloadProvider(): iterable
     {
         yield 'status true' => [
@@ -80,11 +86,13 @@ class TaskControllerTest extends WebTestCase
 
     /**
      * @dataProvider UpdateStatusValidPayloadProvider
+     * @param array<string, mixed> $payload
      *
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws \JsonException
      */
     public function testUpdateIsTaskCalendarStatusUpdated(array $payload): void
     {
@@ -110,6 +118,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSame($payload['status'], $task->isIsDone());
     }
 
+    /**
+     * @return iterable<array<string, mixed>>
+     */
     public function UpdateInvalidPayloadProvider(): iterable
     {
         yield 'empty payload' => [
