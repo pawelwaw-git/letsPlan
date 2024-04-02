@@ -142,14 +142,14 @@ class TaskControllerTest extends WebTestCase
             ],
         ];
 
-//        yield 'status is not boolean' => [
-//            'payload' => [
-//                'id' => 2,
-//                //               TODO this test failing => not sure this should be allowed
-//                //               problem is that I dont know how to use Json Strict deserializer, not strict map string to bool before assertion
-//                'status' => 'false_string',
-//            ],
-//        ];
+        //        yield 'status is not boolean' => [
+        //            'payload' => [
+        //                'id' => 2,
+        //                //               TODO this test failing => not sure this should be allowed
+        //                //               problem is that I dont know how to use Json Strict deserializer, not strict map string to bool before assertion
+        //                'status' => 'false_string',
+        //            ],
+        //        ];
 
         yield 'status is empty' => [
             'payload' => [
