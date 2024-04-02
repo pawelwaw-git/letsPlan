@@ -22,23 +22,8 @@ use Zenstruck\Foundry\Proxy;
  */
 class TaskControllerTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        shell_exec('php bin/console doctrine:database:create --env=test');
-        shell_exec('php bin/console doctrine:schema:create --env=test');
-    }
-
-    protected function tearDown(): void
-    {
-        shell_exec('php bin/console doctrine:database:drop --env=test');
-
-        parent::tearDown();
-    }
-
     /**
-     * @dataProvider UpdateInvalidPayloadProvider
+     * @dataProvider InvalidPayloadStatusProvider
      *
      * @param array<string, mixed> $payload
      *
@@ -48,14 +33,14 @@ class TaskControllerTest extends WebTestCase
      * @throws TransportExceptionInterface
      * @throws \JsonException
      */
-    public function testUpdateInvalidTaskCalendar(array $payload): void
+    public function testUpdateInvalidStatus(array $payload): void
     {
         $client = static::createClient();
         $task = $this->createTask();
 
         $client->request(
             'PATCH',
-            'tasks',
+            'tasks/'.$task->getId(),
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -64,6 +49,94 @@ class TaskControllerTest extends WebTestCase
         $response = $client->getResponse();
 
         $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    /**
+     * @dataProvider TaskInvalidIdProvider
+     *
+     * @param mixed $id
+     *
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \JsonException
+     */
+    public function testUpdateInvalidId($id): void
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'PATCH',
+            'tasks/'.$id,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['status' => false], JSON_THROW_ON_ERROR)
+        );
+        $response = $client->getResponse();
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \JsonException
+     */
+    public function testUpdateNotFoundTask(): void
+    {
+        $client = static::createClient();
+        $task = $this->createTask();
+
+        $client->request(
+            'PATCH',
+            'tasks/'.$task->getId() + 1,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['status' => false], JSON_THROW_ON_ERROR)
+        );
+        $response = $client->getResponse();
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * @dataProvider UpdateStatusValidPayloadProvider
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \JsonException
+     */
+    public function testUpdateStatusUpdated(array $payload): void
+    {
+        $client = static::createClient();
+        $task = $this->createTask();
+
+        $client->request(
+            'PATCH',
+            'tasks/'.$task->getId(),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(
+                array_merge([
+                    'id' => $task->getId(),
+                ], $payload),
+                JSON_THROW_ON_ERROR
+            )
+        );
+        $response = $client->getResponse();
+
+        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertSame($payload['status'], $task->isIsDone());
     }
 
     /**
@@ -85,83 +158,34 @@ class TaskControllerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider UpdateStatusValidPayloadProvider
-     *
-     * @param array<string, mixed> $payload
-     *
-     * @throws ClientExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
-     * @throws \JsonException
-     */
-    public function testUpdateIsTaskCalendarStatusUpdated(array $payload): void
-    {
-        $client = static::createClient();
-        $task = $this->createTask();
-
-        $client->request(
-            'PATCH',
-            'tasks',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode(
-                array_merge([
-                    'id' => $task->getId(),
-                ], $payload),
-                JSON_THROW_ON_ERROR
-            )
-        );
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertSame($payload['status'], $task->isIsDone());
-    }
-
-    /**
      * @return iterable<array<string, mixed>>
      */
-    public function UpdateInvalidPayloadProvider(): iterable
+    public function InvalidPayloadStatusProvider(): iterable
     {
-        yield 'empty payload' => [
-            'payload' => [],
-        ];
-
-        yield 'id below zero' => [
+        yield 'status is not boolean' => [
             'payload' => [
-                'id' => -3,
-                'status' => true,
+                'status' => 'false_string',
             ],
         ];
-
-        yield 'id is not int' => [
-            'payload' => [
-                'id' => 0.3,
-                'status' => true,
-            ],
-        ];
-
-        //        yield 'status is not boolean' => [
-        //            'payload' => [
-        //                'id' => 2,
-        //                //               TODO this test failing => not sure this should be allowed
-        //                //               problem is that I dont know how to use Json Strict deserializer, not strict map string to bool before assertion
-        //                'status' => 'false_string',
-        //            ],
-        //        ];
 
         yield 'status is empty' => [
-            'payload' => [
-                'id' => 2,
-            ],
+            'payload' => [],
         ];
+    }
+
+    public function TaskInvalidIdProvider(): iterable
+    {
+        yield 'id below zero' => ['id' => '-3'];
+
+        yield 'id is not int' => ['id' => '0.3'];
+
+        yield 'id is not zero' => ['id' => '0'];
     }
 
     /**
      * @throws \Exception
      */
-    public function getRandomBoolValue(): bool
+    private function getRandomBoolValue(): bool
     {
         return (bool) (random_int(1, 1000) % 2);
     }

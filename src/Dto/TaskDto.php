@@ -9,11 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TaskDto
 {
     public function __construct(
-        #[Assert\NotBlank()]
-        #[Assert\Positive()]
-        public readonly int $id,
-        #[Assert\NotNull()]
-        #[Assert\Type(type: 'boolean')]
+        #[Assert\NotNull]
+        //        #[Assert\Regex("/['\"]?true|false['\"]?/i")]
+        #[Assert\Type(type: 'bool')]
         public readonly bool $status
     ) {}
 }
