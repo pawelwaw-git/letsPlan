@@ -8,7 +8,6 @@ use App\Entity\TaskCalendar;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
-use ArrayIterator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -40,6 +39,7 @@ class TaskControllerTest extends WebTestCase
 
     /**
      * @dataProvider UpdateInvalidPayloadProvider
+     *
      * @param array<string, mixed> $payload
      *
      * @throws ClientExceptionInterface
@@ -86,6 +86,7 @@ class TaskControllerTest extends WebTestCase
 
     /**
      * @dataProvider UpdateStatusValidPayloadProvider
+     *
      * @param array<string, mixed> $payload
      *
      * @throws ClientExceptionInterface
