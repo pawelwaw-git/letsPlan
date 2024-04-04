@@ -17,7 +17,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class TaskController extends AbstractController
 {
     #[Route('/tasks/{id}', name: 'update_task', requirements: ['id' => '^[1-9][0-9]*$'], methods: ['PATCH'])]
-    #[ParamConverter('task', options: ['strict' => true], converter: 'fos_rest.request_body')]
+    #[ParamConverter('task', converter: 'fos_rest.request_body')]
     public function update(
         int $id,
         TaskDto $task,

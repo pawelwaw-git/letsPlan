@@ -10,7 +10,6 @@ class TaskDto
 {
     public function __construct(
         #[Assert\NotNull]
-        //        #[Assert\Regex("/['\"]?true|false['\"]?/i")]
         #[Assert\Type(type: 'bool')]
         public readonly bool $status
     ) {}

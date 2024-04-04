@@ -32,6 +32,7 @@ class TaskControllerTest extends WebTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws \JsonException
+     * @throws \Exception
      */
     public function testUpdateInvalidStatus(array $payload): void
     {
@@ -54,15 +55,13 @@ class TaskControllerTest extends WebTestCase
     /**
      * @dataProvider TaskInvalidIdProvider
      *
-     * @param mixed $id
-     *
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws \JsonException
      */
-    public function testUpdateInvalidId($id): void
+    public function testUpdateInvalidId(string $id): void
     {
         $client = static::createClient();
 
@@ -85,6 +84,7 @@ class TaskControllerTest extends WebTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws \JsonException
+     * @throws \Exception
      */
     public function testUpdateNotFoundTask(): void
     {
@@ -93,7 +93,7 @@ class TaskControllerTest extends WebTestCase
 
         $client->request(
             'PATCH',
-            'tasks/'.$task->getId() + 1,
+            'tasks/'.($task->getId() + 1),
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -114,6 +114,7 @@ class TaskControllerTest extends WebTestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws \JsonException
+     * @throws \Exception
      */
     public function testUpdateStatusUpdated(array $payload): void
     {
@@ -144,15 +145,15 @@ class TaskControllerTest extends WebTestCase
      */
     public function UpdateStatusValidPayloadProvider(): iterable
     {
-        yield 'status true' => [
+        yield 'status false not string' => [
             'payload' => [
-                'status' => true,
+                'status' => false,
             ],
         ];
 
-        yield 'status false' => [
+        yield 'status true not string' => [
             'payload' => [
-                'status' => false,
+                'status' => true,
             ],
         ];
     }
@@ -168,11 +169,20 @@ class TaskControllerTest extends WebTestCase
             ],
         ];
 
+        yield 'status can not be string' => [
+            'payload' => [
+                'status' => 'false',
+            ],
+        ];
+
         yield 'status is empty' => [
             'payload' => [],
         ];
     }
 
+    /**
+     * @return iterable<array<string,string>>
+     */
     public function TaskInvalidIdProvider(): iterable
     {
         yield 'id below zero' => ['id' => '-3'];
