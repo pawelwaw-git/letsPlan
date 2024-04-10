@@ -15,21 +15,6 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class ScheduleGoalCommandTest extends KernelTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        shell_exec('php bin/console doctrine:database:create --env=test');
-        shell_exec('php bin/console doctrine:schema:create --env=test');
-    }
-
-    protected function tearDown(): void
-    {
-        shell_exec('php bin/console doctrine:database:drop --env=test');
-
-        parent::tearDown();
-    }
-
     public function testExecuteIsCommandSuccessful(): void
     {
         self::bootKernel();

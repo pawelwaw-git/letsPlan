@@ -1,11 +1,14 @@
 <?php
 
 declare(strict_types=1);
+
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle;
 use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
 use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use FOS\RestBundle\FOSRestBundle;
 use FriendsOfBehat\SymfonyExtension\Bundle\FriendsOfBehatSymfonyExtensionBundle;
+use JMS\SerializerBundle\JMSSerializerBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -39,4 +42,6 @@ return [
     ChartjsBundle::class => ['all' => true],
     WebpackEncoreBundle::class => ['all' => true],
     StimulusBundle::class => ['all' => true],
+    FOSRestBundle::class => ['all' => true],
+    JMSSerializerBundle::class => ['all' => true],
 ];

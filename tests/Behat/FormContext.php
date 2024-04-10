@@ -10,8 +10,6 @@ use App\Entity\Category;
 use App\Repository\AdminRepository;
 use App\Repository\CategoryRepository;
 use Behat\Behat\Context\Context;
-use Behat\Behat\Hook\Scope\AfterFeatureScope;
-use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\MinkExtension\Context\MinkContext;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -39,19 +37,6 @@ final class FormContext extends MinkContext implements Context
         $this->categoryEntity = $category;
         $this->passwordHarsher = $passwordHarsher;
         $this->router = $router;
-    }
-
-    /** @BeforeFeature */
-    public static function setupFeature(BeforeFeatureScope $scope): void
-    {
-        shell_exec('php bin/console doctrine:database:create --env=test');
-        shell_exec('php bin/console doctrine:schema:create --env=test');
-    }
-
-    /** @AfterFeature */
-    public static function teardownFeature(AfterFeatureScope $scope): void
-    {
-        shell_exec('php bin/console doctrine:database:drop --env=test --force');
     }
 
     /**
