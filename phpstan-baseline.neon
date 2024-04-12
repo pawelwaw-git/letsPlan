@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Method App\\\\Tests\\\\Controller\\\\Single\\\\TaskControllerTest\\:\\:createTask\\(\\) return type with generic class Zenstruck\\\\Foundry\\\\Proxy does not specify its types\\: TProxiedObject$#"
+			count: 1
+			path: tests/Integration/Controller/Single/TaskControllerTest.php
+
+		-
 			message: "#^Method App\\\\Tests\\\\Integration\\\\Controller\\\\Update\\\\TaskControllerTest\\:\\:createTask\\(\\) return type with generic class Zenstruck\\\\Foundry\\\\Proxy does not specify its types\\: TProxiedObject$#"
 			count: 1
 			path: tests/Integration/Controller/Update/TaskControllerTest.php

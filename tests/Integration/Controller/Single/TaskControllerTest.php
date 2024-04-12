@@ -1,16 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\Single;
 
-use App\Controller\TaskController;
 use App\Entity\TaskCalendar;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Proxy;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class TaskControllerTest extends WebTestCase
 {
     // valid request
@@ -24,7 +29,7 @@ class TaskControllerTest extends WebTestCase
         // WHEN
         $client->request(
             'GET',
-            'tasks/' . $task->getId()
+            'tasks/'.$task->getId()
         );
 
         // THEN
@@ -40,6 +45,37 @@ class TaskControllerTest extends WebTestCase
             ], JSON_THROW_ON_ERROR),
             $response->getContent()
         );
+    }
+
+    /**
+     * @dataProvider InvalidTaskDataProvider
+     */
+    public function testInvalidRequest(string $invalid_task): void
+    {
+        // GIVEN
+        $client = static::createClient();
+
+        // WHEN
+        $client->request(
+            'GET',
+            'tasks/'.$invalid_task
+        );
+
+        // THEN
+        $response = $client->getResponse();
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * @return iterable<array<int, string>>
+     */
+    public function InvalidTaskDataProvider(): iterable
+    {
+        yield 'invalid int' => ['3'];
+
+        yield 'negative value' => ['-3'];
+
+        yield 'string value' => ['some_string'];
     }
 
     /**
@@ -61,9 +97,4 @@ class TaskControllerTest extends WebTestCase
 
         return $task;
     }
-
-    // invalid request (path)
-
-    // get empty data
-
 }
