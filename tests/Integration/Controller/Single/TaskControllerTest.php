@@ -29,7 +29,7 @@ class TaskControllerTest extends WebTestCase
         // WHEN
         $client->request(
             'GET',
-            'tasks/'.$task->getId()
+            'tasks/' . $task->getId()
         );
 
         // THEN
@@ -58,7 +58,7 @@ class TaskControllerTest extends WebTestCase
         // WHEN
         $client->request(
             'GET',
-            'tasks/'.$invalid_task
+            'tasks/' . $invalid_task
         );
 
         // THEN
@@ -81,7 +81,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws \Exception
      */
-    private function createTask(): Proxy|TaskCalendar
+    private function createTask(): TaskCalendar
     {
         $category = CategoryFactory::createOne();
         $goal = GoalFactory::createOne([

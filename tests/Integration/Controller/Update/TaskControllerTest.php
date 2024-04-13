@@ -203,7 +203,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws \Exception
      */
-    private function createTask(): Proxy|TaskCalendar
+    private function createTask(): TaskCalendar
     {
         $category = CategoryFactory::createOne();
         $goal = GoalFactory::createOne([
