@@ -9,7 +9,6 @@ use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @internal
@@ -29,7 +28,7 @@ class TaskControllerTest extends WebTestCase
         // WHEN
         $client->request(
             'GET',
-            'tasks/' . $task->getId()
+            'tasks/'.$task->getId()
         );
 
         // THEN
@@ -58,7 +57,7 @@ class TaskControllerTest extends WebTestCase
         // WHEN
         $client->request(
             'GET',
-            'tasks/' . $invalid_task
+            'tasks/'.$invalid_task
         );
 
         // THEN
