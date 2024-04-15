@@ -9,6 +9,7 @@ use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Proxy;
 
 /**
  * @internal
@@ -80,7 +81,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws \Exception
      */
-    private function createTask(): TaskCalendar
+    private function createTask(): Proxy|TaskCalendar
     {
         $category = CategoryFactory::createOne();
         $goal = GoalFactory::createOne([

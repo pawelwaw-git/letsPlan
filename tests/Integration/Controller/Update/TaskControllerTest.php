@@ -13,6 +13,7 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Zenstruck\Foundry\Proxy;
 
 /**
  * @internal
@@ -202,7 +203,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws \Exception
      */
-    private function createTask(): TaskCalendar
+    private function createTask(): Proxy|TaskCalendar
     {
         $category = CategoryFactory::createOne();
         $goal = GoalFactory::createOne([
