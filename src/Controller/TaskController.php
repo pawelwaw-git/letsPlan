@@ -46,9 +46,22 @@ class TaskController extends AbstractController
     //        $this->json();
     //    }
     //
-    //    public function single(): JsonResponse
-    //    {
-    // //        TODO implement
-    //    }
-    //
+    #[Route('tasks/{id}', name: 'task_single', requirements: ['id' => '^[1-9][0-9]*$'], methods: 'GET')]
+    public function single(
+        int $id,
+        TaskCalendarRepository $taskCalendarRepository
+    ): JsonResponse {
+        $task = $taskCalendarRepository->find($id);
+
+        if ($task === null) {
+            throw new NotFoundHttpException();
+        }
+
+        return new JsonResponse([
+            'id' => $task->getId(),
+            'goal_id' => $task->getGoal()->getId(),
+            'date' => $task->getDate()->format('Y-m-d'),
+            'isDone' => $task->isIsDone(),
+        ], 200);
+    }
 }

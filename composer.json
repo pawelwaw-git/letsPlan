@@ -105,6 +105,7 @@
     },
     "require-dev": {
         "behat/mink-selenium2-driver": "^1.6",
+        "dama/doctrine-test-bundle": "^8.0",
         "dbrekelmans/bdi": "^1.0",
         "dmore/chrome-mink-driver": "^2.8",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
