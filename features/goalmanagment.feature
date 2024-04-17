@@ -9,7 +9,6 @@ Feature: Goal/Category management
     Given I am login as admin
     And There are standard types of categories
   Scenario: Creating category
-    # probably it will be better to create function to describe easier
     Given I am on "/admin?crudAction=index&crudControllerFqcn=App\Controller\Admin\CategoryCrudController"
     When I follow "Add Category"
     And I fill in "Name" with "Test Category"
@@ -26,28 +25,29 @@ Feature: Goal/Category management
     When I follow "Add Goal"
     And I fill in "Name" with "Tests Goal"
     And I fill in "Priority" with "3"
-    And I fill in "Type" with "simple_habit"
-    And I fill in "Category" with "1"
-    And I fill in "Repeatable" with "every_day"
+    And I select "SimpleHabit" from "Goal_Type"
+    And I select "God" from "Goal_Category"
+    And I select "EveryDay" from "Goal_Repeatable"
     And I fill in "Description" with "Sample description of Goal"
     And I press "Create"
     Then I should see "Tests Goal"
     And I should see "SimpleHabit"
-    And I should see "1#New Category"
+    And I should see "God"
     And I should see "Sample description of Goal"
-  Scenario: udpate Goal
-    Given I am on "/admin?crudAction=index&crudControllerFqcn=App\Controller\Admin\GoalCrudController"
+  Scenario: Update Goal
+    Given Goal is Created
+    And I am on "/admin?crudAction=index&crudControllerFqcn=App\Controller\Admin\GoalCrudController"
     When I follow "Edit"
     And I fill in "Name" with "Test Goal"
     And I fill in "Priority" with "4"
-    And I fill in "Type" with "task"
-    And I fill in "Category" with "1"
+    And I select "Task" from "Goal_Type"
+    And I select "God" from "Goal_Category"
     And I fill in "Description" with "Sample description of Goal update"
     And I press "Save changes"
     Then I should see "Test Goal"
     And I should see "4"
     And I should see "Task"
-    And I should see "1#New Category"
+    And I should see "God"
     And I should see "Sample description of Goal update"
 # commented because can set up container for behat headless correctly
 #  @javascript

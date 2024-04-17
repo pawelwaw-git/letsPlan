@@ -7,6 +7,7 @@ default:
                 # - App\Tests\Behat\DemoContext
     extensions:
       DMore\ChromeExtension\Behat\ServiceContainer\ChromeExtension: ~
+      DAMA\DoctrineTestBundle\Behat\ServiceContainer\DoctrineExtension: ~
       FriendsOfBehat\SymfonyExtension:
         bootstrap: tests/bootstrap.php
         kernel:
