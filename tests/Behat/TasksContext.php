@@ -159,6 +159,16 @@ final class TasksContext implements Context
         Carbon::setTestNow($date);
     }
 
+    /**
+     * @Given Goal is Created
+     */
+    public function goalIsCreated(): void
+    {
+        $goal = new Goal();
+        $goal->setName('Goal');
+        $this->goalRepository->save($goal, true);
+    }
+
     private function getQuantityOfPlannedDays(?\DateTime $startDate): \DateInterval
     {
         $today = Carbon::now();

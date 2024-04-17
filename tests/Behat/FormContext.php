@@ -75,7 +75,7 @@ final class FormContext extends MinkContext implements Context
         foreach ($categories as $name) {
             $category = new Category();
             $category->setName($name);
-            $this->categoryEntity->save($category);
+            $this->categoryEntity->save($category, true);
         }
     }
 
