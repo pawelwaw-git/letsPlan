@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Serializer;
 
 use App\Entity\Goal;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -14,7 +15,15 @@ class GoalNormalizer implements ContextAwareNormalizerInterface
         private readonly ObjectNormalizer $normalizer,
     ) {}
 
-    public function normalize($object, ?string $format = null, array $context = []): mixed
+    /**
+     * @param mixed         $object
+     * @param array<string> $context
+     *
+     * @return array<string>
+     *
+     * @throws ExceptionInterface
+     */
+    public function normalize($object, ?string $format = null, array $context = []): array|int
     {
         $data = $this->normalizer->normalize($object, $format, $context);
 
@@ -35,6 +44,10 @@ class GoalNormalizer implements ContextAwareNormalizerInterface
         ];
     }
 
+    /**
+     * @param array<string> $context
+     * @param mixed         $data
+     */
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Goal;

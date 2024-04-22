@@ -77,7 +77,7 @@ class TaskController extends AbstractController
             'id' => $task->getId(),
             'goal_id' => $task->getGoal()->getId(),
             'date' => $task->getDate()->format('Y-m-d'),
-            'isDone' => $task->isIsDone(),
+            'is_done' => $task->isIsDone(),
         ], 200);
     }
 }

@@ -6,7 +6,10 @@ namespace App\Serializer;
 
 final class CircularReferenceHandler
 {
-    public function __invoke($object, $format, $context)
+    /**
+     * @param array<string> $context
+     */
+    public function __invoke(object $object, ?string $format, array $context): int
     {
         return $object->getId();
     }
