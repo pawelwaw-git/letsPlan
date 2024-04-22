@@ -18,8 +18,6 @@ use Zenstruck\Foundry\Proxy;
  */
 class TaskControllerTest extends WebTestCase
 {
-    // valid request
-
     public function testValidRequest(): void
     {
         // GIVEN

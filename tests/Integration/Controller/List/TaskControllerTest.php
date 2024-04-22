@@ -9,6 +9,7 @@ use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Proxy;
 
 /**
@@ -18,8 +19,21 @@ use Zenstruck\Foundry\Proxy;
  */
 class TaskControllerTest extends WebTestCase
 {
-    // invalid request
     // list with filters (isDone) and (Date)
+    public function testEmptyResponseRequest(): void
+    {
+        // GIVEN
+        $client = static::createClient();
+
+        // WHEN
+        $client->request('GET', 'tasks');
+
+        // THEN
+        $response = $client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertEquals('[]', $response->getContent());
+    }
 
     public function testValidRequest(): void
     {
@@ -36,12 +50,7 @@ class TaskControllerTest extends WebTestCase
         // THEN
         $response = $client->getResponse();
 
-        $this->assertEquals(
-            200,
-            $response->getStatusCode(),
-            'task repeatable type =>'.$task->getGoal()->getRepeatable().' task type => '.$task->getGoal()->getType()."response\r\n"
-        .$response->getContent()
-        );
+        $this->assertEquals(200, $response->getStatusCode());
         $this->assertSame(
             json_encode([
                 [
