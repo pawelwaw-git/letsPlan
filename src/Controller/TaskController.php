@@ -9,6 +9,7 @@ use App\Repository\TaskCalendarRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,9 +46,12 @@ class TaskController extends AbstractController
      * @throws \JsonException
      */
     #[Route('tasks', name: 'get_tasks', methods: 'GET')]
-    public function list(TaskCalendarRepository $taskCalendarRepository): JsonResponse
+    public function list(TaskCalendarRepository $taskCalendarRepository, Request $request): JsonResponse
     {
-        $tasks = $taskCalendarRepository->findAll();
+        $page = (int) $request->query->get('page', 1);
+        $per_page = (int) $request->query->get('per_page', 10);
+
+        $tasks = $taskCalendarRepository->getAllPaginated($page, $per_page);
 
         return $this->json(
             $tasks,

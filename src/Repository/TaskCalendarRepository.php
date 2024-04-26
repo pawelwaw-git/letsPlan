@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @extends ServiceEntityRepository<TaskCalendar>
@@ -121,5 +123,19 @@ class TaskCalendarRepository extends ServiceEntityRepository
         $connection = $this->getEntityManager()->getConnection();
         $platform = $connection->getDatabasePlatform();
         $connection->executeQuery($platform->getTruncateTableSQL('my_table', false));
+    }
+
+    public function getAllPaginated(int $page, int $per_page): Pagerfanta
+    {
+        $query = $this->createQueryBuilder('t');
+
+        $pagerfanta = new Pagerfanta(
+            new QueryAdapter($query)
+        );
+
+        $pagerfanta->setMaxPerPage($per_page);
+        $pagerfanta->setCurrentPage($page);
+
+        return $pagerfanta;
     }
 }
