@@ -8,6 +8,7 @@ use App\Entity\TaskCalendar;
 use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\QueryBuilder as QueryBuilderAlias;
 use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -125,9 +126,16 @@ class TaskCalendarRepository extends ServiceEntityRepository
         $connection->executeQuery($platform->getTruncateTableSQL('my_table', false));
     }
 
-    public function getAllPaginated(int $page, int $per_page): Pagerfanta
+    /**
+     * @return Pagerfanta<TaskCalendar>
+     */
+    public function getAllPaginated(int $page, int $per_page, ?string $sort): Pagerfanta
     {
         $query = $this->createQueryBuilder('t');
+
+        if ($sort !== null) {
+            $this->addSortingOption($sort, $query);
+        }
 
         $pagerfanta = new Pagerfanta(
             new QueryAdapter($query)
@@ -137,5 +145,19 @@ class TaskCalendarRepository extends ServiceEntityRepository
         $pagerfanta->setCurrentPage($page);
 
         return $pagerfanta;
+    }
+
+    private function addSortingOption(string $sort, QueryBuilderAlias $query): void
+    {
+        $sort_array = explode(',', $sort);
+        foreach ($sort_array as $sorting) {
+            $query->addOrderBy(
+                't.'.substr($sorting, 1),
+                match ($sorting[0]) {
+                    '+' => 'ASC',
+                    default => 'DESC'
+                }
+            );
+        }
     }
 }

@@ -8,6 +8,7 @@ use App\Entity\TaskCalendar;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
+use Carbon\Carbon;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Proxy;
@@ -19,9 +20,6 @@ use Zenstruck\Foundry\Proxy;
  */
 class TaskControllerTest extends WebTestCase
 {
-    // list with filters (isDone) and (Date)
-    // list with pagination
-
     /**
      * @dataProvider PaginationPerPageDataProvider
      */
@@ -48,21 +46,61 @@ class TaskControllerTest extends WebTestCase
         //        TODO implement it
         //        $this->checkStructureResponse();
 
-        $json_response_decoded = json_decode($response->getContent(), true);
+        $json_response_decoded = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertArrayHasKey('pagination', $json_response_decoded);
         $this->assertSame($per_page, $json_response_decoded['pagination']['per_page']);
         $this->assertSame($tasks_number, $json_response_decoded['pagination']['total_items']);
         $this->assertSame($total_pages, $json_response_decoded['pagination']['total_pages']);
     }
 
-    public function testSortListWithPagination(): void
+    /**
+     * @dataProvider SortListPaginationProvider
+     *
+     * @param array<string,string> $first_task_data
+     * @param array<string,string> $second_task_data
+     *
+     * @throws \JsonException
+     * @throws \Exception
+     */
+    public function testSortListWithPagination(array $first_task_data, array $second_task_data, string $query): void
+    {
+        // GIVEN
+        $client = static::createClient();
+
+        $first_task = $this->createTask([
+            'Date' => Carbon::createFromFormat('Y-m-d', $first_task_data['Date']),
+        ]);
+        $second_task = $this->createTask([
+            'Date' => Carbon::createFromFormat('Y-m-d', $second_task_data['Date']),
+        ]);
+
+        // WHEN
+        $client->request('GET', 'tasks', [
+            'sort' => $query,
+        ]);
+
+        // THEN
+        $response = $client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        //        TODO implement it
+        //        $this->checkStructureResponse();
+
+        $json_response_decoded = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame($first_task->getId(), $json_response_decoded['items'][0]['id']);
+        $this->assertSame($second_task->getId(), $json_response_decoded['items'][1]['id']);
+    }
+
+    public function testInvalidSortListWithPagination(): void
     {
         $this->markTestSkipped('implement');
+        // eg. InvalidParam
     }
 
     public function testFilterListWithPagination(): void
     {
         $this->markTestSkipped('implement');
+        // list with filters (isDone) and (Date)
     }
 
     public function testEmptyResponseRequest(): void
@@ -158,23 +196,77 @@ class TaskControllerTest extends WebTestCase
     }
 
     /**
+     * @return array<array<string, string>>
+     */
+    public function SortListPaginationProvider(): iterable
+    {
+        yield 'Date DESC' => [
+            'first_task' => [
+                'Date' => '2024-05-03',
+            ],
+            'second_task' => [
+                'Date' => '2024-05-02',
+            ],
+            'query_param' => '-Date',
+        ];
+
+        yield 'Date ASC' => [
+            'first_task' => [
+                'Date' => '2024-05-03',
+            ],
+            'second_task' => [
+                'Date' => '2024-05-04',
+            ],
+            'query_param' => '+Date',
+        ];
+
+        yield 'IsDone ASC' => [
+            'first_task' => [
+                'IsDone' => true,
+                'Date' => '2024-05-04',
+            ],
+            'second_task' => [
+                'IsDone' => false,
+                'Date' => '2024-05-04',
+            ],
+            'query_param' => '+isDone',
+        ];
+
+        yield 'IsDone DESC' => [
+            'first_task' => [
+                'IsDone' => false,
+                'Date' => '2024-05-04',
+            ],
+            'second_task' => [
+                'IsDone' => true,
+                'Date' => '2024-05-04',
+            ],
+            'query_param' => '-isDone',
+        ];
+    }
+
+    /**
+     * @param array<string,string> $attributes
+     *
      * @throws \Exception
      */
-    private function createTask(): Proxy|TaskCalendar
+    private function createTask(array $attributes = []): Proxy|TaskCalendar
     {
         $category = CategoryFactory::createOne();
         $goal = GoalFactory::createOne([
             'Category' => $category,
         ]);
 
-        return TaskCalendarFactory::createOne([
-            'Goal' => $goal,
-            'isDone' => true,
-        ]);
+        return TaskCalendarFactory::createOne(
+            array_merge([
+                'Goal' => $goal,
+                'isDone' => true,
+            ], $attributes)
+        );
     }
 
     /**
-     * @return array<Proxy|TaskCalendar>
+     * @return Proxy[]|TaskCalendar[]
      */
     private function createTasks(int $number): array
     {

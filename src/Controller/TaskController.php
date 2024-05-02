@@ -50,8 +50,9 @@ class TaskController extends AbstractController
     {
         $page = (int) $request->query->get('page', 1);
         $per_page = (int) $request->query->get('per_page', 10);
+        $sort = $request->query->get('sort', null);
 
-        $tasks = $taskCalendarRepository->getAllPaginated($page, $per_page);
+        $tasks = $taskCalendarRepository->getAllPaginated($page, $per_page, $sort);
 
         return $this->json(
             $tasks,
