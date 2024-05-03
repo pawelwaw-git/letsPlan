@@ -12,6 +12,7 @@ use App\Repository\GoalRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: GoalRepository::class)]
 class Goal
@@ -176,6 +177,7 @@ class Goal
     /**
      * @throws RepeatableTypeException
      */
+    #[Ignore]
     public function getRepeatableType(): Repeatable
     {
         return RepeatableFactory::getSuitableRepeatableType($this->Repeatable);

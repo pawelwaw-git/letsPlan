@@ -7,6 +7,8 @@ namespace App\Entity;
 use App\Repository\TaskCalendarRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: TaskCalendarRepository::class)]
 class TaskCalendar
@@ -17,6 +19,7 @@ class TaskCalendar
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private ?\DateTimeInterface $Date = null;
 
     #[ORM\ManyToOne(targetEntity: Goal::class, inversedBy: 'tasksCalendar')]

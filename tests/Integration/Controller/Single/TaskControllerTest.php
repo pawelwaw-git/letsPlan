@@ -18,8 +18,6 @@ use Zenstruck\Foundry\Proxy;
  */
 class TaskControllerTest extends WebTestCase
 {
-    // valid request
-
     public function testValidRequest(): void
     {
         // GIVEN
@@ -41,7 +39,7 @@ class TaskControllerTest extends WebTestCase
                 'id' => $task->getId(),
                 'goal_id' => $task->getGoal()->getId(),
                 'date' => $task->getDate()->format('Y-m-d'),
-                'isDone' => $task->isIsDone(),
+                'is_done' => $task->isIsDone(),
             ], JSON_THROW_ON_ERROR),
             $response->getContent()
         );

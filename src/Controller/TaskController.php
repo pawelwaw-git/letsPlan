@@ -9,9 +9,11 @@ use App\Repository\TaskCalendarRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class TaskController extends AbstractController
@@ -40,12 +42,31 @@ class TaskController extends AbstractController
         return new JsonResponse([], 204);
     }
 
-    //    public function list(): JsonResponse
-    //    {
-    //        // TODO implement
-    //        $this->json();
-    //    }
-    //
+    /**
+     * @throws \JsonException
+     */
+    #[Route('tasks', name: 'get_tasks', methods: 'GET')]
+    public function list(TaskCalendarRepository $taskCalendarRepository, Request $request): JsonResponse
+    {
+        $page = (int) $request->query->get('page', 1);
+        $per_page = (int) $request->query->get('per_page', 10);
+        $sort = $request->query->get('sort', null);
+
+        $tasks = $taskCalendarRepository->getAllPaginated($page, $per_page, $sort);
+
+        return $this->json(
+            $tasks,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                    return $object->getId();
+                },
+                AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 1,
+            ]
+        );
+    }
+
     #[Route('tasks/{id}', name: 'task_single', requirements: ['id' => '^[1-9][0-9]*$'], methods: 'GET')]
     public function single(
         int $id,
@@ -61,7 +82,7 @@ class TaskController extends AbstractController
             'id' => $task->getId(),
             'goal_id' => $task->getGoal()->getId(),
             'date' => $task->getDate()->format('Y-m-d'),
-            'isDone' => $task->isIsDone(),
+            'is_done' => $task->isIsDone(),
         ], 200);
     }
 }
