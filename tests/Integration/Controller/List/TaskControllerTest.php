@@ -246,7 +246,7 @@ class TaskControllerTest extends WebTestCase
     }
 
     /**
-     * @param array<string,string> $attributes
+     * @param array<string,mixed> $attributes
      *
      * @throws \Exception
      */
