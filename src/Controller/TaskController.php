@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Dto\TaskDto;
 use App\Repository\TaskCalendarRepository;
+use Doctrine\ORM\Query\QueryException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,23 +49,27 @@ class TaskController extends AbstractController
     #[Route('tasks', name: 'get_tasks', methods: 'GET')]
     public function list(TaskCalendarRepository $taskCalendarRepository, Request $request): JsonResponse
     {
-        $page = (int) $request->query->get('page', 1);
-        $per_page = (int) $request->query->get('per_page', 10);
-        $sort = $request->query->get('sort', null);
+        try {
+            $page = (int) $request->query->get('page', 1);
+            $per_page = (int) $request->query->get('per_page', 10);
+            $sort = $request->query->get('sort', null);
 
-        $tasks = $taskCalendarRepository->getAllPaginated($page, $per_page, $sort);
+            $tasks = $taskCalendarRepository->getAllPaginated($page, $per_page, $sort);
 
-        return $this->json(
-            $tasks,
-            Response::HTTP_OK,
-            [],
-            [
-                AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-                    return $object->getId();
-                },
-                AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 1,
-            ]
-        );
+            return $this->json(
+                $tasks,
+                Response::HTTP_OK,
+                [],
+                [
+                    AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                        return $object->getId();
+                    },
+                    AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 1,
+                ]
+            );
+        } catch (QueryException $exception) {
+            return $this->json([], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     #[Route('tasks/{id}', name: 'task_single', requirements: ['id' => '^[1-9][0-9]*$'], methods: 'GET')]

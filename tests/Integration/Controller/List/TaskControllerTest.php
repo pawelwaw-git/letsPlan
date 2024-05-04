@@ -91,10 +91,22 @@ class TaskControllerTest extends WebTestCase
         $this->assertSame($second_task->getId(), $json_response_decoded['items'][1]['id']);
     }
 
-    public function testInvalidSortListWithPagination(): void
+    public function testInvalidSortParamBadRequestExpected(): void
     {
-        $this->markTestSkipped('implement');
-        // eg. InvalidParam
+        // GIVEN
+        $client = static::createClient();
+
+        $task = $this->createTask();
+
+        // WHEN
+        $client->request('GET', 'tasks', [
+            'sort' => '-invalidParam',
+        ]);
+
+        // THEN
+        $response = $client->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testFilterListWithPagination(): void
