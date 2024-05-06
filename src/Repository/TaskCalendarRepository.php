@@ -190,11 +190,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
             $filterField = substr($condition, 0, $startOperator);
             $filterValue = substr($condition, $endOperator + 2, strlen($condition) - $endOperator - 2);
 
-            if (in_array($filterOperator, ['lte', 'gte', 'eq', 'lt', 'gt'], true)) {
-                $filterConditions[$filterField][$filterOperator] = $filterValue;
-            } else {
-                throw new InvalidOperatorException('Invalid Operator');
-            }
+            $filterConditions[$filterField][$filterOperator] = $filterValue;
         }
 
         return $filterConditions;
