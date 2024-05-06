@@ -67,8 +67,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->addSelect('g')
             ->orderBy('t.id', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
@@ -83,8 +82,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->setParameter('isDone', false)
             ->orderBy('t.id', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     /**
@@ -102,8 +100,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->orderBy('t.Date', 'ASC')
             ->select('count(t.id) as Quantity', 't.Date', 't.isDone')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function getQuantityOfTasksTypes(string $period): int
@@ -114,8 +111,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
             ->leftJoin('t.Goal', 'g')
             ->select('count(t.id) as Quantity')
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
     }
 
     /**
@@ -231,10 +227,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
         $sort_array = explode(',', $sort);
         foreach ($sort_array as $sorting) {
             $query->addOrderBy(
-                't.'.substr(
-                    $sorting,
-                    1
-                ),
+                't.' . substr($sorting, 1),
                 match ($sorting[0]) {
                     '+' => 'ASC',
                     default => 'DESC'
