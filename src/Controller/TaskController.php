@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Dto\TaskDto;
-use App\Repository\InvalidFilterException;
-use App\Repository\InvalidOperatorException;
 use App\Repository\TaskCalendarRepository;
-use Carbon\Exceptions\InvalidFormatException;
-use Doctrine\ORM\Query\QueryException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -71,13 +67,7 @@ class TaskController extends AbstractController
                     AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 1,
                 ]
             );
-        } catch (QueryException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        } catch (InvalidOperatorException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        } catch (InvalidFilterException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        } catch (InvalidFormatException $e) {
+        } catch (\Exception $e) {
             return $this->json([], Response::HTTP_BAD_REQUEST);
         }
     }

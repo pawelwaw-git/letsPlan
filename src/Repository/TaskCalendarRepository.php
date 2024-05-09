@@ -132,8 +132,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
      * @return Pagerfanta<TaskCalendar>
      *
      * @throws QueryException
-     * @throws InvalidOperatorException
-     * @throws InvalidFilterException
+     * @throws \Exception
      */
     public function getPaginatedWithFilterAndSort(int $page, int $per_page, ?string $sort, ?string $filter): Pagerfanta
     {
@@ -156,8 +155,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws InvalidFilterException
-     * @throws InvalidOperatorException
+     * @throws \Exception
      * @throws QueryException
      */
     public function addFilter(?string $filter, QueryBuilderAlias $query): void
@@ -176,7 +174,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
      *
      * @return array<string,array<string,string>>
      *
-     * @throws InvalidOperatorException
+     * @throws \Exception
      */
     public function extractFilterValues(array $conditions): array
     {
@@ -199,9 +197,8 @@ class TaskCalendarRepository extends ServiceEntityRepository
     /**
      * @param array<string,array<string,string>> $filterConditions
      *
-     * @throws InvalidFilterException
+     * @throws \Exception
      * @throws QueryException
-     * @throws InvalidOperatorException
      */
     public function addCriteria(array $filterConditions, QueryBuilderAlias $query): void
     {
@@ -216,7 +213,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
                     'lt' => Criteria::expr()->lt($field, $value),
                     'lte' => Criteria::expr()->lte($field, $value),
                     'eq' => Criteria::expr()->eq($field, $value),
-                    default => throw new InvalidOperatorException('Invalid Operator')
+                    default => throw new \Exception('Invalid Operator')
                 };
 
                 $criteria->andWhere($where);
@@ -241,7 +238,7 @@ class TaskCalendarRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws InvalidFilterException
+     * @throws \Exception
      */
     private function validateFilters(string $field, string $conditions): bool|string
     {
@@ -255,11 +252,11 @@ class TaskCalendarRepository extends ServiceEntityRepository
                 return match ($conditions) {
                     'true' => true,
                     'false' => false,
-                    default => throw new InvalidFilterException('Invalid Filter Value')
+                    default => throw new \Exception('Invalid Filter Value')
                 };
 
             default:
-                return throw new InvalidFilterException('Invalid Filter Option');
+                return throw new \Exception('Invalid Filter Option');
         }
     }
 }
