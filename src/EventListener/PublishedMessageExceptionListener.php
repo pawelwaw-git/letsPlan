@@ -11,6 +11,8 @@ use Doctrine\ORM\Query\QueryException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublishedMessageExceptionListener
 {
@@ -19,7 +21,8 @@ class PublishedMessageExceptionListener
         $throwable = $event->getThrowable();
 
         $code = match (get_class($throwable)) {
-            InvalidOperatorException::class, InvalidFilterException::class, QueryException::class, InvalidFormatException::class => Response::HTTP_BAD_REQUEST,
+            InvalidOperatorException::class, InvalidFilterException::class, QueryException::class, InvalidFormatException::class, BadRequestHttpException::class => Response::HTTP_BAD_REQUEST,
+            NotFoundHttpException::class => Response::HTTP_NOT_FOUND,
             default => Response::HTTP_INTERNAL_SERVER_ERROR,
         };
 
