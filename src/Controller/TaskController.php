@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Dto\TaskDto;
-use App\Repository\InvalidFilterException;
-use App\Repository\InvalidOperatorException;
 use App\Repository\TaskCalendarRepository;
-use Carbon\Exceptions\InvalidFormatException;
-use Doctrine\ORM\Query\QueryException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,34 +48,24 @@ class TaskController extends AbstractController
     #[Route('tasks', name: 'get_tasks', methods: 'GET')]
     public function list(TaskCalendarRepository $taskCalendarRepository, Request $request): JsonResponse
     {
-        try {
-            $page = (int) $request->query->get('page', 1);
-            $per_page = (int) $request->query->get('per_page', 10);
-            $sort = $request->query->get('sort', null);
-            $filter = $request->query->get('filter', null);
+        $page = (int) $request->query->get('page', 1);
+        $per_page = (int) $request->query->get('per_page', 10);
+        $sort = $request->query->get('sort', null);
+        $filter = $request->query->get('filter', null);
 
-            $tasks = $taskCalendarRepository->getPaginatedWithFilterAndSort($page, $per_page, $sort, $filter);
+        $tasks = $taskCalendarRepository->getPaginatedWithFilterAndSort($page, $per_page, $sort, $filter);
 
-            return $this->json(
-                $tasks,
-                Response::HTTP_OK,
-                [],
-                [
-                    AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-                        return $object->getId();
-                    },
-                    AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 1,
-                ]
-            );
-        } catch (QueryException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        } catch (InvalidOperatorException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        } catch (InvalidFilterException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        } catch (InvalidFormatException $e) {
-            return $this->json([], Response::HTTP_BAD_REQUEST);
-        }
+        return $this->json(
+            $tasks,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                    return $object->getId();
+                },
+                AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 1,
+            ]
+        );
     }
 
     #[Route('tasks/{id}', name: 'task_single', requirements: ['id' => '^[1-9][0-9]*$'], methods: 'GET')]

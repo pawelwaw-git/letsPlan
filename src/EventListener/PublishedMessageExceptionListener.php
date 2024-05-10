@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use App\Contracts\PublishedMessageException;
-use App\Contracts\UserInputException;
+use App\Exceptions\InvalidFilterException;
+use App\Exceptions\InvalidOperatorException;
+use Carbon\Exceptions\InvalidFormatException;
+use Doctrine\ORM\Query\QueryException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -16,11 +18,10 @@ class PublishedMessageExceptionListener
     {
         $throwable = $event->getThrowable();
 
-        if ($throwable instanceof PublishedMessageException) {
-            return;
-        }
-
-        $code = $throwable instanceof UserInputException ? Response::HTTP_BAD_REQUEST : Response::HTTP_INTERNAL_SERVER_ERROR;
+        $code = match (get_class($throwable)) {
+            InvalidOperatorException::class, InvalidFilterException::class, QueryException::class, InvalidFormatException::class => Response::HTTP_BAD_REQUEST,
+            default => Response::HTTP_INTERNAL_SERVER_ERROR,
+        };
 
         $response_data = [
             'error' => [
@@ -29,6 +30,6 @@ class PublishedMessageExceptionListener
             ],
         ];
 
-        $event->setResponse(new JsonResponse($response_data,$code));
+        $event->setResponse(new JsonResponse($response_data, $code));
     }
 }
