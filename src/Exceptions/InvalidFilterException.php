@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Exceptions;
 
-class InvalidFilterException extends \Exception {}
+use App\Contracts\UserInputException;
+
+class InvalidFilterException extends \Exception implements UserInputException {}
