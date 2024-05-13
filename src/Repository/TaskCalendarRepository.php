@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\TaskCalendar;
+use App\Exceptions\InvalidFilterException;
+use App\Exceptions\InvalidOperatorException;
 use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\QueryBuilder as QueryBuilderAlias;
 use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -128,14 +132,20 @@ class TaskCalendarRepository extends ServiceEntityRepository
 
     /**
      * @return Pagerfanta<TaskCalendar>
+     *
+     * @throws QueryException
+     * @throws InvalidOperatorException
+     * @throws InvalidFilterException
      */
-    public function getAllPaginated(int $page, int $per_page, ?string $sort): Pagerfanta
+    public function getPaginatedWithFilterAndSort(int $page, int $per_page, ?string $sort, ?string $filter): Pagerfanta
     {
         $query = $this->createQueryBuilder('t');
 
         if ($sort !== null) {
             $this->addSortingOption($sort, $query);
         }
+
+        $this->addFilter($filter, $query);
 
         $pagerfanta = new Pagerfanta(
             new QueryAdapter($query)
@@ -145,6 +155,77 @@ class TaskCalendarRepository extends ServiceEntityRepository
         $pagerfanta->setCurrentPage($page);
 
         return $pagerfanta;
+    }
+
+    /**
+     * @throws InvalidFilterException
+     * @throws InvalidOperatorException
+     * @throws QueryException
+     */
+    public function addFilter(?string $filter, QueryBuilderAlias $query): void
+    {
+        if ($filter !== null) {
+            $conditions = explode('&', $filter);
+
+            $filterConditions = $this->extractFilterValues($conditions);
+
+            $this->addCriteria($filterConditions, $query);
+        }
+    }
+
+    /**
+     * @param array<int,string> $conditions
+     *
+     * @return array<string,array<string,string>>
+     *
+     * @throws InvalidOperatorException
+     */
+    public function extractFilterValues(array $conditions): array
+    {
+        $filterConditions = [];
+
+        foreach ($conditions as $condition) {
+            $startOperator = strpos($condition, '[');
+            $endOperator = strpos($condition, ']=');
+
+            $filterOperator = substr($condition, $startOperator + 1, $endOperator - $startOperator - 1);
+            $filterField = substr($condition, 0, $startOperator);
+            $filterValue = substr($condition, $endOperator + 2, strlen($condition) - $endOperator - 2);
+
+            $filterConditions[$filterField][$filterOperator] = $filterValue;
+        }
+
+        return $filterConditions;
+    }
+
+    /**
+     * @param array<string,array<string,string>> $filterConditions
+     *
+     * @throws InvalidFilterException
+     * @throws QueryException
+     * @throws InvalidOperatorException
+     */
+    public function addCriteria(array $filterConditions, QueryBuilderAlias $query): void
+    {
+        foreach ($filterConditions as $field => $conditions) {
+            $criteria = Criteria::create();
+
+            foreach ($conditions as $operator => $value) {
+                $value = $this->validateFilters($field, $value);
+                $where = match ($operator) {
+                    'gt' => Criteria::expr()->gt($field, $value),
+                    'gte' => Criteria::expr()->gte($field, $value),
+                    'lt' => Criteria::expr()->lt($field, $value),
+                    'lte' => Criteria::expr()->lte($field, $value),
+                    'eq' => Criteria::expr()->eq($field, $value),
+                    default => throw new InvalidOperatorException('Invalid Operator')
+                };
+
+                $criteria->andWhere($where);
+            }
+
+            $query->addCriteria($criteria);
+        }
     }
 
     private function addSortingOption(string $sort, QueryBuilderAlias $query): void
@@ -158,6 +239,29 @@ class TaskCalendarRepository extends ServiceEntityRepository
                     default => 'DESC'
                 }
             );
+        }
+    }
+
+    /**
+     * @throws InvalidFilterException
+     */
+    private function validateFilters(string $field, string $conditions): bool|string
+    {
+        switch ($field) {
+            case 'Date':
+                Carbon::parse($conditions);
+
+                return $conditions;
+
+            case 'isDone':
+                return match ($conditions) {
+                    'true' => true,
+                    'false' => false,
+                    default => throw new InvalidFilterException('Invalid Filter Value')
+                };
+
+            default:
+                return throw new InvalidFilterException('Invalid Filter Option');
         }
     }
 }

@@ -91,16 +91,68 @@ class TaskControllerTest extends WebTestCase
         $this->assertSame($second_task->getId(), $json_response_decoded['items'][1]['id']);
     }
 
-    public function testInvalidSortListWithPagination(): void
+    public function testInvalidSortParamBadRequestExpected(): void
     {
-        $this->markTestSkipped('implement');
-        // eg. InvalidParam
+        // GIVEN
+        $client = static::createClient();
+
+        $task = $this->createTask();
+
+        // WHEN
+        $client->request('GET', 'tasks', [
+            'sort' => '-invalidParam',
+        ]);
+
+        // THEN
+        $response = $client->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testFilterListWithPagination(): void
+    /**
+     * @dataProvider FilterListDataProvider
+     *
+     * @param array<mixed> $tasks_data
+     *
+     * @throws \JsonException
+     */
+    public function testFilterListWithPagination(array $tasks_data, string $query, int $result): void
     {
-        $this->markTestSkipped('implement');
-        // list with filters (isDone) and (Date)
+        // GIVEN
+        $client = static::createClient();
+        $this->createTasksFromArray($tasks_data);
+
+        // THEN
+        $client->request('GET', 'tasks', [
+            'filter' => $query,
+        ]);
+
+        // THEN
+        $response = $client->getResponse();
+
+        $this->assertSame(200, $response->getStatusCode());
+        $content = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame($result, count($content['items']));
+    }
+
+    /**
+     * @dataProvider FilterInvalidParamDataProvider
+     *
+     * @throws \Exception
+     */
+    public function testFilterListInvalidParam(string $query): void
+    {
+        // GIVEN
+        $client = static::createClient();
+        $this->createTask();
+
+        // WHEN
+        $client->request('GET', 'tasks', [
+            'filter' => $query,
+        ]);
+
+        // THEN
+        $this->assertSame(400, $client->getResponse()->getStatusCode());
     }
 
     public function testEmptyResponseRequest(): void
@@ -246,6 +298,174 @@ class TaskControllerTest extends WebTestCase
     }
 
     /**
+     * @return array<mixed> iterable
+     */
+    public function FilterListDataProvider(): iterable
+    {
+        yield 'Date Filter gte and lte' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-02 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-06-01 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'Date[gte]=2024-05-01&Date[lte]=2024-05-31',
+            'result' => 1,
+        ];
+
+        yield 'Date Filter gte' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-02 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-06-01 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'Date[gte]=2024-05-04',
+            'result' => 2,
+        ];
+
+        yield 'Date Filter lte' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-02 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-06-01 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'Date[lte]=2024-05-04',
+            'result' => 2,
+        ];
+
+        yield 'Date Filter lt' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-02 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-06-01 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'Date[lt]=2024-05-04',
+            'result' => 1,
+        ];
+
+        yield 'Date Filter gt' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-02 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-06-01 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'Date[gt]=2024-05-04',
+            'result' => 1,
+        ];
+
+        yield 'Date Filter eq' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-02 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-06-01 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'Date[eq]=2024-05-04',
+            'result' => 1,
+        ];
+
+        yield 'IsDone Filter eq No' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => false,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'isDone[eq]=false',
+            'result' => 1,
+        ];
+
+        yield 'IsDone Filter eq Yes' => [
+            'tasks' => [
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => false,
+                ],
+                [
+                    'Date' => '2024-05-04 00:00:00',
+                    'IsDone' => true,
+                ],
+            ],
+            'query' => 'isDone[eq]=true',
+            'result' => 2,
+        ];
+    }
+
+    /**
+     * @return iterable<array<string, string>>
+     */
+    public function FilterInvalidParamDataProvider(): iterable
+    {
+        yield 'Invalid Filter isDone' => ['query' => 'ISDone[eq]=true'];
+
+        yield 'Invalid Filter Date' => ['query' => 'Datee[eq]=2024-03-12'];
+
+        yield 'Invalid Filter Date Format' => ['query' => 'Date[eq]=2a02-03-12'];
+
+        yield 'Invalid Filter Operator' => ['query' => 'Date[eqi]=2a02-03-12'];
+    }
+
+    /**
      * @param array<string,mixed> $attributes
      *
      * @throws \Exception
@@ -279,5 +499,34 @@ class TaskControllerTest extends WebTestCase
             'Goal' => $goal,
             'isDone' => true,
         ]);
+    }
+
+    /**
+     * @param array<mixed> $data
+     *
+     * @return Proxy[]|TaskCalendar[]
+     */
+    private function createTasksFromArray(array $data): array
+    {
+        $category = CategoryFactory::createOne();
+        $goal = GoalFactory::createOne([
+            'Category' => $category,
+        ]);
+
+        $tasks = [];
+        foreach ($data as $item) {
+            $task = TaskCalendarFactory::createOne(
+                array_merge([
+                    'Goal' => $goal,
+                    'isDone' => true,
+                ], [
+                    'Date' => Carbon::createFromFormat('Y-m-d H:i:s', $item['Date']),
+                    'IsDone' => $item['IsDone'],
+                ])
+            );
+            $tasks[] = $task;
+        }
+
+        return $tasks;
     }
 }
