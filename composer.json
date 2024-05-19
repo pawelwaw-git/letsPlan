@@ -117,6 +117,7 @@
         "friends-of-behat/symfony-extension": "^2.3",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5",
+        "rector/rector": "^1.0",
         "roave/security-advisories": "dev-latest",
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
