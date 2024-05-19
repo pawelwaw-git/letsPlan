@@ -39,6 +39,7 @@ class PublishedMessageExceptionEventSubscriber implements EventSubscriberInterfa
 
         $event->setResponse(new JsonResponse($response_data, $code));
     }
+
     /**
      * @return array<string, mixed>
      */

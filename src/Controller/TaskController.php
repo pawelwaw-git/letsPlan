@@ -14,8 +14,6 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Validator\ConstraintValidatorInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TaskController extends AbstractController
@@ -23,11 +21,11 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}', name: 'update_task', requirements: ['id' => '^[1-9][0-9]*$'], methods: ['PATCH'])]
     public function update(
         int $id,
-        #[MapRequestPayload] TaskDto $task,
+        #[MapRequestPayload]
+        TaskDto $task,
         ValidatorInterface $validator,
         TaskCalendarRepository $taskCalendarRepository,
     ): JsonResponse {
-
         $taskCalendar = $taskCalendarRepository->find($id);
 
         if ($taskCalendar === null) {
