@@ -7,11 +7,11 @@ namespace App\Controller;
 use App\Service\Bible\RandomBibleText;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class HomepageController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Attribute\Route('/', name: 'app_homepage')]
+    #[Route('/', name: 'app_homepage')]
     public function index(RandomBibleText $randomBibleText): Response
     {
         return $this->render('homepage/index.html.twig', [

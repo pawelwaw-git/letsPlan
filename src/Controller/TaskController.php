@@ -12,13 +12,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class TaskController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Attribute\Route('/tasks/{id}', name: 'update_task', requirements: ['id' => '^[1-9][0-9]*$'], methods: ['PATCH'])]
+    #[Route('/tasks/{id}', name: 'update_task', requirements: ['id' => '^[1-9][0-9]*$'], methods: ['PATCH'])]
     #[ParamConverter('task', converter: 'fos_rest.request_body')]
     public function update(
         int $id,
@@ -45,7 +45,7 @@ class TaskController extends AbstractController
     /**
      * @throws \JsonException
      */
-    #[\Symfony\Component\Routing\Attribute\Route('tasks', name: 'get_tasks', methods: 'GET')]
+    #[Route('tasks', name: 'get_tasks', methods: 'GET')]
     public function list(TaskCalendarRepository $taskCalendarRepository, Request $request): JsonResponse
     {
         $page = (int) $request->query->get('page', 1);
@@ -68,7 +68,7 @@ class TaskController extends AbstractController
         );
     }
 
-    #[\Symfony\Component\Routing\Attribute\Route('tasks/{id}', name: 'task_single', requirements: ['id' => '^[1-9][0-9]*$'], methods: 'GET')]
+    #[Route('tasks/{id}', name: 'task_single', requirements: ['id' => '^[1-9][0-9]*$'], methods: 'GET')]
     public function single(
         int $id,
         TaskCalendarRepository $taskCalendarRepository
