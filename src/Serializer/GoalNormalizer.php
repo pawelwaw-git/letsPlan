@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Serializer;
 
 use App\Entity\Goal;
+use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class GoalNormalizer implements ContextAwareNormalizerInterface
+class GoalNormalizer implements NormalizationAwareInterface
 {
     public function __construct(
         private readonly ObjectNormalizer $normalizer,
