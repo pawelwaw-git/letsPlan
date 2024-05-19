@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomepageController extends AbstractController
 {
-    #[Route('/', name: 'app_homepage')]
+    #[\Symfony\Component\Routing\Attribute\Route('/', name: 'app_homepage')]
     public function index(RandomBibleText $randomBibleText): Response
     {
         return $this->render('homepage/index.html.twig', [

@@ -41,7 +41,7 @@ class DashboardController extends AbstractDashboardController
         $this->taskChartDatasetFactory = $taskChartDatasetFactory;
     }
 
-    #[Route('/admin', name: 'admin')]
+    #[\Symfony\Component\Routing\Attribute\Route('/admin', name: 'admin')]
     public function index(): Response
     {
         /**
