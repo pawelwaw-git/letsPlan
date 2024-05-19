@@ -20,7 +20,7 @@ services:
             - '../src/Kernel.php'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    published_message_exception.listener:
-        class: App\EventListener\PublishedMessageExceptionListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+#    published_message_exception.listener:
+#        class: App\EventListener\PublishedMessageExceptionListener
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
