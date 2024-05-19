@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -25,6 +26,7 @@ class PublishedMessageExceptionEventSubscriber implements EventSubscriberInterfa
         $code = match (get_class($throwable)) {
             InvalidOperatorException::class, InvalidFilterException::class, QueryException::class, InvalidFormatException::class, BadRequestHttpException::class => Response::HTTP_BAD_REQUEST,
             NotFoundHttpException::class => Response::HTTP_NOT_FOUND,
+            HttpException::class => $throwable->getStatusCode(),
             default => Response::HTTP_INTERNAL_SERVER_ERROR,
         };
 

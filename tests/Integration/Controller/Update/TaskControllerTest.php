@@ -49,7 +49,7 @@ class TaskControllerTest extends WebTestCase
         );
         $response = $client->getResponse();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
     }
 
     /**
