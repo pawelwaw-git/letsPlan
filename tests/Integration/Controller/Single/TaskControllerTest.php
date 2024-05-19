@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Single;
+namespace App\Tests\Integration\Controller\Single;
 
 use App\Entity\TaskCalendar;
 use App\Factory\CategoryFactory;
