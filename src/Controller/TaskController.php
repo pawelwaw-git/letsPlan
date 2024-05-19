@@ -39,7 +39,7 @@ class TaskController extends AbstractController
         $taskCalendar->setIsDone($task->status);
         $taskCalendarRepository->flush();
 
-        return new JsonResponse([], 204);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -84,6 +84,6 @@ class TaskController extends AbstractController
             'goal_id' => $task->getGoal()->getId(),
             'date' => $task->getDate()->format('Y-m-d'),
             'is_done' => $task->isIsDone(),
-        ], 200);
+        ], Response::HTTP_OK);
     }
 }
