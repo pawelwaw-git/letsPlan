@@ -12,6 +12,10 @@ if (file_exists(dirname(__DIR__).'/config/bootstrap.php')) {
     (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 }
 
+if ($_SERVER['APP_DEBUG']) {
+    umask(0000);
+}
+
 // TODO consider this change -- look at before commit
 if (isset($_ENV['BOOTSTRAP_CLEAR_CACHE_ENV'])) {
     // executes the "php bin/console cache:clear" command
