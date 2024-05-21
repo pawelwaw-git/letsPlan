@@ -19,13 +19,12 @@ jobs:
       - name: Start container
         shell: bash
         run: |
-          docker-compose -f docker-compose.yml up -d --build
-          cp behat.yml.dist behat.yml
+          docker-compose -f docker-compose.yml build --no-cache & docker-compose up -d
       - name: "install composer/npm"
         run: |
-          composer install
-          npm install
-          npm run dev
+          docker exec -t lets-plan-php sudo su -c "composer install" -s /bin/sh headless
+          docker exec -t lets-plan-php sudo su -c "npm install" -s /bin/sh headless
+          docker exec -t lets-plan-php sudo su -c "npm run dev" -s /bin/sh headless
       - name: Create database schema
         shell: bash
         run: | 
@@ -38,8 +37,8 @@ jobs:
       - name: Run Tests
         shell: bash
         run: |
-          docker exec -t lets-plan-php composer behat_test
-          docker exec -t lets-plan-php composer phpunit_test
+          docker exec -t lets-plan-php sudo su -c "composer behat_test" -s /bin/sh headless
+          docker exec -t lets-plan-php sudo su -c "composer phpunit_test" -s /bin/sh headless
       - name: Remove database
         shell: bash
         run: |
