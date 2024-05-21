@@ -1,3 +1,4 @@
+import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -10,4 +11,4 @@ import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
-import { Input } from 'mdb-ui-kit';
+import { Input } from 'mdb-ui-kit'; 
