@@ -24,3 +24,6 @@ services:
 #        class: App\EventListener\PublishedMessageExceptionListener
 #        tags:
 #            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+    App\Serializer\GoalNormalizer:
+        arguments:
+            $normalizer: '@serializer.normalizer.object'

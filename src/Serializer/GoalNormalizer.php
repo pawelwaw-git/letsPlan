@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace App\Serializer;
 
 use App\Entity\Goal;
-use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class GoalNormalizer implements NormalizationAwareInterface
+class GoalNormalizer implements NormalizerInterface
 {
     public function __construct(
-        private readonly ObjectNormalizer $normalizer,
+        private readonly NormalizerInterface $normalizer,
     ) {}
 
     /**
@@ -53,5 +50,13 @@ class GoalNormalizer implements NormalizationAwareInterface
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Goal;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [Goal::class => true];
     }
 }

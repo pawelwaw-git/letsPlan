@@ -12,7 +12,6 @@ use App\Repository\GoalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * @internal
@@ -22,7 +21,6 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class DeleteGoalTest extends KernelTestCase
 {
     use Factories;
-    use ResetDatabase;
 
     private GoalRepository $goal_repository;
 
