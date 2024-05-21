@@ -45,7 +45,7 @@ final class FormContext extends MinkContext implements Context
     public function thereIsAnAdminUserWithPassword(string $email, string $plaintextPassword): Admin
     {
         $user = $this->userEntity->findByEmail($email);
-        if (!$user) {
+        if (!$user instanceof Admin) {
             $user = $this->creteNewUser($email, $plaintextPassword);
         }
 

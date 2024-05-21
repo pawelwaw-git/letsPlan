@@ -99,13 +99,7 @@ final class TasksContext implements Context
      */
     public function thereArePlanedTasksInDbFromDate(?string $type, ?string $startDate = null): void
     {
-        if ($startDate !== false) {
-            $startDate = \DateTime::createFromFormat('Y-m-d', $startDate);
-        }
-        // strange this, $startDate return false in console, but if I use else there is not working !== don't work also
-        if ($startDate === false) {
-            $startDate = null;
-        }
+        $startDate = \DateTime::createFromFormat('Y-m-d', $startDate);
 
         $days_diff = $this->getQuantityOfPlannedDays($startDate);
 

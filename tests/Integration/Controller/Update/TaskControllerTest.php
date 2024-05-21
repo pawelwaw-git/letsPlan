@@ -9,6 +9,8 @@ use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -40,7 +42,7 @@ class TaskControllerTest extends WebTestCase
         $task = $this->createTask();
 
         $client->request(
-            'PATCH',
+            Request::METHOD_PATCH,
             'tasks/'.$task->getId(),
             [],
             [],
@@ -49,7 +51,7 @@ class TaskControllerTest extends WebTestCase
         );
         $response = $client->getResponse();
 
-        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $response->getStatusCode());
     }
 
     /**
@@ -66,7 +68,7 @@ class TaskControllerTest extends WebTestCase
         $client = static::createClient();
 
         $client->request(
-            'PATCH',
+            Request::METHOD_PATCH,
             'tasks/'.$id,
             [],
             [],
@@ -75,7 +77,7 @@ class TaskControllerTest extends WebTestCase
         );
         $response = $client->getResponse();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     /**
@@ -92,7 +94,7 @@ class TaskControllerTest extends WebTestCase
         $task = $this->createTask();
 
         $client->request(
-            'PATCH',
+            Request::METHOD_PATCH,
             'tasks/'.($task->getId() + 1),
             [],
             [],
@@ -101,7 +103,7 @@ class TaskControllerTest extends WebTestCase
         );
         $response = $client->getResponse();
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     /**
@@ -122,7 +124,7 @@ class TaskControllerTest extends WebTestCase
         $task = $this->createTask();
 
         $client->request(
-            'PATCH',
+            Request::METHOD_PATCH,
             'tasks/'.$task->getId(),
             [],
             [],
@@ -136,7 +138,7 @@ class TaskControllerTest extends WebTestCase
         );
         $response = $client->getResponse();
 
-        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
         $this->assertSame($payload['status'], $task->isIsDone());
     }
 

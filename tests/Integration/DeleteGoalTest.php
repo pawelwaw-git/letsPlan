@@ -47,7 +47,7 @@ class DeleteGoalTest extends KernelTestCase
         $this->removeGoal($goal);
 
         // THEN
-        $this->goalIsNotExists($goal);
+        $this->goalIsNotExists();
     }
 
     private function createGoalWithTaskCalendar(): Goal
@@ -65,7 +65,7 @@ class DeleteGoalTest extends KernelTestCase
         $this->goal_repository->flush();
     }
 
-    private function goalIsNotExists(Goal $goal): void
+    private function goalIsNotExists(): void
     {
         $result = $this->goal_repository->findAll();
         $this->assertEmpty($result);

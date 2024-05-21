@@ -10,6 +10,7 @@ use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
 use Carbon\Carbon;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Proxy;
 
@@ -31,10 +32,10 @@ class TaskControllerTest extends WebTestCase
     ): void {
         // GIVEN
         $client = static::createClient();
-        $tasks = $this->createTasks($tasks_number);
+        $this->createTasks($tasks_number);
 
         // WHEN
-        $client->request('GET', 'tasks', [
+        $client->request(Request::METHOD_GET, 'tasks', [
             'page' => $page,
             'per_page' => $per_page,
         ]);
@@ -42,7 +43,7 @@ class TaskControllerTest extends WebTestCase
         // THEN
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         //        TODO implement it
         //        $this->checkStructureResponse();
 
@@ -75,14 +76,14 @@ class TaskControllerTest extends WebTestCase
         ]);
 
         // WHEN
-        $client->request('GET', 'tasks', [
+        $client->request(Request::METHOD_GET, 'tasks', [
             'sort' => $query,
         ]);
 
         // THEN
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         //        TODO implement it
         //        $this->checkStructureResponse();
 
@@ -96,17 +97,17 @@ class TaskControllerTest extends WebTestCase
         // GIVEN
         $client = static::createClient();
 
-        $task = $this->createTask();
+        $this->createTask();
 
         // WHEN
-        $client->request('GET', 'tasks', [
+        $client->request(Request::METHOD_GET, 'tasks', [
             'sort' => '-invalidParam',
         ]);
 
         // THEN
         $response = $client->getResponse();
 
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     /**
@@ -123,14 +124,14 @@ class TaskControllerTest extends WebTestCase
         $this->createTasksFromArray($tasks_data);
 
         // THEN
-        $client->request('GET', 'tasks', [
+        $client->request(Request::METHOD_GET, 'tasks', [
             'filter' => $query,
         ]);
 
         // THEN
         $response = $client->getResponse();
 
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
         $content = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame($result, count($content['items']));
     }
@@ -147,12 +148,12 @@ class TaskControllerTest extends WebTestCase
         $this->createTask();
 
         // WHEN
-        $client->request('GET', 'tasks', [
+        $client->request(Request::METHOD_GET, 'tasks', [
             'filter' => $query,
         ]);
 
         // THEN
-        $this->assertSame(400, $client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode(), $client->getResponse()->getContent());
     }
 
     public function testEmptyResponseRequest(): void
@@ -162,7 +163,7 @@ class TaskControllerTest extends WebTestCase
         $client = static::createClient();
 
         // WHEN
-        $client->request('GET', 'tasks');
+        $client->request(Request::METHOD_GET, 'tasks');
 
         // THEN
         $response = $client->getResponse();
@@ -179,14 +180,14 @@ class TaskControllerTest extends WebTestCase
 
         // WHEN
         $client->request(
-            'GET',
+            Request::METHOD_GET,
             'tasks'
         );
 
         // THEN
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame(
             json_encode([
                 'items' => [
@@ -516,13 +517,7 @@ class TaskControllerTest extends WebTestCase
         $tasks = [];
         foreach ($data as $item) {
             $task = TaskCalendarFactory::createOne(
-                array_merge([
-                    'Goal' => $goal,
-                    'isDone' => true,
-                ], [
-                    'Date' => Carbon::createFromFormat('Y-m-d H:i:s', $item['Date']),
-                    'IsDone' => $item['IsDone'],
-                ])
+                ['Goal' => $goal, 'isDone' => true, 'Date' => Carbon::createFromFormat('Y-m-d H:i:s', $item['Date']), 'IsDone' => $item['IsDone']]
             );
             $tasks[] = $task;
         }
