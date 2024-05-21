@@ -19,7 +19,7 @@ jobs:
       - name: Start container
         shell: bash
         run: |
-          docker-compose -f docker-compose.yml up -d --build
+          docker-compose -f docker-compose.yml build --no-cache & docker-compose up -d 
           cp behat.yml.dist behat.yml
       - name: "install composer/npm"
         run: |
