@@ -21,6 +21,7 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d --build
       - name: "install composer/npm"
+        shell: bash
         run: |
           docker exec -t lets-plan-php composer install
           docker exec -t lets-plan-php npm install
