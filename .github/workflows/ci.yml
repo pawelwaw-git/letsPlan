@@ -24,14 +24,14 @@ jobs:
       - name: Run fixer and phpstan
         shell: bash
         run: |
-          docker exec -t letsplan-backend_php composer phpstan
-          docker exec -t letsplan-backend_php composer check-cs
+          docker exec -t lets-plan-php composer phpstan
+          docker exec -t lets-plan-php composer check-cs
       - name: Run Tests
         shell: bash
         run: |
-          docker exec -t letsplan-backend_php composer behat_test
-          docker exec -t letsplan-backend_php composer phpunit_test
+          docker exec -t lets-plan-php composer behat_test
+          docker exec -t lets-plan-php composer phpunit_test
       - name: Remove database
         shell: bash
         run: |
-          docker exec -t letsplan-backend_php php bin/console doctrine:database:drop --force
+          docker exec -t lets-plan-php php bin/console doctrine:database:drop --force
