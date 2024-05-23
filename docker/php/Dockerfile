@@ -102,7 +102,7 @@ USER www
 
 WORKDIR /var/www/html
 
-RUN composer install
-RUN npm install
-RUN npm run dev
-RUN cp behat.yml.dist behat.yml
+CMD bash -c "composer install"
+CMD bash -c "npm install"
+CMD bash -c "run dev"
+CMD bash -c "cp behat.yml.dist behat.yml"
