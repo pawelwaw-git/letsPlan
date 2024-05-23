@@ -20,18 +20,6 @@ jobs:
         shell: bash
         run: |
           docker-compose -f docker-compose.yml up -d --build
-#      - name: "install composer/npm"
-#        shell: bash
-#        run: |
-#          docker exec -t lets-plan-php composer install
-#          docker exec -t lets-plan-php npm install
-#          docker exec -t lets-plan-php npm run dev
-#          docker exec -t lets-plan-php cp behat.yml.dist behat.yml
-      - name: Create database schema
-        shell: bash
-        run: | 
-          docker ps
-          docker exec -t lets-plan-php php bin/console doctrine:schema:create --env=test
       - name: Run fixer and phpstan
         shell: bash
         run: |
