@@ -101,3 +101,8 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 USER www
 
 WORKDIR /var/www/html
+
+RUN composer install
+RUN npm install
+RUN npm run dev
+RUN cp behat.yml.dist behat.yml
