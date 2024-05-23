@@ -20,6 +20,7 @@ jobs:
         shell: bash
         run: |
           docker-compose -f docker-compose.yml up -d --build
+          docker ps
       - name: Run fixer and phpstan
         shell: bash
         run: |
