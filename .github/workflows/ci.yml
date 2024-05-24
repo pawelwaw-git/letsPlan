@@ -26,8 +26,8 @@ jobs:
           docker exec -t lets-plan-php php -v
           docker exec -t lets-plan-php ls -la
           docker exec -t lets-plan-php sudo su -c "composer install" -s /bin/sh headless
-          docker exec -t lets-plan-php npm install
-          docker exec -t lets-plan-php npm run dev
+          docker exec -t lets-plan-php sudo su -c "npm install" -s /bin/sh headless
+          docker exec -t lets-plan-php sudo su -c "npm run dev" -s /bin/sh headless
       - name: Create database schema
         shell: bash
         run: | 
