@@ -24,6 +24,7 @@ jobs:
       - name: "install composer/npm"
         run: |
           docker exec -t lets-plan-php php -v
+          docker exec -t lets-plan-php ls -la
           docker exec -t lets-plan-php composer install
           docker exec -t lets-plan-php npm install
           docker exec -t lets-plan-php npm run dev
