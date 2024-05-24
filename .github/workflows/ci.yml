@@ -20,7 +20,7 @@ jobs:
         shell: bash
         run: |
           docker-compose -f docker-compose.yml up -d --build
-      - name: "install composer/npm"
+      - name: "install composer/npm  "
         shell: bash
         run: |
           docker exec -t lets-plan-php ls -la
