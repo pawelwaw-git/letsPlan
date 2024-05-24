@@ -90,10 +90,10 @@ RUN a2enmod ssl
 
 
 # FROM https://gitlab.com/behat-chrome/docker-chrome-headless/-/blob/main/Dockerfile?ref_type=heads
-RUN useradd headless --shell /bin/bash --create-home \
-  && usermod -a -G sudo headless \
-  && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
-  && echo 'headless:nopassword' | chpasswd
+#RUN useradd headless --shell /bin/bash --create-home \
+#  && usermod -a -G sudo headless \
+#  && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
+#  && echo 'headless:nopassword' | chpasswd
 
 # Copy configurations
 COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
