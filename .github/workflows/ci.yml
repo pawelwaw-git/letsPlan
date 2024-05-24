@@ -20,11 +20,11 @@ jobs:
         shell: bash
         run: |
           docker-compose -f docker-compose.yml up -d --build
-#      - name: "install composer/npm"
-#        run: |
-#          docker exec -t lets-plan-php composer install
-#          docker exec -t lets-plan-php npm install
-#          docker exec -t lets-plan-php npm run dev
+      - name: "install composer/npm"
+        run: |
+          docker exec -t lets-plan-php composer install
+          docker exec -t lets-plan-php npm install
+          docker exec -t lets-plan-php npm run dev
       - name: Create database schema
         shell: bash
         run: | 

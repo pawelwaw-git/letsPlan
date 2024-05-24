@@ -102,4 +102,6 @@ USER www
 
 WORKDIR /var/www/html
 
-CMD bash -c "composer install && npm install && npm run dev"
+COPY . .
+
+#CMD bash -c "composer install && npm install && npm run dev"
