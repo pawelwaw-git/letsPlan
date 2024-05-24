@@ -23,6 +23,7 @@ jobs:
           cp behat.yml.dist behat.yml
       - name: "install composer/npm"
         run: |
+          docker exec -t lets-plan-php php -v
           composer install
           npm install
           npm run dev
