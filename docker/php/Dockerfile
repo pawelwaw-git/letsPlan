@@ -101,9 +101,3 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 USER www
 
 WORKDIR /var/www/html
-
-CMD bash -c "composer install"
-CMD bash -c "npm install"
-CMD bash -c "run dev"
-CMD bash -c "cp behat.yml.dist behat.yml"
-CMD bash -c "php bin/console doctrine:schema:create --env=test"
