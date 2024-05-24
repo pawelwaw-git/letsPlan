@@ -24,9 +24,9 @@ jobs:
       - name: "install composer/npm"
         run: |
           docker exec -t lets-plan-php php -v
-          composer install
-          npm install
-          npm run dev
+          docker exec -t lets-plan-php composer install
+          docker exec -t lets-plan-php npm install
+          docker exec -t lets-plan-php npm run dev
       - name: Create database schema
         shell: bash
         run: | 
