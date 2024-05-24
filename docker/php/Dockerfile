@@ -101,7 +101,7 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 USER www
 
 WORKDIR /var/www/html
-
 COPY . .
+
 
 #CMD bash -c "composer install && npm install && npm run dev"

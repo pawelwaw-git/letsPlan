@@ -26,7 +26,7 @@ jobs:
           docker exec -t lets-plan-php npm install
           docker exec -t lets-plan-php npm run dev
       - name: Create database schema
-        shell: bash
+#        shell: bash
         run: | 
           docker exec -t lets-plan-php php bin/console doctrine:schema:create --env=test
       - name: Run fixer and phpstan
