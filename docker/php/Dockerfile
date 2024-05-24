@@ -73,9 +73,6 @@ RUN pecl install xdebug-3.2.1 && docker-php-ext-enable xdebug
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
 RUN sudo apt install symfony-cli
 
-SHELL ["/bin/bash", "-c"]
-RUN composer install
-
 RUN groupadd -g 1000 1000
 RUN useradd -u 1000 -ms /bin/bash -g 1000 www
 
@@ -105,5 +102,4 @@ USER www
 
 WORKDIR /var/www/html
 
-
-#CMD bash -c "cp behat.yml.dist behat.yml"
+CMD bash -c "composer install && npm install && npm run dev"
