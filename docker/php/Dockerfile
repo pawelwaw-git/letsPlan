@@ -101,3 +101,5 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 USER www
 
 WORKDIR /var/www/html
+
+#CMD bash -c "cp behat.yml.dist behat.yml"
