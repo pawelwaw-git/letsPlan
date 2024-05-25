@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Single;
+namespace App\Tests\Integration\Controller\Single;
 
 use App\Entity\TaskCalendar;
 use App\Factory\CategoryFactory;
 use App\Factory\GoalFactory;
 use App\Factory\TaskCalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Proxy;
 
 /**
@@ -26,14 +28,14 @@ class TaskControllerTest extends WebTestCase
 
         // WHEN
         $client->request(
-            'GET',
+            Request::METHOD_GET,
             'tasks/'.$task->getId()
         );
 
         // THEN
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame(
             json_encode([
                 'id' => $task->getId(),
@@ -55,13 +57,13 @@ class TaskControllerTest extends WebTestCase
 
         // WHEN
         $client->request(
-            'GET',
+            Request::METHOD_GET,
             'tasks/'.$invalid_task
         );
 
         // THEN
         $response = $client->getResponse();
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
     /**

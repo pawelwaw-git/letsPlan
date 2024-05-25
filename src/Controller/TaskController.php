@@ -6,30 +6,26 @@ namespace App\Controller;
 
 use App\Dto\TaskDto;
 use App\Repository\TaskCalendarRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TaskController extends AbstractController
 {
     #[Route('/tasks/{id}', name: 'update_task', requirements: ['id' => '^[1-9][0-9]*$'], methods: ['PATCH'])]
-    #[ParamConverter('task', converter: 'fos_rest.request_body')]
     public function update(
         int $id,
+        #[MapRequestPayload]
         TaskDto $task,
-        ConstraintViolationListInterface $validationErrors,
+        ValidatorInterface $validator,
         TaskCalendarRepository $taskCalendarRepository,
     ): JsonResponse {
-        if ($validationErrors->count() > 0) {
-            return $this->json($validationErrors, Response::HTTP_BAD_REQUEST);
-        }
-
         $taskCalendar = $taskCalendarRepository->find($id);
 
         if ($taskCalendar === null) {
@@ -39,7 +35,7 @@ class TaskController extends AbstractController
         $taskCalendar->setIsDone($task->status);
         $taskCalendarRepository->flush();
 
-        return new JsonResponse([], 204);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -84,6 +80,6 @@ class TaskController extends AbstractController
             'goal_id' => $task->getGoal()->getId(),
             'date' => $task->getDate()->format('Y-m-d'),
             'is_done' => $task->isIsDone(),
-        ], 200);
+        ], Response::HTTP_OK);
     }
 }

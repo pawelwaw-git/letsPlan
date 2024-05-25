@@ -1,9 +1,8 @@
 # Read the documentation: https://fosrestbundle.readthedocs.io/en/3.x/
 fos_rest:
     body_converter:
-        enabled: true
-        validate: true
-    param_fetcher_listener:  true
+        enabled: false
+        validate: false
 #    allowed_methods_listener:  true
     routing_loader: false
 #    view:

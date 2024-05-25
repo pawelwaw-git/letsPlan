@@ -33,7 +33,7 @@ final class DemoContext implements Context
      */
     public function aDemoScenarioSendsARequestTo(string $path): void
     {
-        $this->response = $this->kernel->handle(Request::create($path, 'GET'));
+        $this->response = $this->kernel->handle(Request::create($path, Request::METHOD_GET));
     }
 
     /**

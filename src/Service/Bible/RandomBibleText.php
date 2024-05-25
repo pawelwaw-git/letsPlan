@@ -64,7 +64,7 @@ class RandomBibleText
     private function isCached(): bool
     {
         $bibleEntity = $this->BibleQuoteRepository->findByBibleAndChapter($this);
-        if ($bibleEntity) {
+        if ($bibleEntity instanceof BibleQuote) {
             $this->cached_obeject = $bibleEntity;
 
             return true;

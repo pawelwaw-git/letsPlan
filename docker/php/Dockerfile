@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.3-apache
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
@@ -68,7 +68,7 @@ RUN docker-php-ext-install \
     bcmath
 
 # Install XDebug \
-RUN pecl install xdebug-3.2.1 && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.3.2 && docker-php-ext-enable xdebug
 
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
 RUN sudo apt install symfony-cli

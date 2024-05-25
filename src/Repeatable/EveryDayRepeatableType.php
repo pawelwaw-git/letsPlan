@@ -9,8 +9,6 @@ use Carbon\Carbon;
 
 class EveryDayRepeatableType implements Repeatable
 {
-    public function __construct() {}
-
     public function getStartDate(): \DateTime
     {
         return Carbon::now()->setTime(0, 0);

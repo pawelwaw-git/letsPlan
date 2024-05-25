@@ -26,7 +26,7 @@ class ApiBible
 
     public function call(): ResultBibleApi
     {
-        if ($this->apiLink == '') {
+        if ($this->apiLink === '') {
             return new ResultBibleApi('', 'Api link wasn\'t set', false);
         }
         $response = $this->client->request(

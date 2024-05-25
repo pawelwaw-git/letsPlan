@@ -12,7 +12,6 @@ use App\Repository\GoalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * @internal
@@ -22,7 +21,6 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class DeleteGoalTest extends KernelTestCase
 {
     use Factories;
-    use ResetDatabase;
 
     private GoalRepository $goal_repository;
 
@@ -49,7 +47,7 @@ class DeleteGoalTest extends KernelTestCase
         $this->removeGoal($goal);
 
         // THEN
-        $this->goalIsNotExists($goal);
+        $this->goalIsNotExists();
     }
 
     private function createGoalWithTaskCalendar(): Goal
@@ -67,7 +65,7 @@ class DeleteGoalTest extends KernelTestCase
         $this->goal_repository->flush();
     }
 
-    private function goalIsNotExists(Goal $goal): void
+    private function goalIsNotExists(): void
     {
         $result = $this->goal_repository->findAll();
         $this->assertEmpty($result);
