@@ -30,6 +30,10 @@ services:
         APACHE_RUN_GROUP: www-data
       networks:
         - my-network
+      healthcheck:
+        test: [ "CMD", "test -f var/lib/mysql/db" ]
+        timeout: 20s
+        retries: 10
 
 networks:
   my-network:
