@@ -37,8 +37,8 @@ jobs:
       - name: Run Tests
         shell: bash
         run: |
-          docker exec -t lets-plan-php composer behat_test
-          docker exec -t lets-plan-php composer phpunit_test
+          docker exec -t lets-plan-php sudo su -c "composer behat_test" -s /bin/sh headless
+          docker exec -t lets-plan-php sudo su -c "composer phpunit_test" -s /bin/sh headless
       - name: Remove database
         shell: bash
         run: |
