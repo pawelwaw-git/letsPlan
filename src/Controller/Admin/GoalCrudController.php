@@ -42,7 +42,7 @@ class GoalCrudController extends AbstractCrudController
                 ->renderAsNativeWidget()
                 ->setFormTypeOption('by_reference', true),
             TextEditorField::new('Description'),
-            BooleanField::new('Active')
+            BooleanField::new('Active'),
         ];
     }
 
